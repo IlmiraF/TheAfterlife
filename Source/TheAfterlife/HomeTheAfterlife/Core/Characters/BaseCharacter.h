@@ -6,24 +6,32 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+class UBaseCharacterMovementComponent;
+
 UCLASS()
 class THEAFTERLIFE_API ABaseCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	ABaseCharacter();
+	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
+
+	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
+
+	virtual void MoveForward(float value) {};
+	virtual void MoveRight(float value) {};
+	virtual void Turn(float value) {};
+	virtual void LookUp(float value) {};
+	virtual void Jump();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UBaseCharacterMovementComponent* BaseCharacterMovementComponent;
+
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 };
