@@ -9,9 +9,13 @@
 /**
  * 
  */
+
 UCLASS()
 class THEAFTERLIFE_API UBaseCharacterMovementComponent : public UCharacterMovementComponent
 {
 	GENERATED_BODY()
+
+public:
+	virtual float GetMaxSpeed() const override;
 	
 };

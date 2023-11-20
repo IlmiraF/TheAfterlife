@@ -23,6 +23,8 @@ public:
 	virtual void Turn(float value) {};
 	virtual void LookUp(float value) {};
 	virtual void Jump();
+	virtual void ChangeCrouchState();
+	virtual void Landed(const FHitResult& Hit) override;
 
 protected:
 	virtual void BeginPlay() override;

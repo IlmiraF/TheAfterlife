@@ -21,6 +21,8 @@ public:
 	virtual void MoveRight(float value) override;
 	virtual void Turn(float value) override;
 	virtual void LookUp(float value) override;
+	virtual void Jump() override;
+	virtual void Landed(const FHitResult& Hit) override;
 
 protected:
 
@@ -31,5 +33,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Camera")
 	class USpringArmComponent* SpringArmComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Jump")
+	class UAnimMontage* DoubleJumpMontage;
+
+private:
+	int32 JumpCount = 0;
 	
 };

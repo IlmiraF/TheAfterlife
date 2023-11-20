@@ -57,6 +57,31 @@ void APlayerCharacter::LookUp(float value)
 	AddControllerPitchInput(value);
 }
 
+void APlayerCharacter::Jump()
+{
+	if (JumpCount == 0)
+	{
+		Super::Jump();
+		JumpCount++;
+	}
+	else
+	{
+		if (JumpCount < 2)
+		{
+			PlayAnimMontage(DoubleJumpMontage);
+			FVector JumpForce = GetVelocity() + FVector(0.0f, 0.0f, 500.f);
+			LaunchCharacter(JumpForce, false, true);
+			JumpCount++;
+		}
+	}
+}
+
+void APlayerCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+	JumpCount = 0;
+}
+
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();

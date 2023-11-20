@@ -18,6 +18,23 @@ void ABaseCharacter::Jump()
 	Super::Jump();
 }
 
+void ABaseCharacter::ChangeCrouchState()
+{
+	if (!GetMovementComponent()->IsCrouching())
+	{
+		Crouch();
+	}
+	else
+	{
+		UnCrouch();
+	}
+}
+
+void ABaseCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();

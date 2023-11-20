@@ -3,3 +3,8 @@
 
 #include "BaseCharacterMovementComponent.h"
 
+float UBaseCharacterMovementComponent::GetMaxSpeed() const
+{
+    float Result = Super::GetMaxSpeed();
+    return Result;
+}
