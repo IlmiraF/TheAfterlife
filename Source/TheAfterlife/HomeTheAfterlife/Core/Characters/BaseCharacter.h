@@ -37,6 +37,9 @@ struct FMantlingSettings
 };
 
 class UBaseCharacterMovementComponent;
+class AInteractiveActor;
+
+typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
 UCLASS()
 class THEAFTERLIFE_API ABaseCharacter : public ACharacter
@@ -62,6 +65,9 @@ public:
 	UPROPERTY()
 	bool bIsMantling;
 
+	void RegisterInteractiveActor(AInteractiveActor* InteractiveActor);
+	void UnregisterInteractiveActor(AInteractiveActor* InteractiveActor);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -85,4 +91,6 @@ protected:
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
+
+	TInteractiveActorsArray AvailableInteractiveActors;
 };

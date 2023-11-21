@@ -84,6 +84,16 @@ void ABaseCharacter::Mantle(bool bForce)
 	}
 }
 
+void ABaseCharacter::RegisterInteractiveActor(AInteractiveActor* InteractiveActor)
+{
+	AvailableInteractiveActors.AddUnique(InteractiveActor);
+}
+
+void ABaseCharacter::UnregisterInteractiveActor(AInteractiveActor* InteractiveActor)
+{
+	AvailableInteractiveActors.RemoveSingleSwap(InteractiveActor);
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
