@@ -22,6 +22,7 @@ void ABasePlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePlayerController::Jump);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
+	InputComponent->BindAction("Mantle", EInputEvent::IE_Pressed, this, &ABasePlayerController::Mantle);
 }
 
 void ABasePlayerController::MoveForward(float value)
@@ -53,6 +54,14 @@ void ABasePlayerController::LookUp(float value)
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->LookUp(value);
+	}
+}
+
+void ABasePlayerController::Mantle()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->Mantle();
 	}
 }
 

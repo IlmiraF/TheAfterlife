@@ -6,6 +6,36 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+USTRUCT(BlueprintType)
+struct FMantlingSettings
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UAnimMontage* MantlingMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UCurveVector* MantlingCurve;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float AnimationCorrectionXY = 65.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float AnimationCorrectionZ = 200.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float MaxHeight = 200.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float MinHeight = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float MaxHeightStartTime = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float MinHeightStartTime = 0.5f;
+};
+
 class UBaseCharacterMovementComponent;
 
 UCLASS()
@@ -26,14 +56,33 @@ public:
 	virtual void ChangeCrouchState();
 	virtual void Landed(const FHitResult& Hit) override;
 
+	UFUNCTION(BlueprintCallable)
+	void Mantle(bool bForce = false);
+
+	UPROPERTY()
+	bool bIsMantling;
+
 protected:
 	virtual void BeginPlay() override;
 
 	UBaseCharacterMovementComponent* BaseCharacterMovementComponent;
 
-public:	
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Movement")
+	class ULedgeDetectorComponent* LedgeDetectorComponent;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement|Mantling")
+	FMantlingSettings HighMantleSettings;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement|Mantling")
+	FMantlingSettings LowMantleSettings;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement|Mantling", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float LowMantleMaxHeight = 125.0f;
+
+	bool CanMantle() const;
+
+	virtual void OnMantle(const FMantlingSettings& MantlingSettings, float MantlingAnimationStartTime);
+
+private:
+	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
 };

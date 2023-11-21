@@ -32,7 +32,6 @@ void APlayerCharacter::MoveForward(float value)
 		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
 		FVector ForwardVector = YawRotator.RotateVector(FVector::ForwardVector);
 		AddMovementInput(ForwardVector, value);
-		//AddMovementInput(GetActorForwardVector(), value);
 	}
 }
 
@@ -43,7 +42,6 @@ void APlayerCharacter::MoveRight(float value)
 		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
 		FVector RightVector = YawRotator.RotateVector(FVector::RightVector);
 		AddMovementInput(RightVector, value);
-		//AddMovementInput(GetActorRightVector(), value);
 	}
 }
 
@@ -69,7 +67,7 @@ void APlayerCharacter::Jump()
 		if (JumpCount < 2)
 		{
 			PlayAnimMontage(DoubleJumpMontage);
-			FVector JumpForce = GetVelocity() + FVector(0.0f, 0.0f, 500.f);
+			FVector JumpForce = GetVelocity() + FVector(0.0f, 0.0f, 300.f);
 			LaunchCharacter(JumpForce, false, true);
 			JumpCount++;
 		}
