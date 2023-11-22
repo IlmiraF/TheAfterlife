@@ -27,7 +27,17 @@ enum class ECustomMovementMode : uint8
 {
 	CMOVE_None = 0 UMETA(DisplayName = "None"),
 	CMOVE_Mantling UMETA(DisplayName = "Mantling"),
+	CMOVE_Ladder UMETA(DisplayName = "Ladder"),
 	CMOVE_Max UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
+enum class EDetachFromLadderMethod : uint8
+{
+	Fall = 0,
+	ReachingTheTop,
+	ReachingTheBottom,
+	JumpOff
 };
 
 /**
@@ -45,6 +55,13 @@ public:
 	void StartMantle(const FMantlingMovementParameters& MantlingParameters);
 	void EndMantle();
 	bool IsMantling() const;
+
+	void AttachToLadder(const class ALadder* Ladder);
+	void DetachFromLadder(EDetachFromLadderMethod DetachFromLadderMethod = EDetachFromLadderMethod::Fall);
+	bool IsOnLadder() const;
+	const class ALadder* GetCurrentLadder();
+	float GetLadderSpeedRatio() const;
+	float GetActorToCurrentLadderProjection(const FVector& Location) const;
 	
 protected:
 
@@ -53,12 +70,35 @@ protected:
 	virtual void PhysCustom(float DeltaTime, int32 Iterations) override;
 
 	void PhysMantling(float DeltaTime, int32 Iterations);
+	void PhysLadder(float DeltaTime, int32 Iterations);
 
 	class ABaseCharacter* GetBaseCharacterOwner() const;
+
+	UPROPERTY(Category = "Character Movement: Ladder", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
+	float ClimbingOnLadderMaxSpeed = 200.0f;
+
+	UPROPERTY(Category = "Character Movement: Ladder", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
+	float ClimbingOnLadderBrakingDecelaration = 2048.0f;
+
+	UPROPERTY(Category = "Character Movement: Ladder", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
+	float LadderToCharacterOffset = 60.0f;
+
+	UPROPERTY(Category = "Character Movement: Ladder", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
+	float MaxLadderTopOffset = 90.0f;
+
+	UPROPERTY(Category = "Character Movement: Ladder", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
+	float MinLadderBottomOffset = 90.0f;
+
+	UPROPERTY(Category = "Character Movement: Ladder", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
+	float JumpOffFromLadderSpeed = 500.0f;
 
 private:
 	FMantlingMovementParameters CurrentMantlingParameters;
 
 	FTimerHandle MantlingTimer;
+
+	const ALadder* CurrentLadder = nullptr;
+	FRotator ForceTargetRotation = FRotator::ZeroRotator;
+	bool bForceRotation = false;
 
 };

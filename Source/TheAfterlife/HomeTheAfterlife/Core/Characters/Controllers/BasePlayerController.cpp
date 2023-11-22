@@ -19,7 +19,10 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAxis("MoveRight", this, &ABasePlayerController::MoveRight);
 	InputComponent->BindAxis("Turn", this, &ABasePlayerController::Turn);
 	InputComponent->BindAxis("LookUp", this, &ABasePlayerController::LookUp);
+	InputComponent->BindAxis("ClimbLadderUp", this, &ABasePlayerController::ClimbLadderUp);
 
+	InputComponent->BindAction("InteractWithRunWall", EInputEvent::IE_Pressed, this, &ABasePlayerController::InteractWithRunWall);
+	InputComponent->BindAction("InteractWithLadder", EInputEvent::IE_Pressed, this, &ABasePlayerController::InteractWithLadder);
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePlayerController::Jump);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
 	InputComponent->BindAction("Mantle", EInputEvent::IE_Pressed, this, &ABasePlayerController::Mantle);
@@ -78,5 +81,29 @@ void ABasePlayerController::ChangeCrouchState()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->ChangeCrouchState();
+	}
+}
+
+void ABasePlayerController::InteractWithRunWall()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->InteractWithRunWall();
+	}
+}
+
+void ABasePlayerController::ClimbLadderUp(float value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->ClimbLadderUp(value);
+	}
+}
+
+void ABasePlayerController::InteractWithLadder()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->InteractWithLadder();
 	}
 }

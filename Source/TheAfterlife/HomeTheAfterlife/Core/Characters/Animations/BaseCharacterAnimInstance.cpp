@@ -24,4 +24,9 @@ void UBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	Speed = CharacterMovement->Velocity.Size();
 	bIsFalling = CharacterMovement->IsFalling();
 	bIsCrouching = CharacterMovement->IsCrouching();
+	bIsOnLadder = CharacterMovement->IsOnLadder();
+	if (bIsOnLadder)
+	{
+		LadderSpeedRatio = CharacterMovement->GetLadderSpeedRatio();
+	}
 }

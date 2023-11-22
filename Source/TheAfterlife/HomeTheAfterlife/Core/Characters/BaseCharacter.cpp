@@ -6,6 +6,8 @@
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
 #include "../Components/AdditionalComponents/LedgeDetectorComponent.h"
 #include "Curves/CurveVector.h"
+#include "../Actors/Interactive/Environment/Ladder.h"
+#include "../Actors/Interactive/InteractiveActor.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -92,6 +94,53 @@ void ABaseCharacter::RegisterInteractiveActor(AInteractiveActor* InteractiveActo
 void ABaseCharacter::UnregisterInteractiveActor(AInteractiveActor* InteractiveActor)
 {
 	AvailableInteractiveActors.RemoveSingleSwap(InteractiveActor);
+}
+
+void ABaseCharacter::InteractWithRunWall()
+{
+}
+
+void ABaseCharacter::ClimbLadderUp(float Value)
+{
+	if (GetBaseCharacterMovementComponent()->IsOnLadder() && !FMath::IsNearlyZero(Value))
+	{
+		FVector LadderUpVector = GetBaseCharacterMovementComponent()->GetCurrentLadder()->GetActorUpVector();
+		AddMovementInput(LadderUpVector, Value);
+	}
+}
+
+void ABaseCharacter::InteractWithLadder()
+{
+	if (GetBaseCharacterMovementComponent()->IsOnLadder())
+	{
+		GetBaseCharacterMovementComponent()->DetachFromLadder(EDetachFromLadderMethod::JumpOff);
+	}
+	else
+	{
+		const ALadder* AvailableLadder = GetAvailableLadder();
+		if (IsValid(AvailableLadder))
+		{
+			if (AvailableLadder->GetIsOnTop())
+			{
+				PlayAnimMontage(AvailableLadder->GetAttachFromTopAnimMontage());
+			}
+			GetBaseCharacterMovementComponent()->AttachToLadder(AvailableLadder);
+		}
+	}
+}
+
+const ALadder* ABaseCharacter::GetAvailableLadder() const
+{
+	const ALadder* Result = nullptr;
+	for (const AInteractiveActor* InteractiveActor : AvailableInteractiveActors)
+	{
+		if (InteractiveActor->IsA<ALadder>())
+		{
+			Result = StaticCast<const ALadder*>(InteractiveActor);
+			break;
+		}
+	}
+	return Result;
 }
 
 void ABaseCharacter::BeginPlay()
