@@ -5,6 +5,8 @@
 #include "../../Characters/BaseCharacter.h"
 #include "Curves/CurveVector.h"
 #include "../../Actors/Interactive/Environment/Ladder.h"
+#include "../../Actors/Interactive/Environment/Zipline.h"
+#include "Components/CapsuleComponent.h"
 
 float UBaseCharacterMovementComponent::GetMaxSpeed() const
 {
@@ -12,6 +14,10 @@ float UBaseCharacterMovementComponent::GetMaxSpeed() const
 	if (IsOnLadder())
 	{
 		Result = ClimbingOnLadderMaxSpeed;
+	}
+	if (IsOnZipline())
+	{
+		Result = MaxSpeedOnZipline;
 	}
     return Result;
 }
@@ -119,6 +125,41 @@ float UBaseCharacterMovementComponent::GetActorToCurrentLadderProjection(const F
 	return ActorToLadderProjection;
 }
 
+void UBaseCharacterMovementComponent::AttachToZipline(const AZipline* Zipline)
+{
+	CurrentZipline = Zipline;
+	FRotator InteractiveCapsuleRotation = CurrentZipline->GetZiplineInteractiveCapsule()->GetRelativeRotation();
+	FRotator TargetOrientationRotation = FRotator(0.0f, InteractiveCapsuleRotation.Yaw, InteractiveCapsuleRotation.Roll);
+	float Projection = GetActorToCurrentZiplineProjection(GetActorLocation());
+	FVector ZiplineForwardVector = CurrentZipline->GetZiplineInteractiveCapsule()->GetForwardVector();
+	FVector ZiplineUpVector = CurrentZipline->GetZiplineInteractiveCapsule()->GetUpVector();
+
+	FVector NewCharacterLocation = CurrentZipline->GetZiplineInteractiveCapsule()->GetComponentLocation() + Projection * ZiplineUpVector - (CurrentZipline->GetZiplineInteractiveCapsule()->GetUnscaledCapsuleRadius() + ZiplineToCharacterOffset) * ZiplineForwardVector;
+
+	GetOwner()->SetActorLocation(NewCharacterLocation);
+	GetOwner()->SetActorRotation(TargetOrientationRotation);
+
+	SetMovementMode(MOVE_Custom, (uint8)ECustomMovementMode::CMOVE_Zipline);
+}
+
+void UBaseCharacterMovementComponent::DetachFromZipline()
+{
+	SetMovementMode(MOVE_Falling);
+}
+
+float UBaseCharacterMovementComponent::GetActorToCurrentZiplineProjection(const FVector& Location) const
+{
+	checkf(IsValid(CurrentZipline), TEXT("UGCBaseCharacterMovementComponent::GetCharacterToCurrentZiplineProjection() cannot be invoked when current zipline is null"));
+	FVector ZiplineUpVector = CurrentZipline->GetZiplineInteractiveCapsule()->GetUpVector();
+	FVector ZiplineToCharacterDistance = Location - CurrentZipline->GetZiplineInteractiveCapsule()->GetComponentLocation();
+	return FVector::DotProduct(ZiplineUpVector, ZiplineToCharacterDistance);
+}
+
+bool UBaseCharacterMovementComponent::IsOnZipline() const
+{
+	return UpdatedComponent && MovementMode == MOVE_Custom && CustomMovementMode == (uint8)ECustomMovementMode::CMOVE_Zipline;
+}
+
 void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
@@ -126,6 +167,11 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 	if (PreviousMovementMode == MOVE_Custom && PreviousCustomMode == (uint8)ECustomMovementMode::CMOVE_Ladder)
 	{
 		CurrentLadder = nullptr;
+	}
+
+	if (PreviousMovementMode == MOVE_Custom && PreviousCustomMode == (uint8)ECustomMovementMode::CMOVE_Zipline)
+	{
+		CurrentZipline = nullptr;
 	}
 
 	if (MovementMode == MOVE_Custom)
@@ -155,6 +201,11 @@ void UBaseCharacterMovementComponent::PhysCustom(float DeltaTime, int32 Iteratio
 		case (uint8)ECustomMovementMode::CMOVE_Ladder:
 		{
 			PhysLadder(DeltaTime, Iterations);
+			break;
+		}
+		case (uint8)ECustomMovementMode::CMOVE_Zipline:
+		{
+			PhysZipline(DeltaTime, Iterations);
 			break;
 		}
 		default:
@@ -216,6 +267,19 @@ void UBaseCharacterMovementComponent::PhysLadder(float DeltaTime, int32 Iteratio
 
 	FHitResult Hit;
 	SafeMoveUpdatedComponent(Delta, GetOwner()->GetActorRotation(), true, Hit);
+}
+
+void UBaseCharacterMovementComponent::PhysZipline(float DeltaTime, int32 Iterations)
+{
+	FVector ZiplineDirection = (CurrentZipline->GetTopPointOfSecondPillar() - CurrentZipline->GetTopPointOfFirstPillar()).GetSafeNormal();
+	FVector Delta = MaxSpeedOnZipline * ZiplineDirection * DeltaTime;
+
+	FHitResult Hit;
+	SafeMoveUpdatedComponent(Delta, GetOwner()->GetActorRotation(), true, Hit);
+	if (Hit.IsValidBlockingHit())
+	{
+		SetMovementMode(MOVE_Walking);
+	}
 }
 
 ABaseCharacter* UBaseCharacterMovementComponent::GetBaseCharacterOwner() const

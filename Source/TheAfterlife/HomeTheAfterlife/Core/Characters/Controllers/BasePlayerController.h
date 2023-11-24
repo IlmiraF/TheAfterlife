@@ -38,5 +38,7 @@ protected:
 	void ClimbLadderUp(float value);
 	void InteractWithLadder();
 
+	void InteractWithZipline();
+
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
 };

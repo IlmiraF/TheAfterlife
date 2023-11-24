@@ -7,6 +7,7 @@
 #include "../Components/AdditionalComponents/LedgeDetectorComponent.h"
 #include "Curves/CurveVector.h"
 #include "../Actors/Interactive/Environment/Ladder.h"
+#include "../Actors/Interactive/Environment/Zipline.h"
 #include "../Actors/Interactive/InteractiveActor.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
@@ -137,6 +138,36 @@ const ALadder* ABaseCharacter::GetAvailableLadder() const
 		if (InteractiveActor->IsA<ALadder>())
 		{
 			Result = StaticCast<const ALadder*>(InteractiveActor);
+			break;
+		}
+	}
+	return Result;
+}
+
+void ABaseCharacter::InteractWithZipline()
+{
+	if (GetBaseCharacterMovementComponent()->IsOnZipline())
+	{
+		GetBaseCharacterMovementComponent()->DetachFromZipline();
+	}
+	else
+	{
+		const AZipline* AvailableZipline = GetAvailableZipline();
+		if (IsValid(AvailableZipline))
+		{
+			GetBaseCharacterMovementComponent()->AttachToZipline(AvailableZipline);
+		}
+	}
+}
+
+const AZipline* ABaseCharacter::GetAvailableZipline() const
+{
+	const AZipline* Result = nullptr;
+	for (const AInteractiveActor* InteractiveActor : AvailableInteractiveActors)
+	{
+		if (InteractiveActor->IsA<AZipline>())
+		{
+			Result = StaticCast<const AZipline*>(InteractiveActor);
 			break;
 		}
 	}

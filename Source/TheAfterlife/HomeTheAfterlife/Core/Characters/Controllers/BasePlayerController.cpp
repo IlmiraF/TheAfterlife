@@ -23,6 +23,7 @@ void ABasePlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("InteractWithRunWall", EInputEvent::IE_Pressed, this, &ABasePlayerController::InteractWithRunWall);
 	InputComponent->BindAction("InteractWithLadder", EInputEvent::IE_Pressed, this, &ABasePlayerController::InteractWithLadder);
+	InputComponent->BindAction("InteractWithZipline", EInputEvent::IE_Released, this, &ABasePlayerController::InteractWithZipline);
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePlayerController::Jump);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
 	InputComponent->BindAction("Mantle", EInputEvent::IE_Pressed, this, &ABasePlayerController::Mantle);
@@ -105,5 +106,13 @@ void ABasePlayerController::InteractWithLadder()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->InteractWithLadder();
+	}
+}
+
+void ABasePlayerController::InteractWithZipline()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->InteractWithZipline();
 	}
 }

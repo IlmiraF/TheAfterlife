@@ -28,6 +28,7 @@ enum class ECustomMovementMode : uint8
 	CMOVE_None = 0 UMETA(DisplayName = "None"),
 	CMOVE_Mantling UMETA(DisplayName = "Mantling"),
 	CMOVE_Ladder UMETA(DisplayName = "Ladder"),
+	CMOVE_Zipline UMETA(DisplayName = "Zipline"),
 	CMOVE_Max UMETA(Hidden)
 };
 
@@ -62,6 +63,11 @@ public:
 	const class ALadder* GetCurrentLadder();
 	float GetLadderSpeedRatio() const;
 	float GetActorToCurrentLadderProjection(const FVector& Location) const;
+
+	void AttachToZipline(const class AZipline* Zipline);
+	void DetachFromZipline();
+	float GetActorToCurrentZiplineProjection(const FVector& Location) const;
+	bool IsOnZipline() const;
 	
 protected:
 
@@ -71,6 +77,7 @@ protected:
 
 	void PhysMantling(float DeltaTime, int32 Iterations);
 	void PhysLadder(float DeltaTime, int32 Iterations);
+	void PhysZipline(float DeltaTime, int32 Iterations);
 
 	class ABaseCharacter* GetBaseCharacterOwner() const;
 
@@ -92,12 +99,20 @@ protected:
 	UPROPERTY(Category = "Character Movement: Ladder", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
 	float JumpOffFromLadderSpeed = 500.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character movement: Zipline", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float MaxSpeedOnZipline = 1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character movement: Zipline", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float ZiplineToCharacterOffset = 60.0f;
+
 private:
 	FMantlingMovementParameters CurrentMantlingParameters;
 
 	FTimerHandle MantlingTimer;
 
 	const ALadder* CurrentLadder = nullptr;
+	const AZipline* CurrentZipline = nullptr;
+
 	FRotator ForceTargetRotation = FRotator::ZeroRotator;
 	bool bForceRotation = false;
 

@@ -74,6 +74,9 @@ public:
 	void InteractWithLadder();
 	const class ALadder* GetAvailableLadder() const;
 
+	void InteractWithZipline();
+	const class AZipline* GetAvailableZipline() const;
+
 protected:
 	virtual void BeginPlay() override;
 
