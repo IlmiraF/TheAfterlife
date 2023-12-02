@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
 #include "../Components\CharacterComponents\CharacterAttributeComponent.h"
+#include "Engine/DamageEvents.h"
 
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -81,6 +82,25 @@ void APlayerCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 	JumpCount = 0;
+
+	float FallHeight = (CurrentFallApex - GetActorLocation()).Z * 0.01;
+
+	if (IsValid(FallDamageCurve) == true)
+	{
+		float DamageAmount = FallDamageCurve->GetFloatValue(FallHeight);
+		TakeDamage(DamageAmount, FDamageEvent(), GetController(), Hit.GetActor());
+	}
+}
+
+void APlayerCharacter::NotifyJumpApex()
+{
+	Super::NotifyJumpApex();
+	CurrentFallApex = GetActorLocation();
+}
+
+void APlayerCharacter::Falling()
+{
+	GetBaseCharacterMovementComponent()->bNotifyApex = true;
 }
 
 void APlayerCharacter::BeginPlay()
