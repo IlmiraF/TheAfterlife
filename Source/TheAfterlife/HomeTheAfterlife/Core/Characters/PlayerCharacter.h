@@ -25,6 +25,8 @@ public:
 	virtual void LookUp(float value) override;
 	virtual void Jump() override;
 	virtual void Landed(const FHitResult& Hit) override;
+	virtual void Falling() override;
+	virtual void NotifyJumpApex() override;
 
 protected:
 
@@ -40,13 +42,18 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
 	class UCharacterAttributeComponent* CharacterAttributeComponent;
 
-	virtual void OnDeath();
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Animations")
 	class UAnimMontage* OnDeathAnimMontage;
+	// Damage depending from fall height (in meters)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Attributes")
+	class UCurveFloat* FallDamageCurve;
+
+	virtual void OnDeath();
 
 private:
 	int32 JumpCount = 0;
 	
 	void EnableRagdoll();
+
+	FVector CurrentFallApex;
 };
