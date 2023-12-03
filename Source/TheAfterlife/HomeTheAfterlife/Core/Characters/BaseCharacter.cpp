@@ -193,3 +193,4 @@ const FMantlingSettings& ABaseCharacter::GetMantlingSettings(float LedgeHeight) 
 {
 	return LedgeHeight > LowMantleMaxHeight ? HighMantleSettings : LowMantleSettings;
 }
+

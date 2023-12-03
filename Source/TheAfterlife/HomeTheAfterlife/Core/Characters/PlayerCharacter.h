@@ -17,8 +17,6 @@ class THEAFTERLIFE_API APlayerCharacter : public ABaseCharacter
 public:
 	APlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
-	virtual void BeginPlay() override;
-
 	virtual void MoveForward(float value) override;
 	virtual void MoveRight(float value) override;
 	virtual void Turn(float value) override;
@@ -27,6 +25,8 @@ public:
 	virtual void Landed(const FHitResult& Hit) override;
 
 protected:
+
+	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Camera")
 	class UCameraComponent* CameraComponent;
@@ -37,16 +37,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Jump")
 	class UAnimMontage* DoubleJumpMontage;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
-	class UCharacterAttributeComponent* CharacterAttributeComponent;
-
-	virtual void OnDeath();
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Animations")
-	class UAnimMontage* OnDeathAnimMontage;
-
 private:
 	int32 JumpCount = 0;
 	
-	void EnableRagdoll();
 };
