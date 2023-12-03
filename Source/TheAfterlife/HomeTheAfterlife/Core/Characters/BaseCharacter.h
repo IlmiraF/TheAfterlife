@@ -102,4 +102,5 @@ private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
 
 	TInteractiveActorsArray AvailableInteractiveActors;
+
 };

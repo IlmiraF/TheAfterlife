@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
+#include "../Components\CharacterComponents\CharacterAttributeComponent.h"
 
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -23,6 +24,8 @@ APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 
 	GetCharacterMovement()->bOrientRotationToMovement = 1;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
+
+	CharacterAttributeComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("CharacterAttributes") );
 }
 
 void APlayerCharacter::MoveForward(float value)
@@ -83,4 +86,23 @@ void APlayerCharacter::Landed(const FHitResult& Hit)
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CharacterAttributeComponent->OnDeathEvent.AddUObject(this, &APlayerCharacter::OnDeath);
+}
+
+void APlayerCharacter::OnDeath()
+{	
+	GetCharacterMovement()->DisableMovement();
+
+	float Duration = PlayAnimMontage(OnDeathAnimMontage);
+	if (Duration == 0.0f)
+	{
+		EnableRagdoll();
+	}
+}
+
+void APlayerCharacter::EnableRagdoll()
+{
+	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
+	GetMesh()->SetSimulatePhysics(true);
 }
