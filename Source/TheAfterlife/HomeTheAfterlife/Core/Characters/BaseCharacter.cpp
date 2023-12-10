@@ -4,11 +4,14 @@
 #include "BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
+#include "../Components/CharacterComponents/CharacterAttributeComponent.h"
 #include "../Components/AdditionalComponents/LedgeDetectorComponent.h"
 #include "Curves/CurveVector.h"
 #include "../Actors/Interactive/Environment/Ladder.h"
 #include "../Actors/Interactive/Environment/Zipline.h"
 #include "../Actors/Interactive/InteractiveActor.h"
+#include "../../../TheAfterlifeTypes.h"
+#include "Engine/DamageEvents.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -16,7 +19,7 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	BaseCharacterMovementComponent = StaticCast<UBaseCharacterMovementComponent*>(GetCharacterMovement());
 
 	LedgeDetectorComponent = CreateDefaultSubobject<ULedgeDetectorComponent>(TEXT("Ledge Detector"));
-
+	CharacterAttributesComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("Attribute Component"));
 }
 
 void ABaseCharacter::Jump()
@@ -36,9 +39,27 @@ void ABaseCharacter::ChangeCrouchState()
 	}
 }
 
+void ABaseCharacter::Falling()
+{
+	Super::Falling();
+	GetBaseCharacterMovementComponent()->bNotifyApex = true;
+}
+
+void ABaseCharacter::NotifyJumpApex()
+{
+	Super::NotifyJumpApex();
+	CurrentFallApex = GetActorLocation();
+}
+
 void ABaseCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
+	float FallHeight = (CurrentFallApex - GetActorLocation()).Z * 0.01f;
+	if (IsValid(FallDamageCurve))
+	{
+		float DamageAmount = FallDamageCurve->GetFloatValue(FallHeight);
+		TakeDamage(DamageAmount, FDamageEvent(), GetController(), Hit.GetActor());
+	}
 }
 
 void ABaseCharacter::Mantle(bool bForce)
@@ -83,7 +104,6 @@ void ABaseCharacter::Mantle(bool bForce)
 
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Play(MantlingSettings.MantlingMontage, 1.0f, EMontagePlayReturnType::Duration, MantlingParameters.StartTime);
-		OnMantle(MantlingSettings, MantlingParameters.StartTime);
 	}
 }
 
@@ -185,8 +205,14 @@ bool ABaseCharacter::CanMantle() const
 	return true;
 }
 
-void ABaseCharacter::OnMantle(const FMantlingSettings& MantlingSettings, float MantlingAnimationStartTime)
+void ABaseCharacter::OnDeath()
 {
+	GetCharacterMovement()->DisableMovement();
+	float Duration = PlayAnimMontage(OnDeathAnimMontage);
+	if (Duration == 0.0f)
+	{
+		EnableRagdoll();
+	}
 }
 
 const FMantlingSettings& ABaseCharacter::GetMantlingSettings(float LedgeHeight) const
@@ -194,3 +220,8 @@ const FMantlingSettings& ABaseCharacter::GetMantlingSettings(float LedgeHeight) 
 	return LedgeHeight > LowMantleMaxHeight ? HighMantleSettings : LowMantleSettings;
 }
 
+void ABaseCharacter::EnableRagdoll()
+{
+	GetMesh()->SetCollisionProfileName(CollisionProfileRagdoll);
+	GetMesh()->SetSimulatePhysics(true);
+}

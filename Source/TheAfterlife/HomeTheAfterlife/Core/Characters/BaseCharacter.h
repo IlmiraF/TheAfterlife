@@ -37,6 +37,7 @@ struct FMantlingSettings
 };
 
 class UBaseCharacterMovementComponent;
+class UCharacterAttributeComponent;
 class AInteractiveActor;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
@@ -50,6 +51,7 @@ public:
 	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 
 	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
+	FORCEINLINE UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
 
 	virtual void MoveForward(float value) {};
 	virtual void MoveRight(float value) {};
@@ -57,6 +59,8 @@ public:
 	virtual void LookUp(float value) {};
 	virtual void Jump();
 	virtual void ChangeCrouchState();
+	virtual void Falling() override;
+	virtual void NotifyJumpApex() override;
 	virtual void Landed(const FHitResult& Hit) override;
 
 	UFUNCTION(BlueprintCallable)
@@ -85,6 +89,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Movement")
 	class ULedgeDetectorComponent* LedgeDetectorComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
+	UCharacterAttributeComponent* CharacterAttributesComponent;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement|Mantling")
 	FMantlingSettings HighMantleSettings;
 
@@ -96,10 +103,20 @@ protected:
 
 	bool CanMantle() const;
 
-	virtual void OnMantle(const FMantlingSettings& MantlingSettings, float MantlingAnimationStartTime);
+	virtual void OnDeath();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
+	class UAnimMontage* OnDeathAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Attributes")
+	class UCurveFloat* FallDamageCurve;
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
 
 	TInteractiveActorsArray AvailableInteractiveActors;
+
+	void EnableRagdoll();
+	FVector CurrentFallApex;
+
 };

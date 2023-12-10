@@ -17,6 +17,8 @@ class THEAFTERLIFE_API APlayerCharacter : public ABaseCharacter
 public:
 	APlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
+	virtual void BeginPlay() override;
+
 	virtual void MoveForward(float value) override;
 	virtual void MoveRight(float value) override;
 	virtual void Turn(float value) override;
@@ -25,8 +27,6 @@ public:
 	virtual void Landed(const FHitResult& Hit) override;
 
 protected:
-
-	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Camera")
 	class UCameraComponent* CameraComponent;
@@ -39,5 +39,4 @@ protected:
 
 private:
 	int32 JumpCount = 0;
-	
 };
