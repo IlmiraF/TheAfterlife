@@ -5,8 +5,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
-#include "../Components\CharacterComponents\CharacterAttributeComponent.h"
-#include "Engine/DamageEvents.h"
 
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -25,8 +23,6 @@ APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 
 	GetCharacterMovement()->bOrientRotationToMovement = 1;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
-
-	CharacterAttributeComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("CharacterAttributes") );
 }
 
 void APlayerCharacter::MoveForward(float value)
@@ -82,47 +78,9 @@ void APlayerCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 	JumpCount = 0;
-
-	float FallHeight = (CurrentFallApex - GetActorLocation()).Z * 0.01;
-
-	if (IsValid(FallDamageCurve) == true)
-	{
-		float DamageAmount = FallDamageCurve->GetFloatValue(FallHeight);
-		TakeDamage(DamageAmount, FDamageEvent(), GetController(), Hit.GetActor());
-	}
-}
-
-void APlayerCharacter::NotifyJumpApex()
-{
-	Super::NotifyJumpApex();
-	CurrentFallApex = GetActorLocation();
-}
-
-void APlayerCharacter::Falling()
-{
-	GetBaseCharacterMovementComponent()->bNotifyApex = true;
 }
 
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	CharacterAttributeComponent->OnDeathEvent.AddUObject(this, &APlayerCharacter::OnDeath);
-}
-
-void APlayerCharacter::OnDeath()
-{	
-	GetCharacterMovement()->DisableMovement();
-
-	float Duration = PlayAnimMontage(OnDeathAnimMontage);
-	if (Duration == 0.0f)
-	{
-		EnableRagdoll();
-	}
-}
-
-void APlayerCharacter::EnableRagdoll()
-{
-	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
-	GetMesh()->SetSimulatePhysics(true);
 }
