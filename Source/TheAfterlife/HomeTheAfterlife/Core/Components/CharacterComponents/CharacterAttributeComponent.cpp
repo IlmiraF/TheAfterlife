@@ -3,7 +3,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "UObject/WeakObjectPtrTemplates.h"
 #include "Components/CapsuleComponent.h"
-#include "..\Source\TheAfterlife\HomeTheAfterlife\Core\Characters\PlayerCharacter.h"
+#include "../../Characters/BaseCharacter.h"
 
 
 UCharacterAttributeComponent::UCharacterAttributeComponent()
@@ -15,45 +15,23 @@ void UCharacterAttributeComponent::TickComponent(float DeltaTime, ELevelTick Tic
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	GEngine->AddOnScreenDebugMessage(0, 0.5f, FColor::Red, FString::Printf(TEXT("Current Health: %f"), Health));
-#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
-	void DebugDrawAttributes();
-#endif
-
 }
 
 void UCharacterAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	checkf(GetOwner()->IsA<APlayerCharacter>(), TEXT("UCharacterAttributeComponent:: BeginPlay UCharacterAttributeComponent can be used only with APlayerCharacter"));
-	CachedBaseCharacterOwner = StaticCast<APlayerCharacter*>(GetOwner());
-	
+	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("UCharacterAttributeComponent:: BeginPlay UCharacterAttributeComponent can be used only with ABaseCharacter"));
+	CachedBaseCharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
+
 	Health = MaxHealth;
-	
+
 	CachedBaseCharacterOwner->OnTakeAnyDamage.AddDynamic(this, &UCharacterAttributeComponent::OnTakeAnyDamage);
 }
 
-#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
-void UCharacterAttributeComponent::DebugDrawAttributes()
-{
-
-	//UDebugSubsystem* DebugSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem <UDebugSubsystem>();
-	//
-	//if (DebugSubsystem->IsCategoryEnabled(DebugCategoryAttributes) == false)
-	//{
-	//	return;
-	//}
-	//
-	//FVector TextLocation = CachedBaseCharacterOwner->GetActorLocation() + (CachedBaseCharacterOwner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 5.0f) * FVector::UpVector;
-	//DrawDebugString(GetWorld(), TextLocation, FString::Printf(TEXT("Health: %.2f"), Health), nullptr, FColor::Green, 0.0f, true);
-}
-#endif
-
-
-
 void UCharacterAttributeComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {	
-	if (IsAlive() == false)
+	if (!IsAlive())
 	{
 		return;
 	}

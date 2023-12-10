@@ -2,9 +2,6 @@
 
 #include "Components/ActorComponent.h"
 #include "CoreMinimal.h"
-#include "DrawDebugHelpers.h"
-#include "Kismet/GameplayStatics.h"
-#include "UObject/WeakObjectPtrTemplates.h"
 #include "CharacterAttributeComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnDeathEventSignature)
@@ -33,12 +30,8 @@ private:
 
 	float Health = 0.0f;
 
-#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
-	void DebugDrawAttributes();
-#endif
-
 	UFUNCTION()
 	void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
-	TWeakObjectPtr<class APlayerCharacter> CachedBaseCharacterOwner;
+	TWeakObjectPtr<class ABaseCharacter> CachedBaseCharacterOwner;
 };
