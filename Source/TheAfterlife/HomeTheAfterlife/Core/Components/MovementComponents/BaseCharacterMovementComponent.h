@@ -29,6 +29,7 @@ enum class ECustomMovementMode : uint8
 	CMOVE_Mantling UMETA(DisplayName = "Mantling"),
 	CMOVE_Ladder UMETA(DisplayName = "Ladder"),
 	CMOVE_Zipline UMETA(DisplayName = "Zipline"),
+	CMOVE_WallRun	UMETA(DisplayName = "WallRun"),
 	CMOVE_Max UMETA(Hidden)
 };
 
@@ -70,16 +71,22 @@ public:
 	bool IsOnZipline() const;
 
 	virtual void PhysicsRotation(float DeltaTime) override;
+
+	void StartWallRun();
+	bool IsWallRunning() const;
+	bool IsWallRunningRight() const { return Safe_bWallRunIsRight; }
 	
 protected:
 
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
+	virtual void UpdateCharacterStateBeforeMovement(float DeltaSeconds) override;
 	
 	virtual void PhysCustom(float DeltaTime, int32 Iterations) override;
 
 	void PhysMantling(float DeltaTime, int32 Iterations);
 	void PhysLadder(float DeltaTime, int32 Iterations);
 	void PhysZipline(float DeltaTime, int32 Iterations);
+	void PhysWallRun(float DeltaTime, int32 Iterations);
 
 	class ABaseCharacter* GetBaseCharacterOwner() const;
 
@@ -101,11 +108,37 @@ protected:
 	UPROPERTY(Category = "Character Movement: Ladder", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
 	float JumpOffFromLadderSpeed = 500.0f;
 
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character movement: Zipline", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float MaxSpeedOnZipline = 1000.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character movement: Zipline", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float ZiplineToCharacterOffset = 60.0f;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character Movement: WallRun") 
+	float MinWallRunSpeed = 300.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character Movement: WallRun") 
+	float MaxWallRunSpeed = 800.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character Movement: WallRun") 
+	float MaxVerticalWallRunSpeed = 180.f; //?
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character Movement: WallRun") 
+	float MinWallRunHeight = 75.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character Movement: WallRun") 
+	float WallJumpOfForce = 400.f; //Force with which a player jumps away from a wall
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character Movement: WallRun") 
+	float WallRunPullAwayAngle = 75.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character Movement: WallRun") 
+	float WallAttractionForce = 200.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character Movement: WallRun") 
+	UCurveFloat* WallRunGravityScaleCurve;
 
 private:
 	FMantlingMovementParameters CurrentMantlingParameters;
@@ -118,4 +151,7 @@ private:
 	FRotator ForceTargetRotation = FRotator::ZeroRotator;
 	bool bForceRotation = false;
 
+	bool IsWallOnSideTrace(FHitResult& WallHit, bool bWallRight) const;
+	bool TryWallRun();
+	bool Safe_bWallRunIsRight;
 };
