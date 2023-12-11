@@ -57,20 +57,14 @@ void APlayerCharacter::LookUp(float value)
 
 void APlayerCharacter::Jump()
 {
-	if (JumpCount == 0)
+	Super::Jump();
+	JumpCount++;
+	if (JumpCount == 2)
 	{
-		Super::Jump();
+		PlayAnimMontage(DoubleJumpMontage);
+		FVector JumpForce = GetVelocity() + FVector(0.0f, 0.0f, 300.f);
+		LaunchCharacter(JumpForce, false, true);
 		JumpCount++;
-	}
-	else
-	{
-		if (JumpCount < 2)
-		{
-			PlayAnimMontage(DoubleJumpMontage);
-			FVector JumpForce = GetVelocity() + FVector(0.0f, 0.0f, 300.f);
-			LaunchCharacter(JumpForce, false, true);
-			JumpCount++;
-		}
 	}
 }
 

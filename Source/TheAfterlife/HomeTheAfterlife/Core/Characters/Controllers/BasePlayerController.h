@@ -33,8 +33,6 @@ protected:
 	void Jump();
 	void ChangeCrouchState();
 
-	void InteractWithRunWall();
-
 	void ClimbLadderUp(float value);
 	void InteractWithLadder();
 

@@ -68,6 +68,8 @@ public:
 	void DetachFromZipline();
 	float GetActorToCurrentZiplineProjection(const FVector& Location) const;
 	bool IsOnZipline() const;
+
+	virtual void PhysicsRotation(float DeltaTime) override;
 	
 protected:
 

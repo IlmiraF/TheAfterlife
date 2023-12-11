@@ -7,6 +7,7 @@
 #include "../../Actors/Interactive/Environment/Ladder.h"
 #include "../../Actors/Interactive/Environment/Zipline.h"
 #include "Components/CapsuleComponent.h"
+#include "../../../../TheAfterlifeTypes.h"
 
 float UBaseCharacterMovementComponent::GetMaxSpeed() const
 {
@@ -158,6 +159,59 @@ float UBaseCharacterMovementComponent::GetActorToCurrentZiplineProjection(const 
 bool UBaseCharacterMovementComponent::IsOnZipline() const
 {
 	return UpdatedComponent && MovementMode == MOVE_Custom && CustomMovementMode == (uint8)ECustomMovementMode::CMOVE_Zipline;
+}
+
+void UBaseCharacterMovementComponent::PhysicsRotation(float DeltaTime)
+{
+	if (bForceRotation)
+	{
+		FRotator CurrentRotation = UpdatedComponent->GetComponentRotation();
+		CurrentRotation.DiagnosticCheckNaN(TEXT("UGCBaseCharacterMovementComponent::PhysicsRotation(): CurrentRotation"));
+
+		FRotator DeltaRot = GetDeltaRotation(DeltaTime);
+		DeltaRot.DiagnosticCheckNaN(TEXT("UGCBaseCharacterMovementComponent::PhysicsRotation(): GetDeltaRotation"));
+
+		// Accumulate a desired new rotation.
+		const float AngleTolerance = 1e-3f;
+
+		if (!CurrentRotation.Equals(ForceTargetRotation, AngleTolerance))
+		{
+			FRotator DesiredRotation = ForceTargetRotation;
+			// PITCH
+			if (!FMath::IsNearlyEqual(CurrentRotation.Pitch, DesiredRotation.Pitch, AngleTolerance))
+			{
+				DesiredRotation.Pitch = FMath::FixedTurn(CurrentRotation.Pitch, DesiredRotation.Pitch, DeltaRot.Pitch);
+			}
+
+			// YAW
+			if (!FMath::IsNearlyEqual(CurrentRotation.Yaw, DesiredRotation.Yaw, AngleTolerance))
+			{
+				DesiredRotation.Yaw = FMath::FixedTurn(CurrentRotation.Yaw, DesiredRotation.Yaw, DeltaRot.Yaw);
+			}
+
+			// ROLL
+			if (!FMath::IsNearlyEqual(CurrentRotation.Roll, DesiredRotation.Roll, AngleTolerance))
+			{
+				DesiredRotation.Roll = FMath::FixedTurn(CurrentRotation.Roll, DesiredRotation.Roll, DeltaRot.Roll);
+			}
+
+			// Set the new rotation.
+			DesiredRotation.DiagnosticCheckNaN(TEXT("CharacterMovementComponent::PhysicsRotation(): DesiredRotation"));
+			MoveUpdatedComponent(FVector::ZeroVector, DesiredRotation, /*bSweep*/ false);
+		}
+		else
+		{
+			ForceTargetRotation = FRotator::ZeroRotator;
+			bForceRotation = false;
+		}
+		return;
+	}
+
+	if (IsOnLadder())
+	{
+		return;
+	}
+	Super::PhysicsRotation(DeltaTime);
 }
 
 void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)

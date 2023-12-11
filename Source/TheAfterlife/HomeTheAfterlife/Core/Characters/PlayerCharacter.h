@@ -36,7 +36,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Jump")
 	class UAnimMontage* DoubleJumpMontage;
-
-private:
-	int32 JumpCount = 0;
 };

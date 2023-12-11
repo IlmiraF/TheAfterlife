@@ -65,14 +65,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Mantle(bool bForce = false);
-
-	UPROPERTY()
 	bool bIsMantling;
 
 	void RegisterInteractiveActor(AInteractiveActor* InteractiveActor);
 	void UnregisterInteractiveActor(AInteractiveActor* InteractiveActor);
-
-	void InteractWithRunWall();
 
 	void ClimbLadderUp(float Value);
 	void InteractWithLadder();
@@ -88,6 +84,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Movement")
 	class ULedgeDetectorComponent* LedgeDetectorComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Movement|Jumping")
+	int32 JumpCount = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
 	UCharacterAttributeComponent* CharacterAttributesComponent;

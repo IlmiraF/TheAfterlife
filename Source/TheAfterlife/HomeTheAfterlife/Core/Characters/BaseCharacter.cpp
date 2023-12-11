@@ -19,6 +19,10 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	BaseCharacterMovementComponent = StaticCast<UBaseCharacterMovementComponent*>(GetCharacterMovement());
 
 	LedgeDetectorComponent = CreateDefaultSubobject<ULedgeDetectorComponent>(TEXT("Ledge Detector"));
+
+	GetMesh()->CastShadow = true;
+	GetMesh()->bCastDynamicShadow = true;
+
 	CharacterAttributesComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("Attribute Component"));
 }
 
@@ -72,6 +76,8 @@ void ABaseCharacter::Mantle(bool bForce)
 	FLedgeDescription LedgeDescription;
 	if (LedgeDetectorComponent->DetectLedge(LedgeDescription) && !GetBaseCharacterMovementComponent()->IsMantling())
 	{
+		JumpCount = 0;
+
 		bIsMantling = true;
 
 		FMantlingMovementParameters MantlingParameters;
@@ -96,11 +102,8 @@ void ABaseCharacter::Mantle(bool bForce)
 		MantlingParameters.StartTime = FMath::GetMappedRangeValueClamped(SourceRange, TargetRange, MantlingHeight);
 
 		MantlingParameters.InitialAnimationLocation = MantlingParameters.TargetLocation - MantlingSettings.AnimationCorrectionZ * FVector::UpVector + MantlingSettings.AnimationCorrectionXY * LedgeDescription.LedgeNormal;
-
-		if (IsLocallyControlled() || GetLocalRole() == ROLE_Authority)
-		{
-			GetBaseCharacterMovementComponent()->StartMantle(MantlingParameters);
-		}
+		
+		GetBaseCharacterMovementComponent()->StartMantle(MantlingParameters);
 
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Play(MantlingSettings.MantlingMontage, 1.0f, EMontagePlayReturnType::Duration, MantlingParameters.StartTime);
@@ -115,10 +118,6 @@ void ABaseCharacter::RegisterInteractiveActor(AInteractiveActor* InteractiveActo
 void ABaseCharacter::UnregisterInteractiveActor(AInteractiveActor* InteractiveActor)
 {
 	AvailableInteractiveActors.RemoveSingleSwap(InteractiveActor);
-}
-
-void ABaseCharacter::InteractWithRunWall()
-{
 }
 
 void ABaseCharacter::ClimbLadderUp(float Value)
@@ -202,7 +201,7 @@ void ABaseCharacter::BeginPlay()
 
 bool ABaseCharacter::CanMantle() const
 {
-	return true;
+	return !GetBaseCharacterMovementComponent()->IsOnLadder() && !GetBaseCharacterMovementComponent()->IsOnZipline();
 }
 
 void ABaseCharacter::OnDeath()
