@@ -43,6 +43,9 @@ class UMeleeCombatComponent;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
+
+//DECLARE_DYNAMIC_DELEGATE_FiveParams(FComponentHitSignature, UPrimitiveComponent*, AActor* , UPrimitiveComponent* , FVector , const FHitResult*);
+
 UCLASS()
 class THEAFTERLIFE_API ABaseCharacter : public ACharacter
 {
@@ -79,10 +82,20 @@ public:
 	const class AZipline* GetAvailableZipline() const;
 
 
+	//FComponentHitSignature OnAttackHit;
+
 	void AttackInput();
 	void MeleeAttackStart();
 	void MeleeAttackFinish();
 
+	UFUNCTION()
+	void OnAttackHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	//UFUNCTION()
+	//void OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	//
+	//UFUNCTION()
+	//void OnAttackOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 protected:
 	virtual void BeginPlay() override;

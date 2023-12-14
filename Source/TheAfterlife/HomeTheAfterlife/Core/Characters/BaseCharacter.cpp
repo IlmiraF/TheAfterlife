@@ -34,10 +34,12 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	LeftHandCollision->SetupAttachment(GetRootComponent());
 	LeftHandCollision->SetHiddenInGame(false);
 	LeftHandCollision->SetCollisionProfileName("NoCollision");
+	LeftHandCollision->SetNotifyRigidBodyCollision(false);
 
 	RightHandCollision->SetupAttachment(GetRootComponent());
 	RightHandCollision->SetHiddenInGame(false);
 	RightHandCollision->SetCollisionProfileName("NoCollision");
+	RightHandCollision->SetNotifyRigidBodyCollision(false);
 }
 
 void ABaseCharacter::Jump()
@@ -215,6 +217,14 @@ void ABaseCharacter::BeginPlay()
 
 	LeftHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "hand_left_collision");
 	RightHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "hand_right_collision");
+
+	LeftHandCollision->OnComponentHit.AddDynamic(this, &ABaseCharacter::OnAttackHit);
+	//LeftHandCollision->OnComponentBeginOverlap.AddDynamic(this, &ABaseCharacter::OnAttackOverlapBegin);
+	//LeftHandCollision->OnComponentEndOverlap.AddDynamic(this, &ABaseCharacter::OnAttackOverlapEnd);
+
+	RightHandCollision->OnComponentHit.AddDynamic(this, &ABaseCharacter::OnAttackHit);
+	//RightHandCollision->OnComponentBeginOverlap.AddDynamic(this, &ABaseCharacter::OnAttackOverlapBegin);
+	//RightHandCollision->OnComponentEndOverlap.AddDynamic(this, &ABaseCharacter::OnAttackOverlapEnd);
 }
 
 bool ABaseCharacter::CanMantle() const
@@ -256,7 +266,12 @@ void ABaseCharacter::MeleeAttackStart()
 	//MeleeCombatComponent->MeleeAttackStart();
 
 	LeftHandCollision->SetCollisionProfileName("Weapon");
+	LeftHandCollision->SetNotifyRigidBodyCollision(true);
+	//LeftHandCollision->SetGenerateOverlapEvents(true);
+
 	RightHandCollision->SetCollisionProfileName("Weapon");
+	RightHandCollision->SetNotifyRigidBodyCollision(true);
+	//RightHandCollision->SetGenerateOverlapEvents(true);
 
 	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::White, FString::Printf(TEXT("AttackStart")));
 }
@@ -266,8 +281,27 @@ void ABaseCharacter::MeleeAttackFinish()
 	//MeleeCombatComponent->MeleeAttackFinish();
 
 	LeftHandCollision->SetCollisionProfileName("NoCollision");
+	LeftHandCollision->SetNotifyRigidBodyCollision(false);
+	//LeftHandCollision->SetGenerateOverlapEvents(false);
+
 	RightHandCollision->SetCollisionProfileName("NoCollision");
+	RightHandCollision->SetNotifyRigidBodyCollision(false);
+	//RightHandCollision->SetGenerateOverlapEvents(false);
 
 	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Black, FString::Printf(TEXT("AttackFinish")));
 }
 
+void ABaseCharacter::OnAttackHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Yellow, Hit.GetActor()->GetName());
+}
+
+//void ABaseCharacter::OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+//{
+//	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Red, OtherActor->GetName());
+//}
+//
+//void ABaseCharacter::OnAttackOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+//{
+//	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Black, OtherActor->GetName());
+//}
