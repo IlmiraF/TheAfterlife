@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerInput.h"
 #include "../BaseCharacter.h"
 
+
 void ABasePlayerController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
@@ -28,8 +29,8 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
 
 
-	InputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &ABasePlayerController::MeleeAttackStart);
-	InputComponent->BindAction("Attack", EInputEvent::IE_Released, this, &ABasePlayerController::MeleeAttackFinish);
+	InputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &ABasePlayerController::AttackInput);
+	//InputComponent->BindAction("Attack", EInputEvent::IE_Released, this, &ABasePlayerController::MeleeAttackFinish);
 }
 
 void ABasePlayerController::MoveForward(float value)
@@ -112,18 +113,26 @@ void ABasePlayerController::InteractWithZipline()
 	}
 }
 
-void ABasePlayerController::MeleeAttackStart()
+void ABasePlayerController::AttackInput()
 {
 	if (CachedBaseCharacter.IsValid())
 	{
-		CachedBaseCharacter->MeleeAttackStart();
+		CachedBaseCharacter->AttackInput();
 	}
 }
 
-void ABasePlayerController::MeleeAttackFinish()
-{
-	if (CachedBaseCharacter.IsValid())
-	{	
-		CachedBaseCharacter->MeleeAttackFinish();
-	}
-}
+//void ABasePlayerController::MeleeAttackStart()
+//{
+//	if (CachedBaseCharacter.IsValid())
+//	{
+//		CachedBaseCharacter->MeleeAttackStart();
+//	}
+//}
+//
+//void ABasePlayerController::MeleeAttackFinish()
+//{
+//	if (CachedBaseCharacter.IsValid())
+//	{	
+//		CachedBaseCharacter->MeleeAttackFinish();
+//	}
+//}

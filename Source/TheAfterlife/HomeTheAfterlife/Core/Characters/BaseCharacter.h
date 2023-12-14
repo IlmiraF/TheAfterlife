@@ -39,6 +39,7 @@ struct FMantlingSettings
 class UBaseCharacterMovementComponent;
 class UCharacterAttributeComponent;
 class AInteractiveActor;
+class UMeleeCombatComponent;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
@@ -77,6 +78,8 @@ public:
 	void InteractWithZipline();
 	const class AZipline* GetAvailableZipline() const;
 
+
+	void AttackInput();
 	void MeleeAttackStart();
 	void MeleeAttackFinish();
 
@@ -117,6 +120,16 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Attributes")
 	class UCurveFloat* FallDamageCurve;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
+	UMeleeCombatComponent* MeleeCombatComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Collisions")
+	class UBoxComponent* LeftHandCollision;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Collisions")
+	class UBoxComponent* RightHandCollision;
+
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;

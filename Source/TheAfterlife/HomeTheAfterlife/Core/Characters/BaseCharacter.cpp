@@ -11,6 +11,8 @@
 #include "../Actors/Interactive/Environment/Zipline.h"
 #include "../Actors/Interactive/InteractiveActor.h"
 #include "../../../TheAfterlifeTypes.h"
+#include "../Components/WeaponComponents/MeleeCombatComponent.h"
+#include "Components/BoxComponent.h"
 #include "Engine/DamageEvents.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
@@ -24,6 +26,18 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->bCastDynamicShadow = true;
 
 	CharacterAttributesComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("Attribute Component"));
+	MeleeCombatComponent = CreateDefaultSubobject<UMeleeCombatComponent>(TEXT("Melee combat Component"));
+
+	LeftHandCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftHandCollisionBox"));
+	RightHandCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("RightHandCollisionBox"));
+
+	LeftHandCollision->SetupAttachment(GetRootComponent());
+	LeftHandCollision->SetHiddenInGame(false);
+	LeftHandCollision->SetCollisionProfileName("NoCollision");
+
+	RightHandCollision->SetupAttachment(GetRootComponent());
+	RightHandCollision->SetHiddenInGame(false);
+	RightHandCollision->SetCollisionProfileName("NoCollision");
 }
 
 void ABaseCharacter::Jump()
@@ -102,7 +116,7 @@ void ABaseCharacter::Mantle(bool bForce)
 		MantlingParameters.StartTime = FMath::GetMappedRangeValueClamped(SourceRange, TargetRange, MantlingHeight);
 
 		MantlingParameters.InitialAnimationLocation = MantlingParameters.TargetLocation - MantlingSettings.AnimationCorrectionZ * FVector::UpVector + MantlingSettings.AnimationCorrectionXY * LedgeDescription.LedgeNormal;
-		
+
 		GetBaseCharacterMovementComponent()->StartMantle(MantlingParameters);
 
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -196,7 +210,11 @@ const AZipline* ABaseCharacter::GetAvailableZipline() const
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+
+	LeftHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "hand_left_collision");
+	RightHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "hand_right_collision");
 }
 
 bool ABaseCharacter::CanMantle() const
@@ -225,18 +243,31 @@ void ABaseCharacter::EnableRagdoll()
 	GetMesh()->SetSimulatePhysics(true);
 }
 
-void ABaseCharacter::MeleeAttackStart()
+void ABaseCharacter::AttackInput()
 {
 	int MontageSectionIndex = rand() % 2 + 1;
 	FString MontageSection = "Start_" + FString::FromInt(MontageSectionIndex);
 
 	PlayAnimMontage(MeleeCombatMontage, 1.0f, FName(MontageSection));
+}
 
+void ABaseCharacter::MeleeAttackStart()
+{
 	//MeleeCombatComponent->MeleeAttackStart();
+
+	LeftHandCollision->SetCollisionProfileName("Weapon");
+	RightHandCollision->SetCollisionProfileName("Weapon");
+
+	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::White, FString::Printf(TEXT("AttackStart")));
 }
 
 void ABaseCharacter::MeleeAttackFinish()
 {
 	//MeleeCombatComponent->MeleeAttackFinish();
+
+	LeftHandCollision->SetCollisionProfileName("NoCollision");
+	RightHandCollision->SetCollisionProfileName("NoCollision");
+
+	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Black, FString::Printf(TEXT("AttackFinish")));
 }
 

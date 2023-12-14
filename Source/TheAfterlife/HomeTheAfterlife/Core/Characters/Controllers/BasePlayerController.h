@@ -38,8 +38,9 @@ protected:
 
 	void InteractWithZipline();
 
-	void MeleeAttackStart();
-	void MeleeAttackFinish();
+	void AttackInput();
+	//void MeleeAttackStart();
+	//void MeleeAttackFinish();
 
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
 };
