@@ -26,6 +26,10 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePlayerController::Jump);
 	InputComponent->BindAction("Mantle", EInputEvent::IE_Pressed, this, &ABasePlayerController::Mantle);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
+
+
+	InputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &ABasePlayerController::MeleeAttackStart);
+	InputComponent->BindAction("Attack", EInputEvent::IE_Released, this, &ABasePlayerController::MeleeAttackFinish);
 }
 
 void ABasePlayerController::MoveForward(float value)
@@ -105,5 +109,21 @@ void ABasePlayerController::InteractWithZipline()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->InteractWithZipline();
+	}
+}
+
+void ABasePlayerController::MeleeAttackStart()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->MeleeAttackStart();
+	}
+}
+
+void ABasePlayerController::MeleeAttackFinish()
+{
+	if (CachedBaseCharacter.IsValid())
+	{	
+		CachedBaseCharacter->MeleeAttackFinish();
 	}
 }

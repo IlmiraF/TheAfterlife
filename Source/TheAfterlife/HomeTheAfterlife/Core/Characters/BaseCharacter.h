@@ -77,6 +77,10 @@ public:
 	void InteractWithZipline();
 	const class AZipline* GetAvailableZipline() const;
 
+	void MeleeAttackStart();
+	void MeleeAttackFinish();
+
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -106,6 +110,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
 	class UAnimMontage* OnDeathAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
+	class UAnimMontage* MeleeCombatMontage;
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Attributes")
 	class UCurveFloat* FallDamageCurve;

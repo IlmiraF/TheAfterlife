@@ -224,3 +224,19 @@ void ABaseCharacter::EnableRagdoll()
 	GetMesh()->SetCollisionProfileName(CollisionProfileRagdoll);
 	GetMesh()->SetSimulatePhysics(true);
 }
+
+void ABaseCharacter::MeleeAttackStart()
+{
+	int MontageSectionIndex = rand() % 2 + 1;
+	FString MontageSection = "Start_" + FString::FromInt(MontageSectionIndex);
+
+	PlayAnimMontage(MeleeCombatMontage, 1.0f, FName(MontageSection));
+
+	//MeleeCombatComponent->MeleeAttackStart();
+}
+
+void ABaseCharacter::MeleeAttackFinish()
+{
+	//MeleeCombatComponent->MeleeAttackFinish();
+}
+
