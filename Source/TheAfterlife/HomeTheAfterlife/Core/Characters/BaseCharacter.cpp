@@ -40,6 +40,10 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	RightHandCollision->SetHiddenInGame(false);
 	RightHandCollision->SetCollisionProfileName("NoCollision");
 	RightHandCollision->SetNotifyRigidBodyCollision(false);
+
+	PunchAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PunchAudioComponent"));
+	PunchAudioComponent->SetupAttachment(GetRootComponent());
+
 }
 
 void ABaseCharacter::Jump()
@@ -225,6 +229,8 @@ void ABaseCharacter::BeginPlay()
 	RightHandCollision->OnComponentHit.AddDynamic(this, &ABaseCharacter::OnAttackHit);
 	//RightHandCollision->OnComponentBeginOverlap.AddDynamic(this, &ABaseCharacter::OnAttackOverlapBegin);
 	//RightHandCollision->OnComponentEndOverlap.AddDynamic(this, &ABaseCharacter::OnAttackOverlapEnd);
+
+	PunchAudioComponent->SetSound(PunchSoundBase);
 }
 
 bool ABaseCharacter::CanMantle() const
@@ -294,6 +300,11 @@ void ABaseCharacter::MeleeAttackFinish()
 void ABaseCharacter::OnAttackHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Yellow, Hit.GetActor()->GetName());
+
+	if (PunchAudioComponent && !PunchAudioComponent->IsPlaying())
+	{
+		PunchAudioComponent->Play(0.f);
+	}
 }
 
 //void ABaseCharacter::OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

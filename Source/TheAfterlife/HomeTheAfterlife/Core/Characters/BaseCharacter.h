@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/AudioComponent.h"
 #include "BaseCharacter.generated.h"
 
 USTRUCT(BlueprintType)
@@ -143,6 +144,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Collisions")
 	class UBoxComponent* RightHandCollision;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Audio")
+	class USoundBase* PunchSoundBase;
+
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
@@ -151,5 +155,7 @@ private:
 
 	void EnableRagdoll();
 	FVector CurrentFallApex;
+
+	UAudioComponent* PunchAudioComponent;
 
 };
