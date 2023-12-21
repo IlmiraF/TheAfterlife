@@ -77,6 +77,9 @@ public:
 	void InteractWithZipline();
 	const class AZipline* GetAvailableZipline() const;
 
+	void InteractWithRunWall();
+	const class ARunWall* GetAvailableRunWall() const;
+
 protected:
 	virtual void BeginPlay() override;
 

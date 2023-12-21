@@ -72,15 +72,14 @@ public:
 
 	virtual void PhysicsRotation(float DeltaTime) override;
 
-	void StartWallRun();
+	bool TryWallRun();
 	bool IsWallRunning() const;
 	bool IsWallRunningRight() const { return Safe_bWallRunIsRight; }
 	
 protected:
 
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
-	virtual void UpdateCharacterStateBeforeMovement(float DeltaSeconds) override;
-	
+
 	virtual void PhysCustom(float DeltaTime, int32 Iterations) override;
 
 	void PhysMantling(float DeltaTime, int32 Iterations);
@@ -152,6 +151,5 @@ private:
 	bool bForceRotation = false;
 
 	bool IsWallOnSideTrace(FHitResult& WallHit, bool bWallRight) const;
-	bool TryWallRun();
 	bool Safe_bWallRunIsRight;
 };

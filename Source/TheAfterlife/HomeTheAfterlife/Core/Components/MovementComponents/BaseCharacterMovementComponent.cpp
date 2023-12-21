@@ -218,11 +218,6 @@ void UBaseCharacterMovementComponent::PhysicsRotation(float DeltaTime)
 	Super::PhysicsRotation(DeltaTime);
 }
 
-void UBaseCharacterMovementComponent::StartWallRun()
-{
-	SetMovementMode(MOVE_Custom, (uint8)ECustomMovementMode::CMOVE_WallRun);
-}
-
 bool UBaseCharacterMovementComponent::IsWallRunning() const
 {
 	return UpdatedComponent && MovementMode == MOVE_Custom && CustomMovementMode == (uint8)ECustomMovementMode::CMOVE_WallRun;
@@ -260,16 +255,6 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 		default:
 			break;
 		}
-	}
-}
-
-void UBaseCharacterMovementComponent::UpdateCharacterStateBeforeMovement(float DeltaSeconds)
-{
-	Super::UpdateCharacterStateBeforeMovement(DeltaSeconds);
-
-	if (IsFalling())
-	{
-		TryWallRun();
 	}
 }
 
@@ -458,7 +443,7 @@ void UBaseCharacterMovementComponent::PhysWallRun(float DeltaTime, int32 Iterati
 	Params.AddIgnoredActor(GetBaseCharacterOwner());
 	GetWorld()->LineTraceSingleByChannel(FloorHit, UpdatedComponent->GetComponentLocation(),
 		UpdatedComponent->GetComponentLocation() + FVector::DownVector * (GetBaseCharacterOwner()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + MinWallRunHeight * .5f),
-		ECC_Visibility, Params);
+		ECC_InteractionVolume, Params);
 
 	if (FloorHit.IsValidBlockingHit() || !WallHit.IsValidBlockingHit() || Velocity.SizeSquared2D() < pow(MinWallRunSpeed, 2))
 	{
@@ -495,7 +480,7 @@ bool UBaseCharacterMovementComponent::TryWallRun()
 	if (GetWorld()->LineTraceSingleByChannel(FloorHit,
 		UpdatedComponent->GetComponentLocation(),
 		UpdatedComponent->GetComponentLocation() + FVector::DownVector * (GetBaseCharacterOwner()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + MinWallRunHeight),
-		ECC_Visibility, Params))
+		ECC_InteractionVolume, Params))
 	{
 		return false;
 	}

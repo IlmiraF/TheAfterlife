@@ -38,5 +38,7 @@ protected:
 
 	void InteractWithZipline();
 
+	void InteractWithRunWall();
+
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
 };

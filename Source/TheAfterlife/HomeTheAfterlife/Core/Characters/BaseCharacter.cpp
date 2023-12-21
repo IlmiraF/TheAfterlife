@@ -9,6 +9,7 @@
 #include "Curves/CurveVector.h"
 #include "../Actors/Interactive/Environment/Ladder.h"
 #include "../Actors/Interactive/Environment/Zipline.h"
+#include "../Actors/Interactive/Environment/RunWall.h"
 #include "../Actors/Interactive/InteractiveActor.h"
 #include "../../../TheAfterlifeTypes.h"
 #include "Engine/DamageEvents.h"
@@ -187,6 +188,29 @@ const AZipline* ABaseCharacter::GetAvailableZipline() const
 		if (InteractiveActor->IsA<AZipline>())
 		{
 			Result = StaticCast<const AZipline*>(InteractiveActor);
+			break;
+		}
+	}
+	return Result;
+}
+
+void ABaseCharacter::InteractWithRunWall()
+{
+	const ARunWall* AvailableRunWall = GetAvailableRunWall();
+	if (IsValid(AvailableRunWall))
+	{
+		GetBaseCharacterMovementComponent()->TryWallRun();
+	}
+}
+
+const ARunWall* ABaseCharacter::GetAvailableRunWall() const
+{
+	const ARunWall* Result = nullptr;
+	for (const AInteractiveActor* InteractiveActor : AvailableInteractiveActors)
+	{
+		if (InteractiveActor->IsA<ARunWall>())
+		{
+			Result = StaticCast<const ARunWall*>(InteractiveActor);
 			break;
 		}
 	}
