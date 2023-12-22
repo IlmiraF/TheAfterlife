@@ -20,6 +20,8 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAxis("Turn", this, &ABasePlayerController::Turn);
 	InputComponent->BindAxis("LookUp", this, &ABasePlayerController::LookUp);
 	InputComponent->BindAxis("ClimbLadderUp", this, &ABasePlayerController::ClimbLadderUp);
+	InputComponent->BindAxis("ClimbMoveForward", this, &ABasePlayerController::ClimbMoveForward);
+	InputComponent->BindAxis("ClimbMoveRight", this, &ABasePlayerController::ClimbMoveRight);
 
 	InputComponent->BindAction("InteractWithLadder", EInputEvent::IE_Pressed, this, &ABasePlayerController::InteractWithLadder);
 	InputComponent->BindAction("InteractWithZipline", EInputEvent::IE_Released, this, &ABasePlayerController::InteractWithZipline);
@@ -27,6 +29,7 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePlayerController::Jump);
 	InputComponent->BindAction("Mantle", EInputEvent::IE_Pressed, this, &ABasePlayerController::Mantle);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
+	InputComponent->BindAction("Climb", EInputEvent::IE_Pressed, this, &ABasePlayerController::OnClimbActionStarted);
 }
 
 void ABasePlayerController::MoveForward(float value)
@@ -114,5 +117,37 @@ void ABasePlayerController::InteractWithRunWall()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->InteractWithRunWall();
+	}
+}
+
+void ABasePlayerController::ClimbMoveForward(float value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->ClimbMoveForward(value);
+	}
+}
+
+void ABasePlayerController::ClimbMoveRight(float value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->ClimbMoveRight(value);
+	}
+}
+
+void ABasePlayerController::ClimbHop()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->ClimbHop();
+	}
+}
+
+void ABasePlayerController::OnClimbActionStarted()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->OnClimbActionStarted();
 	}
 }

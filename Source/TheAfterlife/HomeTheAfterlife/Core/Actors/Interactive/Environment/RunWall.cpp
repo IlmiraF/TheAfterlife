@@ -21,6 +21,8 @@ ARunWall::ARunWall()
 
 void ARunWall::OnConstruction(const FTransform& Transform)
 {
+	WallMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+
 	UStaticMesh* WallMesh = WallMeshComponent->GetStaticMesh();
 	if (IsValid(WallMesh))
 	{
@@ -28,13 +30,13 @@ void ARunWall::OnConstruction(const FTransform& Transform)
 		float MeshWidth = WallMesh->GetBoundingBox().GetSize().Y;
 		if (!FMath::IsNearlyZero(MeshHeight))
 		{
-			WallMeshComponent->SetRelativeScale3D(FVector(1.0f, WallWidth / MeshWidth, WallHeight / MeshHeight));
+			WallMeshComponent->SetRelativeScale3D(FVector(1.0f, WallWidth/ MeshWidth, WallHeight / MeshHeight));
 		}
 	}
 
 	float BoxDepthExtent = GetInteractionBox()->GetUnscaledBoxExtent().X;
-	GetInteractionBox()->SetBoxExtent(FVector(BoxDepthExtent * 1.1f, WallWidth * 0.5f, WallHeight * 0.5f));
-	GetInteractionBox()->SetRelativeLocation(FVector(BoxDepthExtent * 2.0f, WallWidth * 0.5f, WallHeight * 0.5f));
+	GetInteractionBox()->SetBoxExtent(FVector(BoxDepthExtent, WallWidth * 0.5f, WallHeight * 0.5f));
+	GetInteractionBox()->SetRelativeLocation(FVector(WallMesh->GetBoundingBox().GetSize().X + BoxDepthExtent, WallWidth * 0.5f, WallHeight * 0.5f));
 }
 
 UBoxComponent* ARunWall::GetInteractionBox() const

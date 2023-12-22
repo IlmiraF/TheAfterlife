@@ -30,6 +30,8 @@ enum class ECustomMovementMode : uint8
 	CMOVE_Ladder UMETA(DisplayName = "Ladder"),
 	CMOVE_Zipline UMETA(DisplayName = "Zipline"),
 	CMOVE_WallRun	UMETA(DisplayName = "WallRun"),
+	CMOVE_Parkour UMETA(DisplayName = "Parkour"),
+	CMOVE_OnBeam UMETA(DisplayName = "OnBeam"),
 	CMOVE_Max UMETA(Hidden)
 };
 
@@ -75,17 +77,26 @@ public:
 	bool TryWallRun();
 	bool IsWallRunning() const;
 	bool IsWallRunningRight() const { return Safe_bWallRunIsRight; }
+
+	bool IsClimbing() const;
+	FORCEINLINE FVector GetClimbableSurfaceNormal() const { return CurrentClimbableSurfaceNormal; }
+	FVector GetUnrotatedClimbVelocity() const;
+	void ToggleClimbing(bool bAttemptClimbing);
+	void RequestHopping();
 	
 protected:
 
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
 
 	virtual void PhysCustom(float DeltaTime, int32 Iterations) override;
+	virtual void BeginPlay() override;
 
 	void PhysMantling(float DeltaTime, int32 Iterations);
 	void PhysLadder(float DeltaTime, int32 Iterations);
 	void PhysZipline(float DeltaTime, int32 Iterations);
 	void PhysWallRun(float DeltaTime, int32 Iterations);
+	void PhysClimb(float DeltaTime, int32 Iterations);
+
 
 	class ABaseCharacter* GetBaseCharacterOwner() const;
 
@@ -125,7 +136,7 @@ protected:
 	float MaxVerticalWallRunSpeed = 180.f; //?
 
 	UPROPERTY(EditDefaultsOnly, Category = "Character Movement: WallRun") 
-	float MinWallRunHeight = 75.f;
+	float MinWallRunHeight = 10.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Character Movement: WallRun") 
 	float WallJumpOfForce = 400.f; //Force with which a player jumps away from a wall
@@ -139,6 +150,28 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Character Movement: WallRun") 
 	UCurveFloat* WallRunGravityScaleCurve;
 
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing");
+	float ClimbCapsuleTraceRadius = 30.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing");
+	float ClimbMaxSpeed = 100.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing")
+	UAnimMontage* IdleToClimbMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing")
+	UAnimMontage* ClimbToTopMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing")
+	UAnimMontage* ClimbDownLedgeMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing")
+	UAnimMontage* HopRightMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing")
+	UAnimMontage* HopLeftMontage;
+
 private:
 	FMantlingMovementParameters CurrentMantlingParameters;
 
@@ -150,6 +183,40 @@ private:
 	FRotator ForceTargetRotation = FRotator::ZeroRotator;
 	bool bForceRotation = false;
 
+	//Wall Run
+
 	bool IsWallOnSideTrace(FHitResult& WallHit, bool bWallRight) const;
 	bool Safe_bWallRunIsRight;
+
+	//Climb
+
+	bool CanStartClimbing();
+	UFUNCTION()
+	void OnClimbMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	bool bIsHopping = false;
+	FVector CurrentClimbableSurfaceNormal;
+	FVector CurrentClimbableSurfaceLocation;
+	TArray<FHitResult> ClimbableSurfacesTracedResults;
+	TArray<FHitResult> GetClimbableSurfaces();
+	void ProcessClimbableSurfaceInfo();
+	bool ShouldStopClimbing();
+	bool CheckHasReachedFloor();
+	bool CheckHasReachedLedge();
+	FHitResult TraceFromEyeHeight(float TraceDistance, float TraceStartOffset = 0.f);
+	FHitResult TraceFromEyeHeightHop(float TraceDistance);
+	void StartClimbing();
+	void StopClimbing();
+
+	void PlayClimbMontage(UAnimMontage* MontageToPlay);
+
+	void SnapMovementToClimbableSurfaces(float DeltaTime);
+	FQuat GetClimbRotation(float DeltaTime);
+
+	bool CanClimbDownLedge();
+
+	void HandleHopRight();
+	void HandleHopLeft();
+	bool CheckCanHopRight(FVector& OutHopUpTargetPosition);
+	bool CheckCanHopLeft(FVector& OutHopUpTargetPosition);
+	void SetMotionWarpTarget(const FName& InWarpTargetName, const FVector& InTargetPosition);
 };

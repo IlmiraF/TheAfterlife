@@ -25,8 +25,10 @@ void UBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsFalling = CharacterMovement->IsFalling();
 	bIsCrouching = CharacterMovement->IsCrouching();
 	bIsOnLadder = CharacterMovement->IsOnLadder();
+	bIsClimbing = CharacterMovement->IsClimbing();
 	if (bIsOnLadder)
 	{
 		LadderSpeedRatio = CharacterMovement->GetLadderSpeedRatio();
 	}
+	ClimbVelocity = CharacterMovement->GetUnrotatedClimbVelocity();
 }

@@ -80,6 +80,11 @@ public:
 	void InteractWithRunWall();
 	const class ARunWall* GetAvailableRunWall() const;
 
+	virtual void ClimbMoveForward(float Value) {};
+	virtual void ClimbMoveRight(float Value) {};
+	virtual void ClimbHop() {};
+	virtual void OnClimbActionStarted();
+
 protected:
 	virtual void BeginPlay() override;
 

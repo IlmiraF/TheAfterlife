@@ -26,6 +26,10 @@ public:
 	virtual void Jump() override;
 	virtual void Landed(const FHitResult& Hit) override;
 
+	virtual void ClimbMoveForward(float value) override;
+	virtual void ClimbMoveRight(float value) override;
+	virtual void ClimbHop() override;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Camera")

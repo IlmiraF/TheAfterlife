@@ -197,8 +197,9 @@ const AZipline* ABaseCharacter::GetAvailableZipline() const
 void ABaseCharacter::InteractWithRunWall()
 {
 	const ARunWall* AvailableRunWall = GetAvailableRunWall();
-	if (IsValid(AvailableRunWall))
+	if (IsValid(AvailableRunWall) && !GetBaseCharacterMovementComponent()->IsClimbing())
 	{
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Wall Run Start"));
 		GetBaseCharacterMovementComponent()->TryWallRun();
 	}
 }
@@ -215,6 +216,18 @@ const ARunWall* ABaseCharacter::GetAvailableRunWall() const
 		}
 	}
 	return Result;
+}
+
+void ABaseCharacter::OnClimbActionStarted()
+{
+	if (!GetBaseCharacterMovementComponent()->IsClimbing() && !GetBaseCharacterMovementComponent()->IsWallRunning())
+	{
+		GetBaseCharacterMovementComponent()->ToggleClimbing(true);
+	}
+	else
+	{
+		GetBaseCharacterMovementComponent()->ToggleClimbing(false);
+	}
 }
 
 void ABaseCharacter::BeginPlay()

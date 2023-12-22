@@ -8,6 +8,8 @@
 #include "../../Actors/Interactive/Environment/Zipline.h"
 #include "Components/CapsuleComponent.h"
 #include "../../../../TheAfterlifeTypes.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "../../Utils/TheAfterlife_TraceUtils.h"
 
 float UBaseCharacterMovementComponent::GetMaxSpeed() const
 {
@@ -23,6 +25,10 @@ float UBaseCharacterMovementComponent::GetMaxSpeed() const
 	if (IsWallRunning())
 	{
 		Result = MaxWallRunSpeed;
+	}
+	if (IsClimbing())
+	{
+		Result = ClimbMaxSpeed;
 	}
     return Result;
 }
@@ -223,6 +229,36 @@ bool UBaseCharacterMovementComponent::IsWallRunning() const
 	return UpdatedComponent && MovementMode == MOVE_Custom && CustomMovementMode == (uint8)ECustomMovementMode::CMOVE_WallRun;
 }
 
+bool UBaseCharacterMovementComponent::IsClimbing() const
+{
+	return UpdatedComponent && MovementMode == MOVE_Custom && CustomMovementMode == (uint8)ECustomMovementMode::CMOVE_Parkour;
+}
+
+FVector UBaseCharacterMovementComponent::GetUnrotatedClimbVelocity() const
+{
+	return UKismetMathLibrary::Quat_UnrotateVector(UpdatedComponent->GetComponentQuat(), Velocity);
+}
+
+void UBaseCharacterMovementComponent::ToggleClimbing(bool bAttemptClimbing)
+{
+	if (bAttemptClimbing)
+	{
+		if (CanStartClimbing())
+		{
+			PlayClimbMontage(IdleToClimbMontage);
+		}
+		/*else if (CanClimbDownLedge())
+		{
+			PlayClimbMontage(ClimbDownLedgeMontage);
+		}*/
+	}
+
+	if (!bAttemptClimbing)
+	{
+		StopClimbing();
+	}
+}
+
 void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
@@ -235,6 +271,19 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 	if (PreviousMovementMode == MOVE_Custom && PreviousCustomMode == (uint8)ECustomMovementMode::CMOVE_Zipline)
 	{
 		CurrentZipline = nullptr;
+	}
+
+	if (PreviousMovementMode == MOVE_Custom && PreviousCustomMode == (uint8)ECustomMovementMode::CMOVE_Parkour)
+	{
+		bOrientRotationToMovement = true;
+		CharacterOwner->GetCapsuleComponent()->SetCapsuleHalfHeight(96.f);
+
+		// Reset pitch and roll
+		const FRotator DirtyRotation = UpdatedComponent->GetComponentRotation();
+		const FRotator CleanStandRotation = FRotator(0.f, DirtyRotation.Yaw, 0.f);
+		UpdatedComponent->SetRelativeRotation(CleanStandRotation);
+
+		StopMovementImmediately();
 	}
 
 	if (MovementMode == MOVE_Custom)
@@ -250,6 +299,12 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 		{
 			FHitResult WallHit;
 			Safe_bWallRunIsRight = IsWallOnSideTrace(WallHit, true);
+			break;
+		}
+		case (uint8)ECustomMovementMode::CMOVE_Parkour:
+		{
+			bOrientRotationToMovement = false;
+			CharacterOwner->GetCapsuleComponent()->SetCapsuleHalfHeight(48.f);
 			break;
 		}
 		default:
@@ -282,11 +337,27 @@ void UBaseCharacterMovementComponent::PhysCustom(float DeltaTime, int32 Iteratio
 			PhysWallRun(DeltaTime, Iterations);
 			break;
 		}
+		case (uint8)ECustomMovementMode::CMOVE_Parkour:
+		{
+			PhysClimb(DeltaTime, Iterations);
+			break;
+		}
 		default:
 			break;
 	}
 
 	Super::PhysCustom(DeltaTime, Iterations);
+}
+
+void UBaseCharacterMovementComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	UAnimInstance* AnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->OnMontageEnded.AddDynamic(this, &UBaseCharacterMovementComponent::OnClimbMontageEnded);
+		AnimInstance->OnMontageBlendingOut.AddDynamic(this, &UBaseCharacterMovementComponent::OnClimbMontageEnded);
+	}
 }
 
 void UBaseCharacterMovementComponent::PhysMantling(float DeltaTime, int32 Iterations)
@@ -443,11 +514,60 @@ void UBaseCharacterMovementComponent::PhysWallRun(float DeltaTime, int32 Iterati
 	Params.AddIgnoredActor(GetBaseCharacterOwner());
 	GetWorld()->LineTraceSingleByChannel(FloorHit, UpdatedComponent->GetComponentLocation(),
 		UpdatedComponent->GetComponentLocation() + FVector::DownVector * (GetBaseCharacterOwner()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + MinWallRunHeight * .5f),
-		ECC_InteractionVolume, Params);
+		ECC_Visibility, Params);
 
 	if (FloorHit.IsValidBlockingHit() || !WallHit.IsValidBlockingHit() || Velocity.SizeSquared2D() < pow(MinWallRunSpeed, 2))
 	{
 		SetMovementMode(MOVE_Falling);
+	}
+}
+
+void UBaseCharacterMovementComponent::PhysClimb(float DeltaTime, int32 Iterations)
+{
+	if (!bIsHopping)
+	{
+		GetClimbableSurfaces();
+		ProcessClimbableSurfaceInfo();
+
+		if (ShouldStopClimbing() || CheckHasReachedFloor())
+		{
+			StopClimbing();
+		}
+
+		SnapMovementToClimbableSurfaces(DeltaTime);
+
+	}
+
+	RestorePreAdditiveRootMotionVelocity();
+
+	if (!HasAnimRootMotion() && !CurrentRootMotion.HasOverrideVelocity())
+	{ // Define the max climb speed and acceleration
+		CalcVelocity(DeltaTime, 0.f, true, 400.0f);
+	}
+
+	ApplyRootMotionToVelocity(DeltaTime);
+
+	FVector OldLocation = UpdatedComponent->GetComponentLocation();
+	const FVector Adjusted = Velocity * DeltaTime;
+	FHitResult Hit(1.f);
+
+	SafeMoveUpdatedComponent(Adjusted, GetClimbRotation(DeltaTime), true, Hit);
+
+	if (Hit.Time < 1.f)
+	{
+		// adjust and try again
+		HandleImpact(Hit, DeltaTime, Adjusted);
+		SlideAlongSurface(Adjusted, (1.f - Hit.Time), Hit.Normal, Hit, true);
+	}
+
+	if (!HasAnimRootMotion() && !CurrentRootMotion.HasOverrideVelocity())
+	{
+		Velocity = (UpdatedComponent->GetComponentLocation() - OldLocation) / DeltaTime;
+	}
+
+	if (CheckHasReachedLedge())
+	{
+		PlayClimbMontage(ClimbToTopMontage);
 	}
 }
 
@@ -459,12 +579,135 @@ ABaseCharacter* UBaseCharacterMovementComponent::GetBaseCharacterOwner() const
 bool UBaseCharacterMovementComponent::IsWallOnSideTrace(FHitResult& WallHit, bool bWallRight) const
 {
 	const FVector Start = UpdatedComponent->GetComponentLocation();
-	const FVector RightTraceDistance = UpdatedComponent->GetRightVector() * GetBaseCharacterOwner()->GetCapsuleComponent()->GetScaledCapsuleRadius() * 2;
+	const FVector RightTraceDistance = UpdatedComponent->GetRightVector() * CharacterOwner->GetCapsuleComponent()->GetScaledCapsuleRadius() * 2;
 	const FVector End = bWallRight ? Start + RightTraceDistance : Start - RightTraceDistance;
 
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetBaseCharacterOwner());
-	return GetWorld()->LineTraceSingleByChannel(WallHit, Start, End, ECC_Visibility, Params);
+	return TheAfterlife_TraceUtils::SweepCapsuleSingleByChannel(GetWorld(), WallHit, Start, End, 30.0f, 42.0f, FQuat::Identity, ECC_Visibility, Params, FCollisionResponseParams::DefaultResponseParam, true, 5.0f);
+	//return GetWorld()->LineTraceSingleByChannel(WallHit, Start, End, ECC_Visibility, Params);
+}
+
+bool UBaseCharacterMovementComponent::CanStartClimbing()
+{
+	if (IsFalling())
+		return false;
+	ClimbableSurfacesTracedResults = GetClimbableSurfaces();
+	if (ClimbableSurfacesTracedResults.IsEmpty())
+		return false;
+	if (!TraceFromEyeHeight(100.f).bBlockingHit)
+		return false;
+
+	return true;
+}
+
+void UBaseCharacterMovementComponent::OnClimbMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (Montage == IdleToClimbMontage || Montage == ClimbDownLedgeMontage)
+	{
+		StartClimbing();
+		StopMovementImmediately();
+	}
+	if (Montage == ClimbToTopMontage)
+	{
+		SetMovementMode(MOVE_Walking);
+	}
+	if (Montage == HopRightMontage || Montage == HopLeftMontage)
+	{
+		bIsHopping = false;
+	}
+}
+
+TArray<FHitResult> UBaseCharacterMovementComponent::GetClimbableSurfaces()
+{
+	const FVector& StartOffset = UpdatedComponent->GetForwardVector() * 30.f;
+	const FVector& Start = UpdatedComponent->GetComponentLocation() + StartOffset;
+	const FVector& End = Start + UpdatedComponent->GetForwardVector();
+	TheAfterlife_TraceUtils::SweepCapsuleMultiByChannel(GetWorld(), ClimbableSurfacesTracedResults, Start, End, 30.0f, 72.0f, FQuat::Identity, ECC_Climbing, FCollisionQueryParams::DefaultQueryParam, FCollisionResponseParams::DefaultResponseParam, true);
+	return ClimbableSurfacesTracedResults;
+}
+
+void UBaseCharacterMovementComponent::ProcessClimbableSurfaceInfo()
+{
+	CurrentClimbableSurfaceLocation = FVector::ZeroVector;
+	CurrentClimbableSurfaceNormal = FVector::ZeroVector;
+
+	if (ClimbableSurfacesTracedResults.IsEmpty())
+		return;
+
+	for (const FHitResult& TracedHitResult : ClimbableSurfacesTracedResults)
+	{
+		CurrentClimbableSurfaceLocation += TracedHitResult.ImpactPoint;
+		CurrentClimbableSurfaceNormal += TracedHitResult.ImpactNormal;
+	}
+
+	CurrentClimbableSurfaceLocation /= ClimbableSurfacesTracedResults.Num();
+	CurrentClimbableSurfaceNormal = CurrentClimbableSurfaceNormal.GetSafeNormal();
+}
+
+bool UBaseCharacterMovementComponent::ShouldStopClimbing()
+{
+	if (ClimbableSurfacesTracedResults.IsEmpty())
+		return true;
+
+	const float DotResult = FVector::DotProduct(CurrentClimbableSurfaceNormal, FVector::UpVector);
+	const float DegreeDiff = FMath::RadiansToDegrees(FMath::Acos(DotResult));
+
+	if (DegreeDiff <= 60.f)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool UBaseCharacterMovementComponent::CheckHasReachedFloor()
+{
+	const FVector DownVector = -UpdatedComponent->GetUpVector();
+	const FVector StartOffset = DownVector * 50.f;
+
+	const FVector Start = UpdatedComponent->GetComponentLocation() + StartOffset;
+	const FVector End = Start + DownVector;
+
+	FHitResult PossibleFloorHit;
+	TheAfterlife_TraceUtils::SweepCapsuleSingleByChannel(GetWorld(), PossibleFloorHit, Start, End, 30.0f, 72.0f, FQuat::Identity, ECC_Visibility);
+
+	if (PossibleFloorHit.IsValidBlockingHit())
+	{
+		const bool bFloorReached =
+			FVector::Parallel(-PossibleFloorHit.ImpactNormal, FVector::UpVector) &&
+			GetUnrotatedClimbVelocity().Z < -10.f;
+
+		if (bFloorReached)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool UBaseCharacterMovementComponent::CheckHasReachedLedge()
+{
+	FHitResult LedgetHitResult = TraceFromEyeHeight(80.f, 50.f);
+
+	if (!LedgetHitResult.bBlockingHit)
+	{
+		const FVector WalkableSurfaceTraceStart = LedgetHitResult.TraceEnd;
+
+		const FVector DownVector = -UpdatedComponent->GetUpVector();
+		const FVector WalkableSurfaceTraceEnd = WalkableSurfaceTraceStart + DownVector * 100.f;
+
+		FHitResult WalkabkeSurfaceHitResult;
+		TheAfterlife_TraceUtils::SweepCapsuleSingleByChannel(GetWorld(), WalkabkeSurfaceHitResult, WalkableSurfaceTraceStart, WalkableSurfaceTraceEnd, 30.0f, 72.0f, FQuat::Identity, ECC_Visibility);
+
+		if (WalkabkeSurfaceHitResult.bBlockingHit && GetUnrotatedClimbVelocity().Z > 10.f)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool UBaseCharacterMovementComponent::TryWallRun()
@@ -479,28 +722,30 @@ bool UBaseCharacterMovementComponent::TryWallRun()
 	Params.AddIgnoredActor(GetBaseCharacterOwner());
 	if (GetWorld()->LineTraceSingleByChannel(FloorHit,
 		UpdatedComponent->GetComponentLocation(),
-		UpdatedComponent->GetComponentLocation() + FVector::DownVector * (GetBaseCharacterOwner()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + MinWallRunHeight),
-		ECC_InteractionVolume, Params))
+		UpdatedComponent->GetComponentLocation() + FVector::DownVector * (CharacterOwner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + MinWallRunHeight),
+		ECC_Visibility, Params))
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Check"));
 		return false;
 	}
 
 	//Side casts . Velocity | WallHit.Normal must be less than 90 degrees to be able to enter wall run
 	FHitResult WallHit;
 	IsWallOnSideTrace(WallHit, false);
-	if (WallHit.IsValidBlockingHit() && (Velocity | WallHit.Normal) < 0)
+	if (WallHit.IsValidBlockingHit())
 	{
 		Safe_bWallRunIsRight = false;
 	}
 	else
 	{
 		IsWallOnSideTrace(WallHit, true);
-		if (WallHit.IsValidBlockingHit() && (Velocity | WallHit.Normal) < 0)
+		if (WallHit.IsValidBlockingHit())
 		{
 			Safe_bWallRunIsRight = true;
 		}
 		else
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, TEXT("Check"));
 			return false;
 		}
 
@@ -511,4 +756,78 @@ bool UBaseCharacterMovementComponent::TryWallRun()
 	SetMovementMode(MOVE_Custom, (uint8)ECustomMovementMode::CMOVE_WallRun);
 
 	return true;
+}
+
+FHitResult UBaseCharacterMovementComponent::TraceFromEyeHeight(float TraceDistance, float TraceStartOffset)
+{
+	const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
+	const FVector EyeHeightOffset = UpdatedComponent->GetUpVector() * (CharacterOwner->BaseEyeHeight + TraceStartOffset);
+	const FVector Start = ComponentLocation + EyeHeightOffset;
+	const FVector End = Start + UpdatedComponent->GetForwardVector() * TraceDistance;
+
+	FHitResult OutHit;
+	TheAfterlife_TraceUtils::SweepCapsuleSingleByChannel(GetWorld(), OutHit, Start, End, 30.0f, 72.0f, FQuat::Identity, ECC_Climbing);
+	return OutHit;
+}
+
+void UBaseCharacterMovementComponent::StartClimbing()
+{
+	SetMovementMode(MOVE_Custom, (uint8)ECustomMovementMode::CMOVE_Parkour);
+}
+
+void UBaseCharacterMovementComponent::StopClimbing()
+{
+	if (IsClimbing())
+	{
+		SetMovementMode(MOVE_Falling);
+	}
+	else
+	{
+		SetMovementMode(MOVE_Walking);
+	}
+}
+
+void UBaseCharacterMovementComponent::PlayClimbMontage(UAnimMontage* MontageToPlay)
+{
+	if (!MontageToPlay)
+		return;
+
+	UAnimInstance* AnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
+
+	if (!AnimInstance)
+		return;
+	if (AnimInstance->IsAnyMontagePlaying())
+		return;
+
+	AnimInstance->Montage_Play(MontageToPlay);
+}
+
+void UBaseCharacterMovementComponent::SnapMovementToClimbableSurfaces(float DeltaTime)
+{
+	const FVector ComponentForward = UpdatedComponent->GetForwardVector();
+	const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
+
+	const FVector ProjectedCharacterToSurface =
+		(CurrentClimbableSurfaceLocation - ComponentLocation).ProjectOnTo(ComponentForward);
+
+	const FVector SnapVector = -CurrentClimbableSurfaceNormal * ProjectedCharacterToSurface.Length();
+
+	UpdatedComponent->MoveComponent(
+		SnapVector * DeltaTime * 100.0f,
+		UpdatedComponent->GetComponentQuat(),
+		true);
+}
+
+FQuat UBaseCharacterMovementComponent::GetClimbRotation(float DeltaTime)
+{
+	const FQuat CurrentQuat = UpdatedComponent->GetComponentQuat();
+
+	if (HasAnimRootMotion() || CurrentRootMotion.HasOverrideVelocity())
+	{
+		return CurrentQuat;
+	}
+
+	const FQuat TargetQuat = FRotationMatrix::MakeFromX(-CurrentClimbableSurfaceNormal).ToQuat();
+
+	return FMath::QInterpTo(CurrentQuat, TargetQuat, DeltaTime, 5.f);
 }

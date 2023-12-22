@@ -74,6 +74,33 @@ void APlayerCharacter::Landed(const FHitResult& Hit)
 	JumpCount = 0;
 }
 
+void APlayerCharacter::ClimbMoveForward(float value)
+{
+	if (GetBaseCharacterMovementComponent()->IsClimbing() && !FMath::IsNearlyZero(value, 1e-6f))
+	{
+		//FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
+		FVector ForwardVector = FVector::CrossProduct(
+			-GetBaseCharacterMovementComponent()->GetClimbableSurfaceNormal(),
+			GetActorRightVector());
+		AddMovementInput(ForwardVector, value);
+	}
+}
+
+void APlayerCharacter::ClimbMoveRight(float value)
+{
+	if (GetBaseCharacterMovementComponent()->IsClimbing() && !FMath::IsNearlyZero(value, 1e-6f))
+	{
+		const FVector RightVector = FVector::CrossProduct(
+			-GetBaseCharacterMovementComponent()->GetClimbableSurfaceNormal(),
+			-GetActorUpVector());
+		AddMovementInput(RightVector, value);
+	}
+}
+
+void APlayerCharacter::ClimbHop()
+{
+}
+
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();

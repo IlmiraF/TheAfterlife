@@ -34,6 +34,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
 	float LadderSpeedRatio = 0.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
+	bool bIsClimbing = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
+	FVector ClimbVelocity;
+
 private:
 	TWeakObjectPtr<class ABaseCharacter> CachedBaseCharacter;
 	

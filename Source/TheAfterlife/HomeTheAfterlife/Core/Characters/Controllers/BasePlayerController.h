@@ -40,5 +40,10 @@ protected:
 
 	void InteractWithRunWall();
 
+	void ClimbMoveForward(float value);
+	void ClimbMoveRight(float value);
+	void ClimbHop();
+	void OnClimbActionStarted();
+
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
 };
