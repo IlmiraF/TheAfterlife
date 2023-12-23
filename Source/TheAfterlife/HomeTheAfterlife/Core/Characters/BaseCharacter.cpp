@@ -33,12 +33,12 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 
 	LeftHandCollision->SetupAttachment(GetRootComponent());
 	LeftHandCollision->SetHiddenInGame(false);
-	LeftHandCollision->SetCollisionProfileName("NoCollision");
+	LeftHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
 	LeftHandCollision->SetNotifyRigidBodyCollision(false);
 
 	RightHandCollision->SetupAttachment(GetRootComponent());
 	RightHandCollision->SetHiddenInGame(false);
-	RightHandCollision->SetCollisionProfileName("NoCollision");
+	RightHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
 	RightHandCollision->SetNotifyRigidBodyCollision(false);
 
 	PunchAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PunchAudioComponent"));
@@ -259,9 +259,60 @@ void ABaseCharacter::EnableRagdoll()
 	GetMesh()->SetSimulatePhysics(true);
 }
 
+void ABaseCharacter::PunchAttack()
+{
+	AttackInput(EAttackType::MELEE_FIST);
+}
+
+void ABaseCharacter::KickAttack()
+{
+	AttackInput(EAttackType::MELEE_KICK);
+}
+
+void ABaseCharacter::AttackInput(EAttackType AttackType)
+{
+	if (PlayerAttackDataTable)
+	{
+		static const FString ContextString(TEXT("Player Attack Montage Context"));
+
+		FName AttackRowKey;
+
+		switch (AttackType)
+		{
+		case EAttackType::MELEE_FIST:
+
+			AttackRowKey = FName(TEXT("Punch"));
+			//IsAnimationBlended = true;
+
+			GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Yellow, FString::Printf(TEXT("Punch")));
+			break;
+		case EAttackType::MELEE_KICK:
+
+			AttackRowKey = FName(TEXT("Kick"));
+			IsAnimationBlended = false;
+
+			GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Yellow, FString::Printf(TEXT("Kick")));
+			break;
+		default:
+
+			//IsAnimationBlended = true;
+			break;
+		}
+
+		AttackMontage = PlayerAttackDataTable->FindRow<FPlayerAttackMontage>(AttackRowKey, ContextString, true);
+
+		if (AttackMontage)
+		{
+			int MontageSectionIndex = rand() % AttackMontage->AnimSectionCount + 1;
+			FString MontageSection = "Start_" + FString::FromInt(MontageSectionIndex);
+			PlayAnimMontage(AttackMontage->Montage, 1.0f, FName(MontageSection));
+		}
+	}
+}
+
 void ABaseCharacter::AttackInput()
 {
-	int MontageSectionIndex = rand() % 2 + 1;
+	int MontageSectionIndex = rand() % 3 + 1;
 	FString MontageSection = "Start_" + FString::FromInt(MontageSectionIndex);
 
 	PlayAnimMontage(MeleeCombatMontage, 1.0f, FName(MontageSection));
@@ -271,11 +322,11 @@ void ABaseCharacter::MeleeAttackStart()
 {
 	//MeleeCombatComponent->MeleeAttackStart();
 
-	LeftHandCollision->SetCollisionProfileName("Weapon");
+	LeftHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
 	LeftHandCollision->SetNotifyRigidBodyCollision(true);
 	//LeftHandCollision->SetGenerateOverlapEvents(true);
 
-	RightHandCollision->SetCollisionProfileName("Weapon");
+	RightHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
 	RightHandCollision->SetNotifyRigidBodyCollision(true);
 	//RightHandCollision->SetGenerateOverlapEvents(true);
 
@@ -286,11 +337,11 @@ void ABaseCharacter::MeleeAttackFinish()
 {
 	//MeleeCombatComponent->MeleeAttackFinish();
 
-	LeftHandCollision->SetCollisionProfileName("NoCollision");
+	LeftHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
 	LeftHandCollision->SetNotifyRigidBodyCollision(false);
 	//LeftHandCollision->SetGenerateOverlapEvents(false);
 
-	RightHandCollision->SetCollisionProfileName("NoCollision");
+	RightHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
 	RightHandCollision->SetNotifyRigidBodyCollision(false);
 	//RightHandCollision->SetGenerateOverlapEvents(false);
 

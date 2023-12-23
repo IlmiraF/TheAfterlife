@@ -38,7 +38,8 @@ protected:
 
 	void InteractWithZipline();
 
-	void AttackInput();
+	void PunchAttack();
+	void KickAttack();
 	//void MeleeAttackStart();
 	//void MeleeAttackFinish();
 

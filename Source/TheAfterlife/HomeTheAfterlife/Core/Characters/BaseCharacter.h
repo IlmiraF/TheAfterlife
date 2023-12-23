@@ -5,7 +5,51 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/AudioComponent.h"
+
+#include "Engine/DataTable.h"
+
 #include "BaseCharacter.generated.h"
+
+UENUM(BlueprintType)
+enum class EAttackType : uint8
+{
+	MELEE_FIST UMETA(DisplayName = "Melee-Fist"),
+	MELEE_KICK UMETA(DisplayName = "Melee-Kick")
+};
+
+
+USTRUCT(BlueprintType)
+struct FPlayerAttackMontage : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* Montage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 AnimSectionCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString Description;
+};
+
+USTRUCT(BlueprintType)
+struct FMeleeCollisionProfile
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Enabled;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Disabled;
+
+	FMeleeCollisionProfile()
+	{
+		Enabled = FName(TEXT("Weapon"));
+		Disabled = FName(TEXT("NoCollision"));
+	}
+};
 
 USTRUCT(BlueprintType)
 struct FMantlingSettings
@@ -85,6 +129,10 @@ public:
 
 	//FComponentHitSignature OnAttackHit;
 
+	void AttackInput(EAttackType AttackType);
+	void PunchAttack();
+	void KickAttack();
+
 	void AttackInput();
 	void MeleeAttackStart();
 	void MeleeAttackFinish();
@@ -147,6 +195,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Audio")
 	class USoundBase* PunchSoundBase;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
+	class UDataTable* PlayerAttackDataTable;
+
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
@@ -157,5 +208,13 @@ private:
 	FVector CurrentFallApex;
 
 	UAudioComponent* PunchAudioComponent;
+
+	EAttackType CurrnetAttack;
+
+	FPlayerAttackMontage* AttackMontage;
+
+	bool IsAnimationBlended;
+
+	FMeleeCollisionProfile MeleeCollisionProfile;
 
 };

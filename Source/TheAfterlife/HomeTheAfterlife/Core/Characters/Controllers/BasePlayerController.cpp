@@ -29,7 +29,8 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
 
 
-	InputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &ABasePlayerController::AttackInput);
+	InputComponent->BindAction("Punch", EInputEvent::IE_Pressed, this, &ABasePlayerController::PunchAttack);
+	InputComponent->BindAction("Kick", EInputEvent::IE_Pressed, this, &ABasePlayerController::KickAttack);
 	//InputComponent->BindAction("Attack", EInputEvent::IE_Released, this, &ABasePlayerController::MeleeAttackFinish);
 }
 
@@ -113,11 +114,19 @@ void ABasePlayerController::InteractWithZipline()
 	}
 }
 
-void ABasePlayerController::AttackInput()
+void ABasePlayerController::PunchAttack()
 {
 	if (CachedBaseCharacter.IsValid())
 	{
-		CachedBaseCharacter->AttackInput();
+		CachedBaseCharacter->PunchAttack();
+	}
+}
+
+void ABasePlayerController::KickAttack()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->KickAttack();
 	}
 }
 
