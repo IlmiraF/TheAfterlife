@@ -217,11 +217,6 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
-
-	LeftHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "hand_left_collision");
-	RightHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "hand_right_collision");
-
 	LeftHandCollision->OnComponentHit.AddDynamic(this, &ABaseCharacter::OnAttackHit);
 	//LeftHandCollision->OnComponentBeginOverlap.AddDynamic(this, &ABaseCharacter::OnAttackOverlapBegin);
 	//LeftHandCollision->OnComponentEndOverlap.AddDynamic(this, &ABaseCharacter::OnAttackOverlapEnd);
@@ -277,25 +272,39 @@ void ABaseCharacter::AttackInput(EAttackType AttackType)
 
 		FName AttackRowKey;
 
+		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+
+		
+
 		switch (AttackType)
 		{
 		case EAttackType::MELEE_FIST:
 
 			AttackRowKey = FName(TEXT("Punch"));
-			//IsAnimationBlended = true;
 
-			GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Yellow, FString::Printf(TEXT("Punch")));
+			LeftHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "hand_left_collision");
+			RightHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "hand_right_collision");
+
+			GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Blue, FString::Printf(TEXT("Punch")));
+
+			IsKeyboardEnabled = true;
+
 			break;
+
 		case EAttackType::MELEE_KICK:
 
 			AttackRowKey = FName(TEXT("Kick"));
-			IsAnimationBlended = false;
 
-			GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Yellow, FString::Printf(TEXT("Kick")));
+			LeftHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "foot_left_collision");
+			RightHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "foot_right_collision");
+
+			GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Green, FString::Printf(TEXT("Kick")));
+
+			IsKeyboardEnabled = false;
+
 			break;
-		default:
 
-			//IsAnimationBlended = true;
+		default:
 			break;
 		}
 
@@ -356,6 +365,11 @@ void ABaseCharacter::OnAttackHit(UPrimitiveComponent* HitComponent, AActor* Othe
 	{
 		PunchAudioComponent->Play(0.f);
 	}
+}
+
+void ABaseCharacter::SetIsKeyboardEnabled(bool Enabled)
+{
+	IsKeyboardEnabled = Enabled;
 }
 
 //void ABaseCharacter::OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
