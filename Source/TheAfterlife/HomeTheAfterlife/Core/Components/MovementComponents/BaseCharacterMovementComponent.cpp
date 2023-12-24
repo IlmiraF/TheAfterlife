@@ -10,6 +10,7 @@
 #include "../../../../TheAfterlifeTypes.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "../../Utils/TheAfterlife_TraceUtils.h"
+#include "MotionWarpingComponent.h"
 
 float UBaseCharacterMovementComponent::GetMaxSpeed() const
 {
@@ -245,18 +246,43 @@ void UBaseCharacterMovementComponent::ToggleClimbing(bool bAttemptClimbing)
 	{
 		if (CanStartClimbing())
 		{
+			SetJumpAllowed(!bAttemptClimbing);
 			PlayClimbMontage(IdleToClimbMontage);
 		}
-		/*else if (CanClimbDownLedge())
-		{
-			PlayClimbMontage(ClimbDownLedgeMontage);
-		}*/
+			/*else if (CanClimbDownLedge())
+			{
+				PlayClimbMontage(ClimbDownLedgeMontage);
+			}*/
 	}
 
 	if (!bAttemptClimbing)
 	{
 		StopClimbing();
+		SetJumpAllowed(!bAttemptClimbing);
 	}
+}
+
+void UBaseCharacterMovementComponent::RequestHopping()
+{
+	const FVector UnrotatedLastInputVector =
+		UKismetMathLibrary::Quat_UnrotateVector(UpdatedComponent->GetComponentQuat(), GetLastInputVector());
+
+	const float DotResult =
+		FVector::DotProduct(UnrotatedLastInputVector.GetSafeNormal(), FVector::RightVector);
+
+	if (DotResult >= 0.9f)
+	{
+		HandleHopRight();
+	}
+	else if (DotResult <= -0.9f)
+	{
+		HandleHopLeft();
+	}
+}
+
+bool UBaseCharacterMovementComponent::HasClimbing() const
+{
+	return bHasClimbing;
 }
 
 void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
@@ -283,6 +309,8 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 		const FRotator CleanStandRotation = FRotator(0.f, DirtyRotation.Yaw, 0.f);
 		UpdatedComponent->SetRelativeRotation(CleanStandRotation);
 
+		bHasClimbing = true;
+
 		StopMovementImmediately();
 	}
 
@@ -303,6 +331,7 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 		}
 		case (uint8)ECustomMovementMode::CMOVE_Parkour:
 		{
+			bHasClimbing = false;
 			bOrientRotationToMovement = false;
 			CharacterOwner->GetCapsuleComponent()->SetCapsuleHalfHeight(48.f);
 			break;
@@ -770,6 +799,16 @@ FHitResult UBaseCharacterMovementComponent::TraceFromEyeHeight(float TraceDistan
 	return OutHit;
 }
 
+FHitResult UBaseCharacterMovementComponent::TraceFromEyeHeightHop(float TraceDistance)
+{
+	const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
+	const FVector Start = ComponentLocation + UpdatedComponent->GetRightVector() * TraceDistance;
+	const FVector End = Start + UpdatedComponent->GetForwardVector() * 100.0f;
+	FHitResult OutHit;
+	TheAfterlife_TraceUtils::SweepCapsuleSingleByChannel(GetWorld(), OutHit, Start, End, 30.0f, 72.0f, FQuat::Identity, ECC_Climbing);
+	return OutHit;
+}
+
 void UBaseCharacterMovementComponent::StartClimbing()
 {
 	SetMovementMode(MOVE_Custom, (uint8)ECustomMovementMode::CMOVE_Parkour);
@@ -830,4 +869,71 @@ FQuat UBaseCharacterMovementComponent::GetClimbRotation(float DeltaTime)
 	const FQuat TargetQuat = FRotationMatrix::MakeFromX(-CurrentClimbableSurfaceNormal).ToQuat();
 
 	return FMath::QInterpTo(CurrentQuat, TargetQuat, DeltaTime, 5.f);
+}
+
+void UBaseCharacterMovementComponent::HandleHopRight()
+{
+	FVector HopRightTargetPoint;
+
+	if (CheckCanHopRight(HopRightTargetPoint))
+	{
+		SetMotionWarpTarget(FName("HopRightTargetPoint"), HopRightTargetPoint);
+
+		PlayClimbMontage(HopRightMontage);
+		bIsHopping = true;
+	}
+}
+
+void UBaseCharacterMovementComponent::HandleHopLeft()
+{
+	FVector HopLeftTargetPoint;
+
+	if (CheckCanHopLeft(HopLeftTargetPoint))
+	{
+		SetMotionWarpTarget(FName("HopLeftTargetPoint"), HopLeftTargetPoint);
+
+		PlayClimbMontage(HopLeftMontage);
+		bIsHopping = true;
+	}
+}
+
+bool UBaseCharacterMovementComponent::CheckCanHopRight(FVector& OutHopRightTargetPosition)
+{
+	FHitResult HopRightHit = TraceFromEyeHeightHop(250.f);
+	//FHitResult SaftyLedgeHit = TraceFromEyeHeightHop(100.f, 150.f);
+
+	if (HopRightHit.bBlockingHit /* && SaftyLedgeHit.bBlockingHit*/)
+	{
+
+		OutHopRightTargetPosition = HopRightHit.ImpactPoint;
+
+		return true;
+	}
+
+	return false;
+}
+
+bool UBaseCharacterMovementComponent::CheckCanHopLeft(FVector& OutHopLeftTargetPosition)
+{
+	FHitResult HopLeftHit = TraceFromEyeHeightHop(-250.f);
+
+	if (HopLeftHit.bBlockingHit)
+	{
+
+		OutHopLeftTargetPosition = HopLeftHit.ImpactPoint;
+
+		return true;
+	}
+
+	return false;
+}
+
+void UBaseCharacterMovementComponent::SetMotionWarpTarget(const FName& InWarpTargetName, const FVector& InTargetPosition)
+{
+	if (!GetBaseCharacterOwner())
+		return;
+
+	GetBaseCharacterOwner()->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocation(
+		InWarpTargetName,
+		InTargetPosition);
 }

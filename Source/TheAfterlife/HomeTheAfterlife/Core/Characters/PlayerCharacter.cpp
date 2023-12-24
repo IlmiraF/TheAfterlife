@@ -57,14 +57,17 @@ void APlayerCharacter::LookUp(float value)
 
 void APlayerCharacter::Jump()
 {
-	Super::Jump();
-	JumpCount++;
-	if (JumpCount == 2)
+	if (!GetBaseCharacterMovementComponent()->IsClimbing() && !GetBaseCharacterMovementComponent()->HasClimbing())
 	{
-		PlayAnimMontage(DoubleJumpMontage);
-		FVector JumpForce = GetVelocity() + FVector(0.0f, 0.0f, 300.f);
-		LaunchCharacter(JumpForce, false, true);
+		Super::Jump();
 		JumpCount++;
+		if (JumpCount == 2)
+		{
+			PlayAnimMontage(DoubleJumpMontage);
+			FVector JumpForce = GetVelocity() + FVector(0.0f, 0.0f, 300.f);
+			LaunchCharacter(JumpForce, false, true);
+			JumpCount++;
+		}
 	}
 }
 
@@ -99,6 +102,10 @@ void APlayerCharacter::ClimbMoveRight(float value)
 
 void APlayerCharacter::ClimbHop()
 {
+	if (GetBaseCharacterMovementComponent()->IsClimbing())
+	{
+		GetBaseCharacterMovementComponent()->RequestHopping();
+	}
 }
 
 void APlayerCharacter::BeginPlay()

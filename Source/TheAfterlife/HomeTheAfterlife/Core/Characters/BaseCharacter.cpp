@@ -13,6 +13,7 @@
 #include "../Actors/Interactive/InteractiveActor.h"
 #include "../../../TheAfterlifeTypes.h"
 #include "Engine/DamageEvents.h"
+#include "MotionWarpingComponent.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -25,6 +26,7 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->bCastDynamicShadow = true;
 
 	CharacterAttributesComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("Attribute Component"));
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComp"));
 }
 
 void ABaseCharacter::Jump()
@@ -223,11 +225,11 @@ void ABaseCharacter::OnClimbActionStarted()
 	if (!GetBaseCharacterMovementComponent()->IsClimbing() && !GetBaseCharacterMovementComponent()->IsWallRunning())
 	{
 		GetBaseCharacterMovementComponent()->ToggleClimbing(true);
+		JumpCount = 0;
 	}
-	else
+	/*else if(GetBaseCharacterMovementComponent()->IsClimbing())
 	{
-		GetBaseCharacterMovementComponent()->ToggleClimbing(false);
-	}
+	}*/
 }
 
 void ABaseCharacter::BeginPlay()
@@ -238,7 +240,7 @@ void ABaseCharacter::BeginPlay()
 
 bool ABaseCharacter::CanMantle() const
 {
-	return !GetBaseCharacterMovementComponent()->IsOnLadder() && !GetBaseCharacterMovementComponent()->IsOnZipline();
+	return !GetBaseCharacterMovementComponent()->IsOnLadder() && !GetBaseCharacterMovementComponent()->IsOnZipline() && !GetBaseCharacterMovementComponent()->HasClimbing();
 }
 
 void ABaseCharacter::OnDeath()

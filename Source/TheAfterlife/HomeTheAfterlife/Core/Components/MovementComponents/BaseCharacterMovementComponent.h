@@ -83,6 +83,7 @@ public:
 	FVector GetUnrotatedClimbVelocity() const;
 	void ToggleClimbing(bool bAttemptClimbing);
 	void RequestHopping();
+	bool HasClimbing() const;
 	
 protected:
 
@@ -219,4 +220,5 @@ private:
 	bool CheckCanHopRight(FVector& OutHopUpTargetPosition);
 	bool CheckCanHopLeft(FVector& OutHopUpTargetPosition);
 	void SetMotionWarpTarget(const FName& InWarpTargetName, const FVector& InTargetPosition);
+	bool bHasClimbing = false;
 };
