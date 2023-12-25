@@ -79,11 +79,18 @@ public:
 	bool IsWallRunningRight() const { return Safe_bWallRunIsRight; }
 
 	bool IsClimbing() const;
+	bool CanStartClimbing();
 	FORCEINLINE FVector GetClimbableSurfaceNormal() const { return CurrentClimbableSurfaceNormal; }
 	FVector GetUnrotatedClimbVelocity() const;
 	void ToggleClimbing(bool bAttemptClimbing);
 	void RequestHopping();
-	bool HasClimbing() const;
+
+	bool IsOnBeam() const;
+	void StartWalkingOnBeam();
+	void StopWalkingOnBeam();
+	float GetOnBeamDirection() const;
+	void SetOnBeamDirection(float Direction);
+	void SetBalancingDirection(float Direction);
 	
 protected:
 
@@ -97,6 +104,7 @@ protected:
 	void PhysZipline(float DeltaTime, int32 Iterations);
 	void PhysWallRun(float DeltaTime, int32 Iterations);
 	void PhysClimb(float DeltaTime, int32 Iterations);
+	void PhysBeam(float DeltaTime, int32 Iterations);
 
 
 	class ABaseCharacter* GetBaseCharacterOwner() const;
@@ -153,6 +161,9 @@ protected:
 
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing");
+	TArray<TEnumAsByte<EObjectTypeQuery>> ClimbableSurfaceTraceTypes;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing");
 	float ClimbCapsuleTraceRadius = 30.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing");
@@ -173,6 +184,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing")
 	UAnimMontage* HopLeftMontage;
 
+
+	UPROPERTY(Category = "Character Movement: On Beam", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
+	float OnBeamMaxSpeed = 100.0f;
+
 private:
 	FMantlingMovementParameters CurrentMantlingParameters;
 
@@ -191,7 +206,6 @@ private:
 
 	//Climb
 
-	bool CanStartClimbing();
 	UFUNCTION()
 	void OnClimbMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	bool bIsHopping = false;
@@ -213,12 +227,14 @@ private:
 	void SnapMovementToClimbableSurfaces(float DeltaTime);
 	FQuat GetClimbRotation(float DeltaTime);
 
-	bool CanClimbDownLedge();
-
 	void HandleHopRight();
 	void HandleHopLeft();
 	bool CheckCanHopRight(FVector& OutHopUpTargetPosition);
 	bool CheckCanHopLeft(FVector& OutHopUpTargetPosition);
 	void SetMotionWarpTarget(const FName& InWarpTargetName, const FVector& InTargetPosition);
-	bool bHasClimbing = false;
+
+	//Beam
+
+	float StartBalancingDirection;
+	float OnBeamDirection = 0.0f;
 };

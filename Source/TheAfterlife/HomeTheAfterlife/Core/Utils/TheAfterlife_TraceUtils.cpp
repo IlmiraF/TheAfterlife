@@ -89,25 +89,16 @@ bool TheAfterlife_TraceUtils::OverlapCapsuleBlockingByProfile(const UWorld* Worl
 	return bResult;
 }
 
-bool TheAfterlife_TraceUtils::SweepCapsuleMultiByChannel(const UWorld* World, TArray<FHitResult>& OutHit, const FVector& Start, const FVector& End, float CapsuleRadius, float CapsuleHalfHeight, const FQuat& Rot, ECollisionChannel TraceChannel, const FCollisionQueryParams& Params, const FCollisionResponseParams& ResponseParam, bool bDrawDebug, float DrawTime, FColor TraceColor, FColor HitColor)
+FHitResult TheAfterlife_TraceUtils::LineTraceSingleByObject(const UWorld* World, const FVector& Start, const FVector& End, TArray<TEnumAsByte<EObjectTypeQuery>> ClimbableSurfaceTraceTypes)
 {
-	bool bResult = false;
-	FCollisionShape CollisionShape = FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight);
-	bResult = World->SweepMultiByChannel(OutHit, Start, End, Rot, TraceChannel, CollisionShape, Params, ResponseParam);
+	FHitResult OutHit;
+	UKismetSystemLibrary::LineTraceSingleForObjects(World, Start, End, ClimbableSurfaceTraceTypes, false, TArray<AActor*>(), EDrawDebugTrace::ForOneFrame, OutHit, false);
+	return OutHit;
+}
 
-#if ENABLE_DRAW_DEBUG
-	if (bDrawDebug)
-	{
-		DrawDebugCapsule(World, Start, CapsuleHalfHeight, CapsuleRadius, FQuat::Identity, TraceColor, false, DrawTime);
-		DrawDebugCapsule(World, End, CapsuleHalfHeight, CapsuleRadius, FQuat::Identity, TraceColor, false, DrawTime);
-		DrawDebugLine(World, Start, End, FColor::Black, false, DrawTime);
-		/*if (bResult)
-		{
-			DrawDebugCapsule(World, OutHit.Location, CapsuleHalfHeight, CapsuleRadius, FQuat::Identity, HitColor, false, DrawTime);
-			DrawDebugPoint(World, OutHit.ImpactPoint, 10.0f, HitColor, false, DrawTime);
-		}*/
-	}
-#endif
-
-	return bResult;
+TArray<FHitResult> TheAfterlife_TraceUtils::SweepCapsuleMultiByObjectType(const UWorld* World, const FVector& Start, const FVector& End, TArray<TEnumAsByte<EObjectTypeQuery>> ClimbableSurfaceTraceTypes)
+{
+	TArray<FHitResult> OutCapsuleTraceHitResult;
+	UKismetSystemLibrary::CapsuleTraceMultiForObjects(World, Start, End, 30.0f, 72.0f, ClimbableSurfaceTraceTypes, false, TArray<AActor*>(), EDrawDebugTrace::ForOneFrame, OutCapsuleTraceHitResult, false, FColor::Blue, FColor::Purple);
+	return OutCapsuleTraceHitResult;
 }

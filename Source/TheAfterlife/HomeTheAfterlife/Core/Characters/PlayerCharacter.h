@@ -30,6 +30,9 @@ public:
 	virtual void ClimbMoveRight(float value) override;
 	virtual void ClimbHop() override;
 
+	virtual void OnBeamMoveForward(float value) override;
+	virtual void OnBeamMoveRight(float value) override;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Camera")

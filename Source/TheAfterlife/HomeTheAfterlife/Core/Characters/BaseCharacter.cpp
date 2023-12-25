@@ -10,6 +10,7 @@
 #include "../Actors/Interactive/Environment/Ladder.h"
 #include "../Actors/Interactive/Environment/Zipline.h"
 #include "../Actors/Interactive/Environment/RunWall.h"
+#include "../Actors/Interactive/Environment/Beam.h"
 #include "../Actors/Interactive/InteractiveActor.h"
 #include "../../../TheAfterlifeTypes.h"
 #include "Engine/DamageEvents.h"
@@ -225,11 +226,41 @@ void ABaseCharacter::OnClimbActionStarted()
 	if (!GetBaseCharacterMovementComponent()->IsClimbing() && !GetBaseCharacterMovementComponent()->IsWallRunning())
 	{
 		GetBaseCharacterMovementComponent()->ToggleClimbing(true);
-		JumpCount = 0;
+		//JumpCount = 0;
 	}
 	/*else if(GetBaseCharacterMovementComponent()->IsClimbing())
 	{
 	}*/
+}
+
+void ABaseCharacter::InteractWithBeam()
+{
+	if (GetBaseCharacterMovementComponent()->IsOnBeam())
+	{
+		GetBaseCharacterMovementComponent()->StopWalkingOnBeam();
+	}
+	else
+	{
+		const ABeam* AvailableBeam = GetAvailableBeam();
+		if (IsValid(AvailableBeam))
+		{
+			GetBaseCharacterMovementComponent()->StartWalkingOnBeam();
+		}
+	}
+}
+
+const ABeam* ABaseCharacter::GetAvailableBeam() const
+{
+	const ABeam* Result = nullptr;
+	for (const AInteractiveActor* InteractiveActor : AvailableInteractiveActors)
+	{
+		if (InteractiveActor->IsA<ABeam>())
+		{
+			Result = StaticCast<const ABeam*>(InteractiveActor);
+			break;
+		}
+	}
+	return Result;
 }
 
 void ABaseCharacter::BeginPlay()
@@ -240,7 +271,7 @@ void ABaseCharacter::BeginPlay()
 
 bool ABaseCharacter::CanMantle() const
 {
-	return !GetBaseCharacterMovementComponent()->IsOnLadder() && !GetBaseCharacterMovementComponent()->IsOnZipline() && !GetBaseCharacterMovementComponent()->HasClimbing();
+	return !GetBaseCharacterMovementComponent()->IsOnLadder() && !GetBaseCharacterMovementComponent()->IsOnZipline() && !GetBaseCharacterMovementComponent()->IsClimbing();
 }
 
 void ABaseCharacter::OnDeath()

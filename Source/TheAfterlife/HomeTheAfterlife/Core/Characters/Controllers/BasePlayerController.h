@@ -45,5 +45,8 @@ protected:
 	void ClimbHop();
 	void OnClimbActionStarted();
 
+	void OnBeamMoveForward(float value);
+	void OnBeamMoveRight(float value);
+
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
 };

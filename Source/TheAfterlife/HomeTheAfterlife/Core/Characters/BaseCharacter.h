@@ -87,6 +87,12 @@ public:
 	virtual void ClimbHop() {};
 	virtual void OnClimbActionStarted();
 
+	virtual void OnBeamMoveForward(float value) {};
+	virtual void OnBeamMoveRight(float value) {};
+
+	void InteractWithBeam();
+	const class ABeam* GetAvailableBeam() const;
+
 protected:
 	virtual void BeginPlay() override;
 

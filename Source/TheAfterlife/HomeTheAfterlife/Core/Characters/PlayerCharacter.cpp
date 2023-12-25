@@ -57,7 +57,9 @@ void APlayerCharacter::LookUp(float value)
 
 void APlayerCharacter::Jump()
 {
-	if (!GetBaseCharacterMovementComponent()->IsClimbing() && !GetBaseCharacterMovementComponent()->HasClimbing())
+	/*if (!GetBaseCharacterMovementComponent()->IsClimbing())
+	{*/
+	if (!GetBaseCharacterMovementComponent()->CanStartClimbing() && !GetBaseCharacterMovementComponent()->IsClimbing())
 	{
 		Super::Jump();
 		JumpCount++;
@@ -105,6 +107,24 @@ void APlayerCharacter::ClimbHop()
 	if (GetBaseCharacterMovementComponent()->IsClimbing())
 	{
 		GetBaseCharacterMovementComponent()->RequestHopping();
+	}
+}
+
+void APlayerCharacter::OnBeamMoveForward(float value)
+{
+	if (GetBaseCharacterMovementComponent()->IsOnBeam() && !FMath::IsNearlyZero(value, 1e-6f))
+	{
+		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
+		FVector ForwardVector = YawRotator.RotateVector(FVector::ForwardVector);
+		AddMovementInput(ForwardVector, value);
+	}
+}
+
+void APlayerCharacter::OnBeamMoveRight(float value)
+{
+	if (GetBaseCharacterMovementComponent()->IsOnBeam() && !FMath::IsNearlyZero(value, 1e-6f))
+	{
+		GetBaseCharacterMovementComponent()->SetBalancingDirection(value);
 	}
 }
 

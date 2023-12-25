@@ -40,6 +40,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
 	FVector ClimbVelocity;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
+	bool bIsOnBeam = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
+	float OnBeamDirection = 0.0f;
+
 private:
 	TWeakObjectPtr<class ABaseCharacter> CachedBaseCharacter;
 	
