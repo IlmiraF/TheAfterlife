@@ -292,8 +292,11 @@ void UBaseCharacterMovementComponent::StartWalkingOnBeam()
 
 void UBaseCharacterMovementComponent::StopWalkingOnBeam()
 {
+	FVector Start = UpdatedComponent->GetComponentLocation();
+	FVector FallDirection = Start - StartBalancingDirection * UpdatedComponent->GetRightVector() * 100.0f;
+	GetOwner()->SetActorLocation(FallDirection);
 	OnBeamDirection = 0.0f;
-	SetMovementMode(MOVE_Walking);
+	SetMovementMode(MOVE_Falling);
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("StopBeam"));
 }
 
