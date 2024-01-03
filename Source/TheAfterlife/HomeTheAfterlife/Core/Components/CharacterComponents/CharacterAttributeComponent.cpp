@@ -17,10 +17,16 @@ void UCharacterAttributeComponent::TickComponent(float DeltaTime, ELevelTick Tic
 	GEngine->AddOnScreenDebugMessage(0, 0.5f, FColor::Red, FString::Printf(TEXT("Current Health: %f"), Health));
 }
 
+float UCharacterAttributeComponent::GetHealthPercnet() const
+{
+	return Health/MaxHealth;
+}
+
 void UCharacterAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	checkf(MaxHealth > 0.0f,TEXT("UCharacterAttributeComponent:: BeginPlay max health cannot be equal to 0"));
 	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("UCharacterAttributeComponent:: BeginPlay UCharacterAttributeComponent can be used only with ABaseCharacter"));
 	CachedBaseCharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
 
