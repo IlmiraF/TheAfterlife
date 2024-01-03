@@ -3,6 +3,26 @@
 #include "../../Characters\BaseCharacter.h"
 
 
+EEquipableItemType UCharacterEquipmentComponent::GetCurrentEquippedItemType() const
+{
+	EEquipableItemType Result = EEquipableItemType::NONE;
+
+	if (IsValid(CurrentEquippedWeapon))
+	{
+		Result = CurrentEquippedWeapon->GetItemType();
+	}
+
+	return Result;
+}
+
+void UCharacterEquipmentComponent::Fire()
+{
+	if (IsValid(CurrentEquippedWeapon))
+	{
+		CurrentEquippedWeapon->Fire();
+	}
+}
+
 void UCharacterEquipmentComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -18,8 +38,8 @@ void UCharacterEquipmentComponent::CreateLoadout()
 	{
 		return;
 	}
-	CurrentEquippedItem = GetWorld()->SpawnActor<ARangeWeaponItem>(SideArmClass);
-	CurrentEquippedItem->AttachToComponent(CachedBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "hand_right_collision");
+	CurrentEquippedWeapon = GetWorld()->SpawnActor<ARangeWeaponItem>(SideArmClass);
+	CurrentEquippedWeapon->AttachToComponent(CachedBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "hand_right_collision");
 }
 
 

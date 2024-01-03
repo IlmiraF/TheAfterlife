@@ -1,34 +1,23 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "../Source\TheAfterlife\TheAfterlifeTypes.h"
+#include "DrawDebugHelpers.h"
 #include "WeaponBarellComponent.h"
 
-// Sets default values for this component's properties
-UWeaponBarellComponent::UWeaponBarellComponent()
+
+void UWeaponBarellComponent::Shot()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	FVector ShotStart = GetComponentLocation();
+	FVector ShotDirection = GetComponentRotation().RotateVector(FVector::ForwardVector);
+	FVector ShotEnd = ShotStart + FiringRange * ShotDirection;
 
-	// ...
+	FHitResult ShotResult;
+	if (GetWorld()->LineTraceSingleByChannel(ShotResult, ShotStart, ShotEnd, ECC_Visibility))
+	{	
+		ShotEnd = ShotResult.ImpactPoint;
+		DrawDebugSphere(GetWorld(), ShotEnd, 10.0f, 24, FColor::Red, false, 1.0f);
+		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Green, FString::Printf(TEXT("YGA BUGA")));
+	}
+	DrawDebugLine(GetWorld(), ShotStart, ShotEnd, FColor::Green, false, 1.0f, 0, 3.0f);
+	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Blue, FString::Printf(TEXT("YGA BUGA")));
 }
-
-
-// Called when the game starts
-void UWeaponBarellComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-
-// Called every frame
-void UWeaponBarellComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-

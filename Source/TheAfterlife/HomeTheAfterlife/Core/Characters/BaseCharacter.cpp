@@ -215,6 +215,16 @@ const AZipline* ABaseCharacter::GetAvailableZipline() const
 	return Result;
 }
 
+const UCharacterEquipmentComponent* ABaseCharacter::GetCharacterEquipmentComponent() const
+{
+	return CharacterEquipmentComponent;
+}
+
+void ABaseCharacter::Fire()
+{
+	CharacterEquipmentComponent->Fire();
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();

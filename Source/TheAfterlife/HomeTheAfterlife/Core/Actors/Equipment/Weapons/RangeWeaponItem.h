@@ -15,6 +15,8 @@ public:
 
 	ARangeWeaponItem();
 
+	void Fire();
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

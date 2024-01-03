@@ -3,6 +3,8 @@
 
 #include "BaseCharacterAnimInstance.h"
 #include "../BaseCharacter.h"
+#include "../Source\TheAfterlife\TheAfterlifeTypes.h"
+#include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "../../Components/MovementComponents/BaseCharacterMovementComponent.h"
 
 void UBaseCharacterAnimInstance::NativeBeginPlay()
@@ -29,4 +31,7 @@ void UBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		LadderSpeedRatio = CharacterMovement->GetLadderSpeedRatio();
 	}
+
+	const UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent();
+	CurrentEquippedItemType = CharacterEquipment->GetCurrentEquippedItemType();
 }

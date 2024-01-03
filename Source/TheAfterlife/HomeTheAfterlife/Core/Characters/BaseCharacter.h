@@ -85,6 +85,7 @@ class UBaseCharacterMovementComponent;
 class UCharacterAttributeComponent;
 class AInteractiveActor;
 class UMeleeCombatComponent;
+class UCharacterEquipmentComponent;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
@@ -124,6 +125,9 @@ public:
 	void InteractWithZipline();
 	const class AZipline* GetAvailableZipline() const;
 
+	const UCharacterEquipmentComponent* GetCharacterEquipmentComponent() const;
+
+	void Fire();
 
 	void AttackInput(EAttackType AttackType);
 	void PunchAttack();

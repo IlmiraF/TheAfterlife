@@ -31,6 +31,7 @@ void ABasePlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("Punch", EInputEvent::IE_Pressed, this, &ABasePlayerController::PunchAttack);
 	InputComponent->BindAction("Kick", EInputEvent::IE_Pressed, this, &ABasePlayerController::KickAttack);
+	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ABasePlayerController::Fire);
 	//InputComponent->BindAction("Attack", EInputEvent::IE_Released, this, &ABasePlayerController::MeleeAttackFinish);
 }
 
@@ -111,6 +112,14 @@ void ABasePlayerController::InteractWithZipline()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->InteractWithZipline();
+	}
+}
+
+void ABasePlayerController::Fire()
+{
+	if(CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->Fire();
 	}
 }
 

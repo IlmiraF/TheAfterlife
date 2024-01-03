@@ -2,8 +2,12 @@
 
 #pragma once
 #include "CoreMinimal.h"
+#include "../../../../TheAfterlifeTypes.h"
 #include "Components/ActorComponent.h"
 #include "CharacterEquipmentComponent.generated.h"
+
+
+
 
 class ARangeWeaponItem;
 
@@ -11,6 +15,12 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class THEAFTERLIFE_API UCharacterEquipmentComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
+public:
+
+	EEquipableItemType GetCurrentEquippedItemType() const;
+
+	void Fire();
 
 protected:
 	
@@ -23,7 +33,7 @@ private:
 
 	void CreateLoadout();
 
-	ARangeWeaponItem* CurrentEquippedItem;
+	ARangeWeaponItem* CurrentEquippedWeapon;
 
 	TWeakObjectPtr<class ABaseCharacter> CachedBaseCharacter;
 };

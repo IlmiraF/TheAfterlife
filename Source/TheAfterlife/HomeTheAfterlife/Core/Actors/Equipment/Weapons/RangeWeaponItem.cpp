@@ -11,3 +11,8 @@ ARangeWeaponItem::ARangeWeaponItem()
 	WeaponBarell = CreateDefaultSubobject<UWeaponBarellComponent>(TEXT("WeaponBarell"));
 	WeaponBarell->SetupAttachment(WeaponMesh,"MuzzleSocket");
 }
+
+void ARangeWeaponItem::Fire()
+{
+	WeaponBarell->Shot();
+}
