@@ -89,8 +89,6 @@ class UMeleeCombatComponent;
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
 
-//DECLARE_DYNAMIC_DELEGATE_FiveParams(FComponentHitSignature, UPrimitiveComponent*, AActor* , UPrimitiveComponent* , FVector , const FHitResult*);
-
 UCLASS()
 class THEAFTERLIFE_API ABaseCharacter : public ACharacter
 {
@@ -127,13 +125,10 @@ public:
 	const class AZipline* GetAvailableZipline() const;
 
 
-	//FComponentHitSignature OnAttackHit;
-
 	void AttackInput(EAttackType AttackType);
 	void PunchAttack();
 	void KickAttack();
 
-	void AttackInput();
 	void MeleeAttackStart();
 	void MeleeAttackFinish();
 
@@ -142,12 +137,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetIsKeyboardEnabled(bool Enabled);
-
-	//UFUNCTION()
-	//void OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	//
-	//UFUNCTION()
-	//void OnAttackOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 protected:
 	virtual void BeginPlay() override;
@@ -185,6 +174,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Attributes")
 	class UCurveFloat* FallDamageCurve;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
+	class UCharacterEquipmentComponent* CharacterEquipmentComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
 	UMeleeCombatComponent* MeleeCombatComponent;

@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
 #include "../Components/CharacterComponents/CharacterAttributeComponent.h"
+#include "../Components\CharacterComponents\CharacterEquipmentComponent.h"
 #include "../Components/AdditionalComponents/LedgeDetectorComponent.h"
 #include "Curves/CurveVector.h"
 #include "../Actors/Interactive/Environment/Ladder.h"
@@ -27,6 +28,7 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 
 	CharacterAttributesComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("Attribute Component"));
 	MeleeCombatComponent = CreateDefaultSubobject<UMeleeCombatComponent>(TEXT("Melee combat Component"));
+	CharacterEquipmentComponent = CreateDefaultSubobject<UCharacterEquipmentComponent>(TEXT("Character Equipment Component"));
 
 	LeftHandCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftHandCollisionBox"));
 	RightHandCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("RightHandCollisionBox"));
@@ -218,12 +220,7 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	LeftHandCollision->OnComponentHit.AddDynamic(this, &ABaseCharacter::OnAttackHit);
-	//LeftHandCollision->OnComponentBeginOverlap.AddDynamic(this, &ABaseCharacter::OnAttackOverlapBegin);
-	//LeftHandCollision->OnComponentEndOverlap.AddDynamic(this, &ABaseCharacter::OnAttackOverlapEnd);
-
 	RightHandCollision->OnComponentHit.AddDynamic(this, &ABaseCharacter::OnAttackHit);
-	//RightHandCollision->OnComponentBeginOverlap.AddDynamic(this, &ABaseCharacter::OnAttackOverlapBegin);
-	//RightHandCollision->OnComponentEndOverlap.AddDynamic(this, &ABaseCharacter::OnAttackOverlapEnd);
 
 	PunchAudioComponent->SetSound(PunchSoundBase);
 }
@@ -285,8 +282,6 @@ void ABaseCharacter::AttackInput(EAttackType AttackType)
 			LeftHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "hand_left_collision");
 			RightHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "hand_right_collision");
 
-			GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Blue, FString::Printf(TEXT("Punch")));
-
 			IsKeyboardEnabled = true;
 
 			break;
@@ -297,8 +292,6 @@ void ABaseCharacter::AttackInput(EAttackType AttackType)
 
 			LeftHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "foot_left_collision");
 			RightHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "foot_right_collision");
-
-			GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Green, FString::Printf(TEXT("Kick")));
 
 			IsKeyboardEnabled = false;
 
@@ -319,42 +312,23 @@ void ABaseCharacter::AttackInput(EAttackType AttackType)
 	}
 }
 
-void ABaseCharacter::AttackInput()
-{
-	int MontageSectionIndex = rand() % 3 + 1;
-	FString MontageSection = "Start_" + FString::FromInt(MontageSectionIndex);
-
-	PlayAnimMontage(MeleeCombatMontage, 1.0f, FName(MontageSection));
-}
-
 void ABaseCharacter::MeleeAttackStart()
 {
-	//MeleeCombatComponent->MeleeAttackStart();
-
 	LeftHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
 	LeftHandCollision->SetNotifyRigidBodyCollision(true);
-	//LeftHandCollision->SetGenerateOverlapEvents(true);
 
 	RightHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
 	RightHandCollision->SetNotifyRigidBodyCollision(true);
-	//RightHandCollision->SetGenerateOverlapEvents(true);
-
-	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::White, FString::Printf(TEXT("AttackStart")));
 }
 
 void ABaseCharacter::MeleeAttackFinish()
 {
-	//MeleeCombatComponent->MeleeAttackFinish();
 
 	LeftHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
 	LeftHandCollision->SetNotifyRigidBodyCollision(false);
-	//LeftHandCollision->SetGenerateOverlapEvents(false);
 
 	RightHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
 	RightHandCollision->SetNotifyRigidBodyCollision(false);
-	//RightHandCollision->SetGenerateOverlapEvents(false);
-
-	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Black, FString::Printf(TEXT("AttackFinish")));
 }
 
 void ABaseCharacter::OnAttackHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -371,13 +345,3 @@ void ABaseCharacter::SetIsKeyboardEnabled(bool Enabled)
 {
 	IsKeyboardEnabled = Enabled;
 }
-
-//void ABaseCharacter::OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-//{
-//	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Red, OtherActor->GetName());
-//}
-//
-//void ABaseCharacter::OnAttackOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-//{
-//	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Black, OtherActor->GetName());
-//}
