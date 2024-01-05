@@ -38,6 +38,9 @@ protected:
 
 	void InteractWithZipline();
 
+	void NextItem();
+	void PreviousItem();
+
 	void Fire();
 
 	void PunchAttack();

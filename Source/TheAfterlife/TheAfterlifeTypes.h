@@ -7,6 +7,7 @@
 const FName CollisionProfilePawn = FName("Pawn");
 const FName CollisionProfileRagdoll = FName("Ragdoll");
 const FName CollisionProfilePawnInteractionVolume = FName("PawnInteractionVolume");
+const FName SocketCharacterWeapon = FName("CharacterWeaponSocket");
 
 const FName DebugCategoryCharacterAttributes = FName("CharacterAttributes");
 
@@ -16,3 +17,23 @@ enum class EEquipableItemType : uint8
 	NONE,
 	PISTOL
 };
+
+
+UENUM(BlueprintType)
+enum class EAmunitionType : uint8
+{
+	NONE,
+	PISTOL,
+	MAX UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
+enum class EEquipmentSlots : uint8
+{
+	NONE,
+	SIDE_ARM,
+	PRIMARY_WEAPON,
+	SECONDARY_WEAPON,
+	MAX UMETA(Hidden)
+};
+

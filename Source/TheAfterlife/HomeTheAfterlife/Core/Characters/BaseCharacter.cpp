@@ -225,6 +225,16 @@ void ABaseCharacter::Fire()
 	CharacterEquipmentComponent->Fire();
 }
 
+void ABaseCharacter::NextItem()
+{
+	CharacterEquipmentComponent->EquipNextItem();
+}
+
+void ABaseCharacter::PreviousItem()
+{
+	CharacterEquipmentComponent->EquipPreviousItem();
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();

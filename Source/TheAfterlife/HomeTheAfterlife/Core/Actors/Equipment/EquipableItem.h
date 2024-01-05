@@ -14,8 +14,17 @@ public:
 
 	EEquipableItemType GetItemType() const;
 
+	FName GetUnEquippedSocketName() const;
+	FName GetEquippedSocketName() const;
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipable item")
 	EEquipableItemType ItemType = EEquipableItemType::NONE;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipable item")
+	FName UnEquippedSocketName = NAME_None;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipable item")
+	FName EquippedSocketName = NAME_None;
 };

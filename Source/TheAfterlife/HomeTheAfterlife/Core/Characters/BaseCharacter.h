@@ -129,6 +129,9 @@ public:
 
 	void Fire();
 
+	void NextItem();
+	void PreviousItem();
+
 	void AttackInput(EAttackType AttackType);
 	void PunchAttack();
 	void KickAttack();
