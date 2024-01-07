@@ -34,7 +34,11 @@ void UCharacterEquipmentComponent::Fire()
 }
 
 void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
-{
+{	
+	if (!IsValid(ItemsArray[(uint32)Slot]))
+	{
+		return;
+	}
 
 	if (bIsEquipping)
 	{
@@ -44,21 +48,22 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 	UnEquipCurrentItem();
 	CurrentEquippedItem = ItemsArray[(uint32)Slot];
 	CurrentEquippedWeapon = Cast<ARangeWeaponItem>(CurrentEquippedItem);
+	CurrentThrowableItem = Cast<AThrowableItem>(CurrentEquippedItem);
 
 	if (IsValid(CurrentEquippedItem))
 	{
 		//UAnimMontage* EquipMontage = CurrentEquippedItem->GetCharacterEquipAnimMontage();
 		//if (IsValid(EquipMontage))
 		//{
-			bIsEquipping = true;
-			UAnimInstance* CharacterAnimInstnce = CachedBaseCharacter->GetMesh()->GetAnimInstance();
-			//float EquipDuration = CharacterAnimInstnce->Montage_Play(EquipMontage, 1.0f, EMontagePlayReturnType::Duration);
-			//GetWorld()->GetTimerManager().SetTimer(EquipTimer, this, &UCharacterEquipmentComponent::EquipAnimationFinished, EquipDuration, false);
-		//}
-		//else
-		//{
-		//	AttachCurrentItemToEquippedSocket();
-		//}
+		bIsEquipping = true;
+		UAnimInstance* CharacterAnimInstnce = CachedBaseCharacter->GetMesh()->GetAnimInstance();
+		//float EquipDuration = CharacterAnimInstnce->Montage_Play(EquipMontage, 1.0f, EMontagePlayReturnType::Duration);
+		//GetWorld()->GetTimerManager().SetTimer(EquipTimer, this, &UCharacterEquipmentComponent::EquipAnimationFinished, EquipDuration, false);
+	//}
+	//else
+	//{
+	//	AttachCurrentItemToEquippedSocket();
+	//}
 		CurrentEquippedSlot = Slot;
 	}
 
@@ -76,6 +81,16 @@ void UCharacterEquipmentComponent::AttachCurrentItemToEquippedSocket()
 
 }
 
+void UCharacterEquipmentComponent::LaunchCurrentThrowableItem()
+{
+	if (IsValid(CurrentThrowableItem))
+	{
+		CurrentThrowableItem->Throw();
+		bIsEquipping = false;
+		EquipItemInSlot(PreviousEquippedSlot);
+	}
+}
+
 void UCharacterEquipmentComponent::UnEquipCurrentItem()
 {
 	if (IsValid(CurrentEquippedItem))
@@ -89,6 +104,8 @@ void UCharacterEquipmentComponent::UnEquipCurrentItem()
 		CurrentEquippedWeapon->OnAmmoChanged.Remove(OnCurrentWeaponAmmoChangedHandle);
 		//CurrentEquippedWeapon->OnReloadComplete.Remove(OnCurrentWeaponReloadedHandle);
 	}
+
+	PreviousEquippedSlot = CurrentEquippedSlot;
 	CurrentEquippedSlot = EEquipmentSlots::NONE;
 }
 
@@ -112,7 +129,7 @@ void UCharacterEquipmentComponent::CreateLoadout()
 
 	ItemsArray.AddZeroed((uint32)EEquipmentSlots::MAX);
 	for (const TPair<EEquipmentSlots, TSubclassOf<AEquipableItem>>& ItemPair : ItemsLoadout)
-	{	
+	{
 		if (!IsValid(ItemPair.Value))
 		{
 			continue;
@@ -177,7 +194,10 @@ void UCharacterEquipmentComponent::EquipNextItem()
 {
 	uint32 CurrentSlotIndex = (uint32)CurrentEquippedSlot;
 	uint32 NextSlotIndex = NextItemsArraySlotIndex(CurrentSlotIndex);
-	while (CurrentSlotIndex != NextSlotIndex && !IsValid(ItemsArray[NextSlotIndex]))
+
+	while (CurrentSlotIndex != NextSlotIndex
+		&& IgnoreSlotsWhileSwitch.Contains((EEquipmentSlots) NextSlotIndex)
+		&& !IsValid(ItemsArray[NextSlotIndex]))
 	{
 		NextSlotIndex = NextItemsArraySlotIndex(NextSlotIndex);
 	}
@@ -191,7 +211,10 @@ void UCharacterEquipmentComponent::EquipPreviousItem()
 {
 	uint32 CurrentSlotIndex = (uint32)CurrentEquippedSlot;
 	uint32 PreviousSlotIndex = PreviousItemsArraySlotIndex(CurrentSlotIndex);
-	while (CurrentSlotIndex != PreviousSlotIndex && !IsValid(ItemsArray[PreviousSlotIndex]))
+
+	while (CurrentSlotIndex != PreviousSlotIndex 
+		&& IgnoreSlotsWhileSwitch.Contains((EEquipmentSlots)PreviousSlotIndex)
+		&& !IsValid(ItemsArray[PreviousSlotIndex]))
 	{
 		PreviousSlotIndex = PreviousItemsArraySlotIndex(PreviousSlotIndex);
 	}

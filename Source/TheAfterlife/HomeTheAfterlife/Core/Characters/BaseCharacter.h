@@ -127,10 +127,15 @@ public:
 
 	const UCharacterEquipmentComponent* GetCharacterEquipmentComponent() const;
 
+	UCharacterEquipmentComponent* GetCharacterEquipmentComponent_Mutable() const;
+
 	void Fire();
 
 	void NextItem();
 	void PreviousItem();
+
+
+	void EquipPrimaryItem();
 
 	void AttackInput(EAttackType AttackType);
 	void PunchAttack();
@@ -205,6 +210,7 @@ protected:
 
 
 	bool IsKeyboardEnabled;
+
 
 
 

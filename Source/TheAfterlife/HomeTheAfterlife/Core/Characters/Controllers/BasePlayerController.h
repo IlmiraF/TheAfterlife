@@ -42,6 +42,7 @@ protected:
 	void PreviousItem();
 
 	void Fire();
+	void EquipPrimaryItem();
 
 	void PunchAttack();
 	void KickAttack();

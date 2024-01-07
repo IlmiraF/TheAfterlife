@@ -34,6 +34,7 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ABasePlayerController::Fire);
 	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::NextItem);
 	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::PreviousItem);
+	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
 	//InputComponent->BindAction("Attack", EInputEvent::IE_Released, this, &ABasePlayerController::MeleeAttackFinish);
 }
 
@@ -138,6 +139,14 @@ void ABasePlayerController::Fire()
 	if(CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->Fire();
+	}
+}
+
+void ABasePlayerController::EquipPrimaryItem()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->EquipPrimaryItem();
 	}
 }
 

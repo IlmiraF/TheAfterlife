@@ -220,6 +220,11 @@ const UCharacterEquipmentComponent* ABaseCharacter::GetCharacterEquipmentCompone
 	return CharacterEquipmentComponent;
 }
 
+UCharacterEquipmentComponent* ABaseCharacter::GetCharacterEquipmentComponent_Mutable() const
+{
+	return CharacterEquipmentComponent;
+}
+
 void ABaseCharacter::Fire()
 {
 	CharacterEquipmentComponent->Fire();
@@ -258,6 +263,11 @@ void ABaseCharacter::OnDeath()
 	{
 		EnableRagdoll();
 	}
+}
+
+void ABaseCharacter::EquipPrimaryItem()
+{
+	CharacterEquipmentComponent->EquipItemInSlot(EEquipmentSlots::PRIMARY_ITEM_SLOT);
 }
 
 const FMantlingSettings& ABaseCharacter::GetMantlingSettings(float LedgeHeight) const

@@ -1,7 +1,9 @@
 #pragma once
+
 #include "CoreMinimal.h"
 #include "../../../../TheAfterlifeTypes.h"
 #include "Components/ActorComponent.h"
+#include <TheAfterlife/HomeTheAfterlife/Core/Actors/Equipment/Throwables/ThrowableItem.h>
 #include "CharacterEquipmentComponent.generated.h"
 
 typedef TArray<class AEquipableItem*, TInlineAllocator<(uint32)EEquipmentSlots::MAX>> TItemsArray;
@@ -31,6 +33,8 @@ public:
 
 	void AttachCurrentItemToEquippedSocket();
 
+	void LaunchCurrentThrowableItem();
+
 	void UnEquipCurrentItem();
 
 	void EquipNextItem();
@@ -45,6 +49,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
 	TMap<EEquipmentSlots, TSubclassOf<class AEquipableItem>> ItemsLoadout;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
+	TSet<EEquipmentSlots> IgnoreSlotsWhileSwitch;
 
 private:
 
@@ -67,7 +74,10 @@ private:
 	FDelegateHandle OnCurrentWeaponReloadedHandle;
 
 	AEquipableItem* CurrentEquippedItem;
+	AThrowableItem* CurrentThrowableItem;
+
 	EEquipmentSlots CurrentEquippedSlot;
+	EEquipmentSlots PreviousEquippedSlot;
 
 	bool bIsEquipping = false;
 
