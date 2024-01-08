@@ -14,6 +14,8 @@ public:
 
 	EEquipableItemType GetItemType() const;
 
+	UAnimMontage* GetCharacterEquipAnimMontage() const;
+
 	FName GetUnEquippedSocketName() const;
 	FName GetEquippedSocketName() const;
 

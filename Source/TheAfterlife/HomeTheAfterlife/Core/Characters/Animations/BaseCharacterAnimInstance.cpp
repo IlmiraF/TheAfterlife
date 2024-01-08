@@ -17,6 +17,7 @@ void UBaseCharacterAnimInstance::NativeBeginPlay()
 void UBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
+
 	if (!CachedBaseCharacter.IsValid())
 	{
 		return;
@@ -27,11 +28,21 @@ void UBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsFalling = CharacterMovement->IsFalling();
 	bIsCrouching = CharacterMovement->IsCrouching();
 	bIsOnLadder = CharacterMovement->IsOnLadder();
+
 	if (bIsOnLadder)
 	{
 		LadderSpeedRatio = CharacterMovement->GetLadderSpeedRatio();
 	}
 
 	const UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent();
+	if (CharacterEquipment == NULL)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Green, TEXT("PIZDA"));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Green, TEXT("ROFL"));
+	}
+	
 	CurrentEquippedItemType = CharacterEquipment->GetCurrentEquippedItemType();
 }

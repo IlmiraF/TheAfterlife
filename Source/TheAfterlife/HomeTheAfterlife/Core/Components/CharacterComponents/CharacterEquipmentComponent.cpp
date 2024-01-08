@@ -35,6 +35,7 @@ void UCharacterEquipmentComponent::Fire()
 
 void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 {	
+
 	if (!IsValid(ItemsArray[(uint32)Slot]))
 	{
 		return;
@@ -52,18 +53,18 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 
 	if (IsValid(CurrentEquippedItem))
 	{
-		//UAnimMontage* EquipMontage = CurrentEquippedItem->GetCharacterEquipAnimMontage();
-		//if (IsValid(EquipMontage))
-		//{
+		UAnimMontage* EquipMontage = CurrentEquippedItem->GetCharacterEquipAnimMontage();
+		if (IsValid(EquipMontage))
+		{
 		bIsEquipping = true;
 		UAnimInstance* CharacterAnimInstnce = CachedBaseCharacter->GetMesh()->GetAnimInstance();
-		//float EquipDuration = CharacterAnimInstnce->Montage_Play(EquipMontage, 1.0f, EMontagePlayReturnType::Duration);
-		//GetWorld()->GetTimerManager().SetTimer(EquipTimer, this, &UCharacterEquipmentComponent::EquipAnimationFinished, EquipDuration, false);
-	//}
-	//else
-	//{
-	//	AttachCurrentItemToEquippedSocket();
-	//}
+		float EquipDuration = CharacterAnimInstnce->Montage_Play(EquipMontage, 1.0f, EMontagePlayReturnType::Duration);
+		GetWorld()->GetTimerManager().SetTimer(EquipTimer, this, &UCharacterEquipmentComponent::EquipAnimationFinished, EquipDuration, false);
+	}
+	else
+	{
+		AttachCurrentItemToEquippedSocket();
+	}
 		CurrentEquippedSlot = Slot;
 	}
 

@@ -3,7 +3,7 @@
 #include <TheAfterlife/HomeTheAfterlife/Core/Actors/Projectiles/Projectile.h>
 
 void AThrowableItem::Throw()
-{
+{	
 	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("AThrowableItem::Throw only character can be an owner of a throwable"));
 	ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
 

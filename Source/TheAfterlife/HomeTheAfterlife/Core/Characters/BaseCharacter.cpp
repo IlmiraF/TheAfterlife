@@ -216,13 +216,24 @@ const AZipline* ABaseCharacter::GetAvailableZipline() const
 }
 
 const UCharacterEquipmentComponent* ABaseCharacter::GetCharacterEquipmentComponent() const
-{
+{	
+	if (CharacterEquipmentComponent == NULL)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Red, TEXT("PIZDA"));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Red, TEXT("ROFL"));
+	}
 	return CharacterEquipmentComponent;
+
+	//return NULL;
 }
 
 UCharacterEquipmentComponent* ABaseCharacter::GetCharacterEquipmentComponent_Mutable() const
 {
 	return CharacterEquipmentComponent;
+	//return NULL;
 }
 
 void ABaseCharacter::Fire()

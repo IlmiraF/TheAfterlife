@@ -145,7 +145,7 @@ void ABasePlayerController::Fire()
 void ABasePlayerController::EquipPrimaryItem()
 {
 	if (CachedBaseCharacter.IsValid())
-	{
+	{	
 		CachedBaseCharacter->EquipPrimaryItem();
 	}
 }

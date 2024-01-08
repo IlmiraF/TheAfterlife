@@ -83,4 +83,7 @@ private:
 
 	uint32 NextItemsArraySlotIndex(uint32 CurrentSlotIndex);
 	uint32 PreviousItemsArraySlotIndex(uint32 CurrentSlotIndex);
+
+
+	FTimerHandle EquipTimer;
 };
