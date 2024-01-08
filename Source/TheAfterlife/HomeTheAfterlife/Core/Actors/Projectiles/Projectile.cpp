@@ -19,5 +19,10 @@ void AProjectile::LaunchProjectile(FVector Diretion)
 {
     ProjectileMovementComponent->Velocity = Diretion * ProjectileMovementComponent->InitialSpeed;
     CollisionComponent->IgnoreActorWhenMoving(GetOwner(), true);
+    OnProjectileLaunched();
 
+}
+
+void AProjectile::OnProjectileLaunched()
+{
 }
