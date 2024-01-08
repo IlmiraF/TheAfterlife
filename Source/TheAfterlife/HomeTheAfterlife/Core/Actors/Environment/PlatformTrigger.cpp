@@ -41,7 +41,6 @@ void APlatformTrigger::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp
 
 	if (!bIsActivated && OverlappedPawns.Num() > 0)
 	{
-			//OtherPawn->Server_ActivatePlatformTrigger(this, true);
 		SetIsActivated(true);
 		bIsActivated = true;
 	}
@@ -56,11 +55,5 @@ void APlatformTrigger::OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedCompon
 	}
 
 	OverlappedPawns.RemoveSingleSwap(OtherPawn);
-
-	if (bIsActivated && OverlappedPawns.Num() == 0)
-	{
-			//OtherPawn->Server_ActivatePlatformTrigger(this, false);
-		SetIsActivated(false);
-		bIsActivated = false;
-	}
+	bIsActivated = false;
 }

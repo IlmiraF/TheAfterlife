@@ -1,13 +1,11 @@
 
 #include "PlatformBase.h"
 #include "Components/StaticMeshComponent.h"
-#include "PlatformTrigger.h"
+#include "Components/BoxComponent.h"
 
 APlatformBase::APlatformBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	//bReplicates = true;
-	SetReplicateMovement(true);
 	PlatformMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformMesh"));
 	SetRootComponent(PlatformMesh);
 }
@@ -15,71 +13,14 @@ APlatformBase::APlatformBase()
 void APlatformBase::BeginPlay()
 {
 	Super::BeginPlay();
-	if (IsValid(MovementCurve))
-	{
-		FOnTimelineFloatStatic OnTimelineUpdate;
-		OnTimelineUpdate.BindUFunction(this, FName("TickPlatformTimeline"));
-		PlatformTimeline.AddInterpFloat(MovementCurve, OnTimelineUpdate);
-
-		FOnTimelineEventStatic OnTimelineFinished;
-		OnTimelineFinished.BindUFunction(this, FName("OnPlatfromEndReached"));
-		PlatformTimeline.SetTimelineFinishedFunc(OnTimelineFinished);
-	}
-
-	if (PlatformBehavior == EPlatformBehavior::Loop)
-	{
-		MovePlatform();
-	}
-
-	StartLocation = GetActorLocation();
-	EndLocation = GetActorTransform().TransformPosition(EndPlatformLocation);
-
-	if (IsValid(PlatformTrigger))
-	{
-		PlatformTrigger->OnTriggerActivated.AddDynamic(this, &APlatformBase::OnPlatformTriggerActivated);
-	}
+	//TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &APlatformBase::OnTriggerOverlapBegin);
+	//TriggerBox->OnComponentEndOverlap.AddDynamic(this, &APlatformBase::OnTriggerOverlapEnd);
 }
 
-void APlatformBase::Tick(float DeltaTime)
+void APlatformBase::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Super::Tick(DeltaTime);
-	PlatformTimeline.TickTimeline(DeltaTime);
 }
 
-void APlatformBase::MovePlatform()
+void APlatformBase::OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (bIsMovingForward)
-	{
-		PlatformTimeline.Reverse();
-		bIsMovingForward = false;
-	}
-	else
-	{
-		PlatformTimeline.Play();
-		bIsMovingForward = true;
-	}
-}
-
-void APlatformBase::OnPlatformTriggerActivated(bool bIsActivated)
-{
-	MovePlatform();
-}
-
-void APlatformBase::TickPlatformTimeline(float Value)
-{
-	FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Value);
-	SetActorLocation(NewLocation);
-}
-
-void APlatformBase::OnPlatfromEndReached()
-{
-	if (PlatformBehavior == EPlatformBehavior::Loop)
-	{
-		MovePlatform();
-	}
-	else if (ReturnTime > 0.0f)
-	{
-		GetWorld()->GetTimerManager().SetTimer(ReturnTimer, this, &APlatformBase::MovePlatform, ReturnTime, false);
-		return;
-	}
 }
