@@ -17,16 +17,25 @@ void AThrowableItem::Throw()
 	FRotator PlayerViewRotation;
 
 	Controller->GetPlayerViewPoint(PlayerViewPoint, PlayerViewRotation);
+	FTransform PlayerViewTransform(PlayerViewRotation, PlayerViewPoint);
+
+	Controller->GetPlayerViewPoint(PlayerViewPoint, PlayerViewRotation);
 
 	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
+	FVector ViewUpVector = PlayerViewRotation.RotateVector(FVector::UpVector);
+	
+	FVector LaunchDirection = ViewDirection + FMath::Tan(FMath::DegreesToRadians(ThrowAngle)) * ViewUpVector;
 
-	FVector SpawnLocation = PlayerViewPoint + ViewDirection * 100.0f;
+	FVector ThrowableSocketLoaction = CharacterOwner->GetMesh()->GetSocketLocation("hand_right_collision");
+	FVector SocketInViewSpace = PlayerViewTransform.InverseTransformPosition(ThrowableSocketLoaction);
+
+	FVector SpawnLocation = PlayerViewPoint + ViewDirection * SocketInViewSpace.X;
 
 	AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, SpawnLocation, FRotator::ZeroRotator);
 
 	if (IsValid(Projectile))
 	{
 		Projectile->SetOwner(GetOwner());
-		Projectile->LaunchProjectile(ViewDirection);
+		Projectile->LaunchProjectile(LaunchDirection.GetSafeNormal());
 	}
 }
