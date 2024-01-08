@@ -43,7 +43,6 @@ void AMovingPlatform::MovePlatform()
 void AMovingPlatform::BeginPlay()
 {
 	Super::BeginPlay();
-	SetActorTickEnabled(false);
 	if (IsValid(MovementCurve))
 	{
 		FOnTimelineFloatStatic OnTimelineUpdate;
