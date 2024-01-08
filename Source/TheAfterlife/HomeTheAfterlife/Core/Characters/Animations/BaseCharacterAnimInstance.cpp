@@ -35,14 +35,6 @@ void UBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 
 	const UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent();
-	if (CharacterEquipment == NULL)
-	{
-		GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Green, TEXT("PIZDA"));
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Green, TEXT("ROFL"));
-	}
 	
 	CurrentEquippedItemType = CharacterEquipment->GetCurrentEquippedItemType();
 }
