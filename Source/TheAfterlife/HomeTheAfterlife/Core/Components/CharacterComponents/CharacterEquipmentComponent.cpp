@@ -20,6 +20,11 @@ EEquipableItemType UCharacterEquipmentComponent::GetCurrentEquippedItemType() co
 	return Result;
 }
 
+AMeleeWeaponItem* UCharacterEquipmentComponent::GetCurrentMeleeWeaponItem() const
+{
+	return CurrentMeleeWeaponItem;
+}
+
 bool UCharacterEquipmentComponent::IsEquipping() const
 {
 	return bIsEquipping;
@@ -45,6 +50,7 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 	CurrentEquippedItem = ItemsArray[(uint32)Slot];
 	CurrentEquippedWeapon = Cast<ARangeWeaponItem>(CurrentEquippedItem);
 	CurrentThrowableItem = Cast<AThrowableItem>(CurrentEquippedItem);
+	CurrentMeleeWeaponItem = Cast<AMeleeWeaponItem>(CurrentEquippedItem);
 
 	if (IsValid(CurrentEquippedItem))
 	{

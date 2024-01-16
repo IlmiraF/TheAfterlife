@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../../../../TheAfterlifeTypes.h"
+#include <TheAfterlife/HomeTheAfterlife/Core/Characters/BaseCharacter.h>
 #include "EquipableItem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquipmentStateChanged, bool, bIsEquipped);
@@ -13,6 +14,8 @@ class THEAFTERLIFE_API AEquipableItem : public AActor
 	GENERATED_BODY()
 
 public:
+
+	virtual void SetOwner(AActor* NewOwner) override;
 
 	EEquipableItemType GetItemType() const;
 
@@ -40,4 +43,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipable item")
 	UAnimMontage* CharacterEquipAnimMontage;
+
+	ABaseCharacter* GetCharacterOwner() const;
+
+private:
+
+	TWeakObjectPtr<ABaseCharacter> CachedCharacterOwner;
 };

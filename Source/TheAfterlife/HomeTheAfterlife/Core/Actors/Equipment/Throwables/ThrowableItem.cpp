@@ -4,8 +4,12 @@
 
 void AThrowableItem::Throw()
 {	
-	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("AThrowableItem::Throw only character can be an owner of a throwable"));
-	ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
+	
+	ABaseCharacter* CharacterOwner = GetCharacterOwner();
+	if (!IsValid(CharacterOwner))
+	{
+		return;
+	}
 
 	APlayerController* Controller = CharacterOwner->GetController<APlayerController>();
 	if (!IsValid(Controller))

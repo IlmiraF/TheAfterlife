@@ -144,6 +144,9 @@ public:
 	void MeleeAttackStart();
 	void MeleeAttackFinish();
 
+	void HandsMeleeAttack();
+	void LegsMeleeAttack();
+
 	UFUNCTION()
 	void OnAttackHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 

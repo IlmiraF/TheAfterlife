@@ -1,6 +1,21 @@
 #include "EquipableItem.h"
+#include <TheAfterlife/HomeTheAfterlife/Core/Characters/BaseCharacter.h>
 
 
+void AEquipableItem::SetOwner(AActor* NewOwner)
+{
+	Super::SetOwner(NewOwner);
+
+	if (IsValid(NewOwner))
+	{
+		checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("AEquipableItem::SetOwner() only character can be an owner of an equipable item"));
+		CachedCharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
+	}
+	else
+	{
+		CachedCharacterOwner = nullptr;
+	}
+}
 
 EEquipableItemType AEquipableItem::GetItemType() const
 {
@@ -36,4 +51,9 @@ void AEquipableItem::UnEquip()
 	{
 		OnEquipmentStateChanged.Broadcast(false);
 	}
+}
+
+ABaseCharacter* AEquipableItem::GetCharacterOwner() const
+{
+	return CachedCharacterOwner.IsValid() ? CachedCharacterOwner.Get() : nullptr;
 }

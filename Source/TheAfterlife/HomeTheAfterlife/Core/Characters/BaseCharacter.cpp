@@ -15,6 +15,7 @@
 #include "../Components/WeaponComponents/MeleeCombatComponent.h"
 #include "Components/BoxComponent.h"
 #include "Engine/DamageEvents.h"
+#include "../Actors\Equipment\Weapons\MeleeWeaponItem.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -218,11 +219,13 @@ const AZipline* ABaseCharacter::GetAvailableZipline() const
 const UCharacterEquipmentComponent* ABaseCharacter::GetCharacterEquipmentComponent() const
 {	
 	return CharacterEquipmentComponent;
+	//return nullptr;
 }
 
 UCharacterEquipmentComponent* ABaseCharacter::GetCharacterEquipmentComponent_Mutable() const
 {
 	return CharacterEquipmentComponent;
+	//return nullptr;
 }
 
 void ABaseCharacter::Fire()
@@ -368,6 +371,26 @@ void ABaseCharacter::OnAttackHit(UPrimitiveComponent* HitComponent, AActor* Othe
 	if (PunchAudioComponent && !PunchAudioComponent->IsPlaying())
 	{
 		PunchAudioComponent->Play(0.f);
+	}
+}
+
+void ABaseCharacter::HandsMeleeAttack()
+{
+	AMeleeWeaponItem* CurrentMeleeWeaponItem = CharacterEquipmentComponent->GetCurrentMeleeWeaponItem();
+	if (IsValid(CurrentMeleeWeaponItem))
+	{	
+		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Blue, TEXT("EMeleeAttackTypes::HANDS"));
+		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::HANDS);
+	}
+}
+
+void ABaseCharacter::LegsMeleeAttack()
+{
+	AMeleeWeaponItem* CurrentMeleeWeaponItem = CharacterEquipmentComponent->GetCurrentMeleeWeaponItem();
+	if (IsValid(CurrentMeleeWeaponItem))
+	{	
+		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Blue, TEXT("EMeleeAttackTypes::LEGS"));
+		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::LEGS);
 	}
 }
 

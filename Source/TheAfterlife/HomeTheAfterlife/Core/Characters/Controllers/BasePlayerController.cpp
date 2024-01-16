@@ -29,8 +29,8 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
 
 
-	InputComponent->BindAction("Punch", EInputEvent::IE_Pressed, this, &ABasePlayerController::PunchAttack);
-	InputComponent->BindAction("Kick", EInputEvent::IE_Pressed, this, &ABasePlayerController::KickAttack);
+	InputComponent->BindAction("Punch", EInputEvent::IE_Pressed, this, &ABasePlayerController::HandsMeleeAttack);
+	InputComponent->BindAction("Kick", EInputEvent::IE_Pressed, this, &ABasePlayerController::LegsMeleeAttack);
 	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ABasePlayerController::Fire);
 	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::NextItem);
 	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::PreviousItem);
@@ -163,6 +163,22 @@ void ABasePlayerController::KickAttack()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->KickAttack();
+	}
+}
+
+void ABasePlayerController::HandsMeleeAttack()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->HandsMeleeAttack();
+	}
+}
+
+void ABasePlayerController::LegsMeleeAttack()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->LegsMeleeAttack();
 	}
 }
 

@@ -49,5 +49,8 @@ protected:
 	//void MeleeAttackStart();
 	//void MeleeAttackFinish();
 
+	void HandsMeleeAttack();
+	void LegsMeleeAttack();
+
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
 };
