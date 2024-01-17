@@ -35,20 +35,21 @@ void AMeleeWeaponItem::StartAttack(EMeleeAttackTypes AttackType)
 void AMeleeWeaponItem::SetIsHitRegistrationEnabled(bool bIsRegistrationEnabled)
 {
 	HitActors.Empty();
-	//for (UMeleeHitRegistrator* HitRegistrator : HitRegistrators)
-	//{
-	//	HitRegistrator->SetIsHitRegistrationEnabled(bIsRegistrationEnabled);
-	//}
+	for (UMeleeHitRegistrator* HitRegistrator : HitRegistrators)
+	{
+		HitRegistrator->SetIsHitRegistrationEnabled(bIsRegistrationEnabled);
+	}
 }
 
 void AMeleeWeaponItem::BeginPlay()
 {
 	Super::BeginPlay();
-	//GetComponents<UMeleeHitRegistrator>(HitRegistrators);
-	//for (UMeleeHitRegistrator* HitRegistrator : HitRegistrators)
-	//{
-	//	HitRegistrator->OnMeleeHitRegistred.AddUFunction(this, FName("ProcessHit"));
-	//}
+
+	GetComponents<UMeleeHitRegistrator>(HitRegistrators);
+	for (UMeleeHitRegistrator* HitRegistrator : HitRegistrators)
+	{
+		HitRegistrator->OnMeleeHitRegistred.AddUFunction(this, FName("ProcessHit"));
+	}
 }
 
 void AMeleeWeaponItem::ProcessHit(const FHitResult& HitResult, const FVector& HitDirection)

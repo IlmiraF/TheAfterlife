@@ -1,37 +1,61 @@
 #include "AttackStartNotifyState.h"
 #include "../../Core\Characters\BaseCharacter.h"
 #include "Engine.h"
+#include <TheAfterlife/HomeTheAfterlife/Core/Actors/Equipment/Weapons/MeleeWeaponItem.h>
+#include "../../Core\Components\CharacterComponents\CharacterEquipmentComponent.h"
 
 void UAttackStartNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {
-	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Green, __FUNCTION__);
 
 	if (MeshComp == NULL || MeshComp->GetOwner() == NULL)
 	{	
 		return;
 	}
 
-	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(MeshComp->GetOwner());
+	//ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(MeshComp->GetOwner());
+	//
+	//if (BaseCharacter != NULL)
+	//{
+	//	BaseCharacter->MeleeAttackStart();
+	//}
 
-	if (BaseCharacter != NULL)
+	ABaseCharacter* CharacterOwner = Cast<ABaseCharacter>(MeshComp->GetOwner());
+	if (!IsValid(CharacterOwner))
 	{
-		BaseCharacter->MeleeAttackStart();
+		return;
+	}
+
+	AMeleeWeaponItem* MeleeWeapon = CharacterOwner->GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem();
+	if (IsValid(MeleeWeapon))
+	{
+		MeleeWeapon->SetIsHitRegistrationEnabled(true);
 	}
 }
 
 void UAttackStartNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
-	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Blue, __FUNCTION__);
 
 	if (MeshComp == NULL || MeshComp->GetOwner() == NULL)
 	{
 		return;
 	}
 
-	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(MeshComp->GetOwner());
+	//ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(MeshComp->GetOwner());
+	//
+	//if (BaseCharacter != NULL)
+	//{
+	//	BaseCharacter->MeleeAttackFinish();
+	//}
 
-	if (BaseCharacter != NULL)
+	ABaseCharacter* CharacterOwner = Cast<ABaseCharacter>(MeshComp->GetOwner());
+	if (!IsValid(CharacterOwner))
 	{
-		BaseCharacter->MeleeAttackFinish();
+		return;
+	}
+
+	AMeleeWeaponItem* MeleeWeapon = CharacterOwner->GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem();
+	if (IsValid(MeleeWeapon))
+	{
+		MeleeWeapon->SetIsHitRegistrationEnabled(false);
 	}
 }
