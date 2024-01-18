@@ -46,9 +46,15 @@ struct FMeleeCollisionProfile
 
 	FMeleeCollisionProfile()
 	{
-		Enabled = FName(TEXT("Weapon"));
+		Enabled = FName(TEXT("Melee"));
 		Disabled = FName(TEXT("NoCollision"));
 	}
+
+	//FMeleeCollisionProfile()
+	//{
+	//	Enabled = FName(TEXT("Weapon"));
+	//	Disabled = FName(TEXT("NoCollision"));
+	//}
 };
 
 USTRUCT(BlueprintType)
@@ -201,6 +207,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Collisions")
 	class UBoxComponent* RightHandCollision;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
+	class UMeleeHitRegistrator* LeftMeleeHitRegistrator;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
+	class UMeleeHitRegistrator* RightMeleeHitRegistrator;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Audio")
 	class USoundBase* PunchSoundBase;

@@ -31,6 +31,20 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	MeleeCombatComponent = CreateDefaultSubobject<UMeleeCombatComponent>(TEXT("Melee combat Component"));
 	CharacterEquipmentComponent = CreateDefaultSubobject<UCharacterEquipmentComponent>(TEXT("Character Equipment Component"));
 
+	LeftMeleeHitRegistrator = CreateDefaultSubobject<UMeleeHitRegistrator>(TEXT("LeftMeleeHitRegistrator"));
+	RightMeleeHitRegistrator = CreateDefaultSubobject<UMeleeHitRegistrator>(TEXT("RightMeleeHitRegistrator"));
+
+	LeftMeleeHitRegistrator->SetupAttachment(GetRootComponent());
+	LeftMeleeHitRegistrator->SetHiddenInGame(false);
+	LeftMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
+	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
+
+	RightMeleeHitRegistrator->SetupAttachment(GetRootComponent());
+	RightMeleeHitRegistrator->SetHiddenInGame(false);
+	RightMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
+	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
+
+
 	LeftHandCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftHandCollisionBox"));
 	RightHandCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("RightHandCollisionBox"));
 
@@ -304,8 +318,6 @@ void ABaseCharacter::AttackInput(EAttackType AttackType)
 
 		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 
-		
-
 		switch (AttackType)
 		{
 		case EAttackType::MELEE_FIST:
@@ -347,21 +359,34 @@ void ABaseCharacter::AttackInput(EAttackType AttackType)
 
 void ABaseCharacter::MeleeAttackStart()
 {
-	LeftHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
-	LeftHandCollision->SetNotifyRigidBodyCollision(true);
+	//LeftHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
+	//LeftHandCollision->SetNotifyRigidBodyCollision(true);
+	//
+	//RightHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
+	//RightHandCollision->SetNotifyRigidBodyCollision(true);
 
-	RightHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
-	RightHandCollision->SetNotifyRigidBodyCollision(true);
+	LeftMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
+	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(true);
+
+	RightMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
+	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(true);
 }
+
 
 void ABaseCharacter::MeleeAttackFinish()
 {
 
-	LeftHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
-	LeftHandCollision->SetNotifyRigidBodyCollision(false);
+	//LeftHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
+	//LeftHandCollision->SetNotifyRigidBodyCollision(false);
+	//
+	//RightHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
+	//RightHandCollision->SetNotifyRigidBodyCollision(false);
 
-	RightHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
-	RightHandCollision->SetNotifyRigidBodyCollision(false);
+	LeftMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
+	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
+
+	RightMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
+	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
 }
 
 void ABaseCharacter::OnAttackHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -379,6 +404,12 @@ void ABaseCharacter::HandsMeleeAttack()
 	AMeleeWeaponItem* CurrentMeleeWeaponItem = CharacterEquipmentComponent->GetCurrentMeleeWeaponItem();
 	if (IsValid(CurrentMeleeWeaponItem))
 	{	
+
+		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+
+		LeftMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "hand_left_collision");
+		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "hand_right_collision");
+
 		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Blue, TEXT("EMeleeAttackTypes::HANDS"));
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::HANDS);
 	}
@@ -389,6 +420,11 @@ void ABaseCharacter::LegsMeleeAttack()
 	AMeleeWeaponItem* CurrentMeleeWeaponItem = CharacterEquipmentComponent->GetCurrentMeleeWeaponItem();
 	if (IsValid(CurrentMeleeWeaponItem))
 	{	
+		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+
+		LeftMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "foot_left_collision");
+		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "foot_right_collision");
+
 		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Blue, TEXT("EMeleeAttackTypes::LEGS"));
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::LEGS);
 	}
