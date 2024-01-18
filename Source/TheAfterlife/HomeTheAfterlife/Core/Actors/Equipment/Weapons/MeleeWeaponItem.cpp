@@ -17,12 +17,18 @@ void AMeleeWeaponItem::StartAttack(EMeleeAttackTypes AttackType)
 
 	HitActors.Empty();
 	CurrentAttack = Attacks.Find(AttackType);
+
 	if (CurrentAttack && IsValid(CurrentAttack->AttackMontage))
 	{
 		UAnimInstance* CharacterAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
 		if (IsValid(CharacterAnimInstance))
-		{
+		{	
+			int32 RandomIndex = FMath::RandRange(0, CurrentAttack->NameSections.Num() - 1);
+			FName RandomElement = CurrentAttack->NameSections[RandomIndex];
+
 			float Duration = CharacterAnimInstance->Montage_Play(CurrentAttack->AttackMontage, 1.0f, EMontagePlayReturnType::Duration);
+			CharacterAnimInstance->Montage_JumpToSection(RandomElement, CurrentAttack->AttackMontage);
+	
 			GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AMeleeWeaponItem::OnAttackTimerElapsed, Duration, false);
 		}
 		else

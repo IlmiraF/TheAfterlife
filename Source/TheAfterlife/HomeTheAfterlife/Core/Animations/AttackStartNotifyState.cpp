@@ -12,13 +12,6 @@ void UAttackStartNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 		return;
 	}
 
-	//ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(MeshComp->GetOwner());
-	//
-	//if (BaseCharacter != NULL)
-	//{
-	//	BaseCharacter->MeleeAttackStart();
-	//}
-
 	ABaseCharacter* CharacterOwner = Cast<ABaseCharacter>(MeshComp->GetOwner());
 	if (!IsValid(CharacterOwner))
 	{
@@ -29,6 +22,7 @@ void UAttackStartNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 	if (IsValid(MeleeWeapon))
 	{
 		MeleeWeapon->SetIsHitRegistrationEnabled(true);
+		CharacterOwner->MeleeAttackStart();
 	}
 }
 
@@ -40,13 +34,6 @@ void UAttackStartNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimS
 		return;
 	}
 
-	//ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(MeshComp->GetOwner());
-	//
-	//if (BaseCharacter != NULL)
-	//{
-	//	BaseCharacter->MeleeAttackFinish();
-	//}
-
 	ABaseCharacter* CharacterOwner = Cast<ABaseCharacter>(MeshComp->GetOwner());
 	if (!IsValid(CharacterOwner))
 	{
@@ -57,5 +44,6 @@ void UAttackStartNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimS
 	if (IsValid(MeleeWeapon))
 	{
 		MeleeWeapon->SetIsHitRegistrationEnabled(false);
+		CharacterOwner->MeleeAttackFinish();
 	}
 }

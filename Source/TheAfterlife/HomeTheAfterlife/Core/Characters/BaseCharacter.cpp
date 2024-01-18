@@ -28,7 +28,6 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->bCastDynamicShadow = true;
 
 	CharacterAttributesComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("Attribute Component"));
-	MeleeCombatComponent = CreateDefaultSubobject<UMeleeCombatComponent>(TEXT("Melee combat Component"));
 	CharacterEquipmentComponent = CreateDefaultSubobject<UCharacterEquipmentComponent>(TEXT("Character Equipment Component"));
 
 	LeftMeleeHitRegistrator = CreateDefaultSubobject<UMeleeHitRegistrator>(TEXT("LeftMeleeHitRegistrator"));
@@ -44,23 +43,8 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	RightMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
 	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
 
-
-	LeftHandCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftHandCollisionBox"));
-	RightHandCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("RightHandCollisionBox"));
-
-	LeftHandCollision->SetupAttachment(GetRootComponent());
-	LeftHandCollision->SetHiddenInGame(false);
-	LeftHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
-	LeftHandCollision->SetNotifyRigidBodyCollision(false);
-
-	RightHandCollision->SetupAttachment(GetRootComponent());
-	RightHandCollision->SetHiddenInGame(false);
-	RightHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
-	RightHandCollision->SetNotifyRigidBodyCollision(false);
-
 	PunchAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PunchAudioComponent"));
 	PunchAudioComponent->SetupAttachment(GetRootComponent());
-
 }
 
 void ABaseCharacter::Jump()
@@ -233,13 +217,11 @@ const AZipline* ABaseCharacter::GetAvailableZipline() const
 const UCharacterEquipmentComponent* ABaseCharacter::GetCharacterEquipmentComponent() const
 {	
 	return CharacterEquipmentComponent;
-	//return nullptr;
 }
 
 UCharacterEquipmentComponent* ABaseCharacter::GetCharacterEquipmentComponent_Mutable() const
 {
 	return CharacterEquipmentComponent;
-	//return nullptr;
 }
 
 void ABaseCharacter::Fire()
@@ -260,9 +242,6 @@ void ABaseCharacter::PreviousItem()
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	LeftHandCollision->OnComponentHit.AddDynamic(this, &ABaseCharacter::OnAttackHit);
-	RightHandCollision->OnComponentHit.AddDynamic(this, &ABaseCharacter::OnAttackHit);
 
 	PunchAudioComponent->SetSound(PunchSoundBase);
 }
@@ -298,73 +277,8 @@ void ABaseCharacter::EnableRagdoll()
 	GetMesh()->SetSimulatePhysics(true);
 }
 
-void ABaseCharacter::PunchAttack()
-{
-	AttackInput(EAttackType::MELEE_FIST);
-}
-
-void ABaseCharacter::KickAttack()
-{
-	AttackInput(EAttackType::MELEE_KICK);
-}
-
-void ABaseCharacter::AttackInput(EAttackType AttackType)
-{
-	if (PlayerAttackDataTable)
-	{
-		static const FString ContextString(TEXT("Player Attack Montage Context"));
-
-		FName AttackRowKey;
-
-		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
-
-		switch (AttackType)
-		{
-		case EAttackType::MELEE_FIST:
-
-			AttackRowKey = FName(TEXT("Punch"));
-
-			LeftHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "hand_left_collision");
-			RightHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "hand_right_collision");
-
-			IsKeyboardEnabled = true;
-
-			break;
-
-		case EAttackType::MELEE_KICK:
-
-			AttackRowKey = FName(TEXT("Kick"));
-
-			LeftHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "foot_left_collision");
-			RightHandCollision->AttachToComponent(GetMesh(), AttachmentRules, "foot_right_collision");
-
-			IsKeyboardEnabled = false;
-
-			break;
-
-		default:
-			break;
-		}
-
-		AttackMontage = PlayerAttackDataTable->FindRow<FPlayerAttackMontage>(AttackRowKey, ContextString, true);
-
-		if (AttackMontage)
-		{
-			int MontageSectionIndex = rand() % AttackMontage->AnimSectionCount + 1;
-			FString MontageSection = "Start_" + FString::FromInt(MontageSectionIndex);
-			PlayAnimMontage(AttackMontage->Montage, 1.0f, FName(MontageSection));
-		}
-	}
-}
-
 void ABaseCharacter::MeleeAttackStart()
 {
-	//LeftHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
-	//LeftHandCollision->SetNotifyRigidBodyCollision(true);
-	//
-	//RightHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
-	//RightHandCollision->SetNotifyRigidBodyCollision(true);
-
 	LeftMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
 	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(true);
 
@@ -372,16 +286,8 @@ void ABaseCharacter::MeleeAttackStart()
 	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(true);
 }
 
-
 void ABaseCharacter::MeleeAttackFinish()
 {
-
-	//LeftHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
-	//LeftHandCollision->SetNotifyRigidBodyCollision(false);
-	//
-	//RightHandCollision->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
-	//RightHandCollision->SetNotifyRigidBodyCollision(false);
-
 	LeftMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
 	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
 
@@ -389,29 +295,21 @@ void ABaseCharacter::MeleeAttackFinish()
 	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
 }
 
-void ABaseCharacter::OnAttackHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-{
-	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Yellow, Hit.GetActor()->GetName());
-
-	if (PunchAudioComponent && !PunchAudioComponent->IsPlaying())
-	{
-		PunchAudioComponent->Play(0.f);
-	}
-}
-
 void ABaseCharacter::HandsMeleeAttack()
 {
 	AMeleeWeaponItem* CurrentMeleeWeaponItem = CharacterEquipmentComponent->GetCurrentMeleeWeaponItem();
 	if (IsValid(CurrentMeleeWeaponItem))
 	{	
-
 		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 
 		LeftMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "hand_left_collision");
 		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "hand_right_collision");
 
-		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Blue, TEXT("EMeleeAttackTypes::HANDS"));
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::HANDS);
+
+		IsKeyboardEnabled = true;
+
+		PlayAudio(PunchAudioComponent);
 	}
 }
 
@@ -425,8 +323,19 @@ void ABaseCharacter::LegsMeleeAttack()
 		LeftMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "foot_left_collision");
 		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "foot_right_collision");
 
-		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Blue, TEXT("EMeleeAttackTypes::LEGS"));
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::LEGS);
+
+		IsKeyboardEnabled = false;
+
+		PlayAudio(PunchAudioComponent);
+	}
+}
+
+void ABaseCharacter::PlayAudio(UAudioComponent* AudioComponent)
+{
+	if (AudioComponent && !AudioComponent->IsPlaying())
+	{
+		AudioComponent->Play(0.f);
 	}
 }
 

@@ -22,6 +22,9 @@ struct FMeleeAttackDescription
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Melee attack")
 	class UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Melee attack")
+	TArray<FName> NameSections;
 };
 
 UCLASS(Blueprintable)

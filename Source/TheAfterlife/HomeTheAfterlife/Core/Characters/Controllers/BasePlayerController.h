@@ -44,11 +44,6 @@ protected:
 	void Fire();
 	void EquipPrimaryItem();
 
-	void PunchAttack();
-	void KickAttack();
-	//void MeleeAttackStart();
-	//void MeleeAttackFinish();
-
 	void HandsMeleeAttack();
 	void LegsMeleeAttack();
 

@@ -5,17 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/AudioComponent.h"
-
 #include "Engine/DataTable.h"
-
 #include "BaseCharacter.generated.h"
-
-UENUM(BlueprintType)
-enum class EAttackType : uint8
-{
-	MELEE_FIST UMETA(DisplayName = "Melee-Fist"),
-	MELEE_KICK UMETA(DisplayName = "Melee-Kick")
-};
 
 
 USTRUCT(BlueprintType)
@@ -49,12 +40,6 @@ struct FMeleeCollisionProfile
 		Enabled = FName(TEXT("Melee"));
 		Disabled = FName(TEXT("NoCollision"));
 	}
-
-	//FMeleeCollisionProfile()
-	//{
-	//	Enabled = FName(TEXT("Weapon"));
-	//	Disabled = FName(TEXT("NoCollision"));
-	//}
 };
 
 USTRUCT(BlueprintType)
@@ -140,21 +125,13 @@ public:
 	void NextItem();
 	void PreviousItem();
 
-
 	void EquipPrimaryItem();
-
-	void AttackInput(EAttackType AttackType);
-	void PunchAttack();
-	void KickAttack();
 
 	void MeleeAttackStart();
 	void MeleeAttackFinish();
 
 	void HandsMeleeAttack();
 	void LegsMeleeAttack();
-
-	UFUNCTION()
-	void OnAttackHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UFUNCTION(BlueprintCallable)
 	void SetIsKeyboardEnabled(bool Enabled);
@@ -192,21 +169,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
 	class UAnimMontage* MeleeCombatMontage;
 
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Attributes")
 	class UCurveFloat* FallDamageCurve;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
 	class UCharacterEquipmentComponent* CharacterEquipmentComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
-	UMeleeCombatComponent* MeleeCombatComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Collisions")
-	class UBoxComponent* LeftHandCollision;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Collisions")
-	class UBoxComponent* RightHandCollision;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
 	class UMeleeHitRegistrator* LeftMeleeHitRegistrator;
@@ -223,11 +190,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
 	float AnimationVariable;
 
-
 	bool IsKeyboardEnabled;
-
-
-
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
@@ -239,12 +202,11 @@ private:
 
 	UAudioComponent* PunchAudioComponent;
 
-	EAttackType CurrnetAttack;
-
 	FPlayerAttackMontage* AttackMontage;
 
 	bool IsAnimationBlended;
 
 	FMeleeCollisionProfile MeleeCollisionProfile;
 
+	void PlayAudio(UAudioComponent* AudioComponent);
 };

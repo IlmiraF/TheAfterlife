@@ -35,7 +35,6 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::NextItem);
 	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::PreviousItem);
 	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
-	//InputComponent->BindAction("Attack", EInputEvent::IE_Released, this, &ABasePlayerController::MeleeAttackFinish);
 }
 
 void ABasePlayerController::MoveForward(float value)
@@ -150,22 +149,6 @@ void ABasePlayerController::EquipPrimaryItem()
 	}
 }
 
-void ABasePlayerController::PunchAttack()
-{
-	if (CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->PunchAttack();
-	}
-}
-
-void ABasePlayerController::KickAttack()
-{
-	if (CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->KickAttack();
-	}
-}
-
 void ABasePlayerController::HandsMeleeAttack()
 {
 	if (CachedBaseCharacter.IsValid())
@@ -181,19 +164,3 @@ void ABasePlayerController::LegsMeleeAttack()
 		CachedBaseCharacter->LegsMeleeAttack();
 	}
 }
-
-//void ABasePlayerController::MeleeAttackStart()
-//{
-//	if (CachedBaseCharacter.IsValid())
-//	{
-//		CachedBaseCharacter->MeleeAttackStart();
-//	}
-//}
-//
-//void ABasePlayerController::MeleeAttackFinish()
-//{
-//	if (CachedBaseCharacter.IsValid())
-//	{	
-//		CachedBaseCharacter->MeleeAttackFinish();
-//	}
-//}

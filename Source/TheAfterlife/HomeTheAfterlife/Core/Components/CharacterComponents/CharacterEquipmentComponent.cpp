@@ -12,9 +12,9 @@ EEquipableItemType UCharacterEquipmentComponent::GetCurrentEquippedItemType() co
 {
 	EEquipableItemType Result = EEquipableItemType::NONE;
 
-	if (IsValid(CurrentEquippedItem))
+	if (IsValid(CurrentEquippedWeapon))
 	{
-		Result = CurrentEquippedItem->GetItemType();
+		Result = CurrentEquippedWeapon->GetItemType();
 	}
 
 	return Result;
