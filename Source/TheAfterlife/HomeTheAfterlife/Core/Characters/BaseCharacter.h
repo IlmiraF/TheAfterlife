@@ -133,6 +133,8 @@ public:
 	void HandsMeleeAttack();
 	void LegsMeleeAttack();
 
+	void ThrowBomb();
+
 	UFUNCTION(BlueprintCallable)
 	void SetIsKeyboardEnabled(bool Enabled);
 

@@ -331,6 +331,21 @@ void ABaseCharacter::LegsMeleeAttack()
 	}
 }
 
+void ABaseCharacter::ThrowBomb()
+{
+	if (CharacterEquipmentComponent->IsEquipping())
+	{
+		return;
+	}
+
+	AThrowableItem* CurrentThrowableItem = CharacterEquipmentComponent->GetCurrentThrowableItem();
+
+	if (IsValid(CurrentThrowableItem))
+	{
+		CurrentThrowableItem->StartThrow();
+	}
+}
+
 void ABaseCharacter::PlayAudio(UAudioComponent* AudioComponent)
 {
 	if (AudioComponent && !AudioComponent->IsPlaying())

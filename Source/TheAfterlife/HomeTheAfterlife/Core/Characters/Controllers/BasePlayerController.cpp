@@ -34,7 +34,8 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ABasePlayerController::Fire);
 	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::NextItem);
 	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::PreviousItem);
-	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
+	//InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
+	InputComponent->BindAction("ThrowBomb", EInputEvent::IE_Pressed, this, &ABasePlayerController::ThrowBomb);
 }
 
 void ABasePlayerController::MoveForward(float value)
@@ -120,7 +121,7 @@ void ABasePlayerController::InteractWithZipline()
 void ABasePlayerController::NextItem()
 {
 	if (CachedBaseCharacter.IsValid())
-	{
+	{	
 		CachedBaseCharacter->NextItem();
 	}
 }
@@ -128,7 +129,7 @@ void ABasePlayerController::NextItem()
 void ABasePlayerController::PreviousItem()
 {
 	if (CachedBaseCharacter.IsValid())
-	{
+	{	
 		CachedBaseCharacter->PreviousItem();
 	}
 }
@@ -152,7 +153,7 @@ void ABasePlayerController::EquipPrimaryItem()
 void ABasePlayerController::HandsMeleeAttack()
 {
 	if (CachedBaseCharacter.IsValid())
-	{
+	{	
 		CachedBaseCharacter->HandsMeleeAttack();
 	}
 }
@@ -160,7 +161,15 @@ void ABasePlayerController::HandsMeleeAttack()
 void ABasePlayerController::LegsMeleeAttack()
 {
 	if (CachedBaseCharacter.IsValid())
-	{
+	{	
 		CachedBaseCharacter->LegsMeleeAttack();
+	}
+}
+
+void ABasePlayerController::ThrowBomb()
+{
+	if (CachedBaseCharacter.IsValid())
+	{	
+		CachedBaseCharacter->ThrowBomb();
 	}
 }

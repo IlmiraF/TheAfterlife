@@ -2,11 +2,28 @@
 #include <TheAfterlife/HomeTheAfterlife/Core/Characters/BaseCharacter.h>
 #include <TheAfterlife/HomeTheAfterlife/Core/Actors/Projectiles/Projectile.h>
 
+void AThrowableItem::StartThrow()
+{
+	if (CanThrow() == false)
+	{
+		return;
+	}
+
+	ABaseCharacter* CharacterOwner = GetCharacterOwner();
+
+	CharacterOwner->PlayAnimMontage(ThrowItemMontage);
+	//PlayAnimMontage(ThrowItemMontage);
+}
+
 void AThrowableItem::Throw()
 {	
-	
 	ABaseCharacter* CharacterOwner = GetCharacterOwner();
 	if (!IsValid(CharacterOwner))
+	{
+		return;
+	}
+
+	if (!CanThrow())
 	{
 		return;
 	}
@@ -42,4 +59,22 @@ void AThrowableItem::Throw()
 		Projectile->SetOwner(GetOwner());
 		Projectile->LaunchProjectile(LaunchDirection.GetSafeNormal());
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("йнкхвеярбн: %d"), GetAmmo()));
+
+	SetAmmo(GetAmmo() - 1);
+}
+
+int32 AThrowableItem::GetAmmo() const
+{
+	return CurrentAmmo;
+}
+
+void AThrowableItem::SetAmmo(int32 NewAmmo)
+{
+	CurrentAmmo = NewAmmo;
+}
+
+bool AThrowableItem::CanThrow()
+{
+	return CurrentAmmo > 0;
 }

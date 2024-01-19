@@ -22,6 +22,8 @@ class THEAFTERLIFE_API UCharacterEquipmentComponent : public UActorComponent
 public:
 	ARangeWeaponItem* GetCurrentRangeWeapon() const;
 
+	AThrowableItem* GetCurrentThrowableItem() const;
+
 	EEquipableItemType GetCurrentEquippedItemType() const;
 
 	AMeleeWeaponItem* GetCurrentMeleeWeaponItem() const;

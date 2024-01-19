@@ -8,6 +8,11 @@ ARangeWeaponItem* UCharacterEquipmentComponent::GetCurrentRangeWeapon() const
 	return CurrentEquippedWeapon;
 }
 
+AThrowableItem* UCharacterEquipmentComponent::GetCurrentThrowableItem() const
+{
+	return CurrentThrowableItem;
+}
+
 EEquipableItemType UCharacterEquipmentComponent::GetCurrentEquippedItemType() const
 {
 	EEquipableItemType Result = EEquipableItemType::NONE;
@@ -40,7 +45,6 @@ void UCharacterEquipmentComponent::Fire()
 
 void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 {
-
 	if (bIsEquipping)
 	{
 		return;
@@ -53,7 +57,12 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 	CurrentMeleeWeaponItem = Cast<AMeleeWeaponItem>(CurrentEquippedItem);
 
 	if (IsValid(CurrentEquippedItem))
-	{
+	{	
+		if (CurrentThrowableItem != nullptr && CurrentThrowableItem->GetAmmo() == 0)
+		{
+			return;
+		}
+
 		UAnimMontage* EquipMontage = CurrentEquippedItem->GetCharacterEquipAnimMontage();
 		if (IsValid(EquipMontage))
 		{

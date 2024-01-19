@@ -47,5 +47,7 @@ protected:
 	void HandsMeleeAttack();
 	void LegsMeleeAttack();
 
+	void ThrowBomb();
+
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
 };
