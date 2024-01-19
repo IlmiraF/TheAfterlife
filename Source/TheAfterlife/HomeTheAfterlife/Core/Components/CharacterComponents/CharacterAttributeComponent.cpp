@@ -14,7 +14,6 @@ UCharacterAttributeComponent::UCharacterAttributeComponent()
 void UCharacterAttributeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	GEngine->AddOnScreenDebugMessage(0, 0.5f, FColor::Red, FString::Printf(TEXT("Current Health: %f"), Health));
 }
 
 float UCharacterAttributeComponent::GetHealthPercnet() const

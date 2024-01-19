@@ -16,11 +16,21 @@ public :
 
 	class UAmmoWidget* GetWidgetAmmo();
 
+	UFUNCTION()
+	void SetBombAmmo(int32 Ammo);
+
 protected:
 
 	UFUNCTION(BlueprintCallable)
 	float GetHealthPercent() const;
 
+	UFUNCTION(BlueprintCallable)
+	int GetBombAmmo() const;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
 	FName AmmoWidgetName;
+
+private: 
+
+	int32 AmmoUI;
 };

@@ -14,10 +14,13 @@ class THEAFTERLIFE_API UAmmoWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
-protected:
+public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ammo")
 	int32 Ammo;
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetAmmoCount() const;
 
 public:
 

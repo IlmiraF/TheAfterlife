@@ -205,6 +205,8 @@ void ABasePlayerController::CreateAndInitializeWidgets()
 		{	
 			UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent_Mutable();
 			CharacterEquipment->WeaponAmmoChanged.AddUFunction(AmmoWidget, FName("UpdateAmmoCount"));
+			CharacterEquipment->WeaponAmmoChanged.AddUFunction(PlayerHUDWidget, FName("SetBombAmmo"));
 		}
+
 	}
 }
