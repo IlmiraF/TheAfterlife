@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include <TheAfterlife/HomeTheAfterlife/Core/UI/Widget/PlayerHUDWidget.h>
 #include "BasePlayerController.generated.h"
 
 /**
@@ -20,6 +21,10 @@ class THEAFTERLIFE_API ABasePlayerController : public APlayerController
 public:
 
 	virtual void SetPawn(APawn* InPawn) override;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
+	TSubclassOf<class UPlayerHUDWidget> PlayerHudWidgetClass;
 
 protected:
 
@@ -50,4 +55,12 @@ protected:
 	void ThrowBomb();
 
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
+
+private:
+
+	void CreateAndInitializeWidgets();
+
+	UPlayerHUDWidget* PlayerHUDWidget = nullptr;
+
+	bool bIgnoreCameraPitch = false;
 };

@@ -10,7 +10,8 @@
 typedef TArray<class AEquipableItem*, TInlineAllocator<(uint32)EEquipmentSlots::MAX>> TItemsArray;
 typedef TArray<int32, TInlineAllocator<(uint32)EAmunitionType::MAX>> TAmunitonArray;
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCurrentWeaponAmmoChanged, int32, int32)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCurrentWeaponAmmoChanged, int32, int32);
+DECLARE_MULTICAST_DELEGATE_OneParam(FWeaponAmmoChanged, int32);
 
 class ARangeWeaponItem;
 
@@ -31,6 +32,7 @@ public:
 	bool IsEquipping() const;
 
 	FOnCurrentWeaponAmmoChanged OnCurrentWeaponAmmoChangedEvent;
+	FWeaponAmmoChanged WeaponAmmoChanged;
 
 	void Fire();
 
@@ -67,7 +69,7 @@ private:
 	void EquipAnimationFinished();
 
 	UFUNCTION()
-	void OnCurrentWeaponAmmoChanged(int32 Ammo);
+	void OnWeaponAmmoChanged(int32 Ammo);
 
 	int32 GetAvailableAmunitionForCurrentWeapon();
 

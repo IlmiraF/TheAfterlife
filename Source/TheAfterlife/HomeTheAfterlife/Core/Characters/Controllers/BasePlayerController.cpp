@@ -4,6 +4,9 @@
 #include "BasePlayerController.h"
 #include "../Controllers/BasePlayerController.h"
 #include "GameFramework/PlayerInput.h"
+#include "TheAfterlife\HomeTheAfterlife\Core\UI\Widget\AmmoWidget.h"
+#include "TheAfterlife\HomeTheAfterlife\Core\UI\Widget\PlayerHUDWidget.h"
+#include "TheAfterlife\HomeTheAfterlife\Core\Components\CharacterComponents\CharacterEquipmentComponent.h"
 #include "../BaseCharacter.h"
 
 
@@ -11,6 +14,7 @@ void ABasePlayerController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
 	CachedBaseCharacter = Cast<ABaseCharacter>(InPawn);
+	CreateAndInitializeWidgets();
 }
 
 void ABasePlayerController::SetupInputComponent()
@@ -37,6 +41,7 @@ void ABasePlayerController::SetupInputComponent()
 	//InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
 	InputComponent->BindAction("ThrowBomb", EInputEvent::IE_Pressed, this, &ABasePlayerController::ThrowBomb);
 }
+
 
 void ABasePlayerController::MoveForward(float value)
 {
@@ -171,5 +176,35 @@ void ABasePlayerController::ThrowBomb()
 	if (CachedBaseCharacter.IsValid())
 	{	
 		CachedBaseCharacter->ThrowBomb();
+	}
+}
+
+void ABasePlayerController::CreateAndInitializeWidgets()
+{
+	if (!IsValid(PlayerHUDWidget))
+	{
+		PlayerHUDWidget = CreateWidget<UPlayerHUDWidget>(GetWorld(), PlayerHudWidgetClass);
+		if (IsValid(PlayerHUDWidget))
+		{
+			PlayerHUDWidget->AddToViewport();
+		}
+	}
+
+	if (CachedBaseCharacter.IsValid() && IsValid(PlayerHUDWidget))
+	{
+		//UReticleWidget* ReticleWidget = PlayerHUDWidget->GetReticleWidget();
+		//if (IsValid(ReticleWidget))
+		//{
+		//	CachedBaseCharacter->OnAimingStateChanged.AddUFunction(ReticleWidget, FName("OnAimingStateChanged"));
+		//	UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent_Mutable();
+		//	CharacterEquipment->OnEquippedItemChanged.AddUFunction(ReticleWidget, FName("OnEquippedItemChanged"));
+		//}
+
+		UAmmoWidget* AmmoWidget = PlayerHUDWidget->GetWidgetAmmo();
+		if (IsValid(AmmoWidget))
+		{	
+			UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent_Mutable();
+			CharacterEquipment->WeaponAmmoChanged.AddUFunction(AmmoWidget, FName("UpdateAmmoCount"));
+		}
 	}
 }

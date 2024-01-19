@@ -12,9 +12,15 @@ class THEAFTERLIFE_API UPlayerHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+public :
+
+	class UAmmoWidget* GetWidgetAmmo();
+
 protected:
 
 	UFUNCTION(BlueprintCallable)
 	float GetHealthPercent() const;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
+	FName AmmoWidgetName;
 };

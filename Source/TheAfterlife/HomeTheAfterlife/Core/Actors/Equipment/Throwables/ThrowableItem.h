@@ -4,6 +4,7 @@
 #include "../EquipableItem.h"
 #include "ThrowableItem.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAmmoChanged, int32);
 
 UCLASS(Blueprintable)
 class THEAFTERLIFE_API AThrowableItem : public AEquipableItem
@@ -21,6 +22,8 @@ public:
 	void SetAmmo(int32 NewAmmo);
 
 	bool CanThrow();
+
+	FOnAmmoChanged OnAmmoChanged;
 
 protected:
 

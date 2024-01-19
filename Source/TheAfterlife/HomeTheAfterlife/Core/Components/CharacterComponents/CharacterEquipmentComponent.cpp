@@ -79,11 +79,11 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		CurrentEquippedItem->Equip();
 	}
 
-	if (IsValid(CurrentEquippedWeapon))
+	if (IsValid(CurrentThrowableItem))
 	{
-		OnCurrentWeaponAmmoChangedHandle = CurrentEquippedWeapon->OnAmmoChanged.AddUFunction(this, FName("OnCurrentWeaponAmmoChanged"));
+		OnCurrentWeaponAmmoChangedHandle = CurrentThrowableItem->OnAmmoChanged.AddUFunction(this, FName("OnWeaponAmmoChanged"));
 		//OnCurrentWeaponReloadedHandle = CurrentEquippedWeapon->OnReloadComplete.AddUFunction(this, FName("OnWeaponReloadComplete"));
-		OnCurrentWeaponAmmoChanged(CurrentEquippedWeapon->GetAmmo());
+		OnWeaponAmmoChanged(CurrentThrowableItem->GetAmmo());
 	}
 }
 
@@ -157,9 +157,6 @@ void UCharacterEquipmentComponent::CreateLoadout()
 		Item->UnEquip();
 		ItemsArray[(uint32)ItemPair.Key] = Item;
 	}
-
-	//CurrentEquippedWeapon = GetWorld()->SpawnActor<ARangeWeaponItem>(SideArmClass);
-	//CurrentEquippedWeapon->AttachToComponent(CachedBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "hand_right_collision");
 }
 
 void UCharacterEquipmentComponent::EquipAnimationFinished()
@@ -193,18 +190,18 @@ uint32 UCharacterEquipmentComponent::PreviousItemsArraySlotIndex(uint32 CurrentS
 	}
 }
 
-void UCharacterEquipmentComponent::OnCurrentWeaponAmmoChanged(int32 Ammo)
-{
-	if (OnCurrentWeaponAmmoChangedEvent.IsBound())
-	{
-		OnCurrentWeaponAmmoChangedEvent.Broadcast(Ammo, GetAvailableAmunitionForCurrentWeapon());
+
+void UCharacterEquipmentComponent::OnWeaponAmmoChanged(int32 Ammo)
+{	
+	if (WeaponAmmoChanged.IsBound())
+	{	
+		WeaponAmmoChanged.Broadcast(Ammo);
 	}
 }
 
 int32 UCharacterEquipmentComponent::GetAvailableAmunitionForCurrentWeapon()
 {
-	//return AmunitionArray[(uint32)GetCurrentRangeWeapon()->GetAmmoType()];
-	return 0; //TODO
+	return AmunitionArray[(uint32)GetCurrentThrowableItem()->GetAmmo()-1];
 }
 
 void UCharacterEquipmentComponent::EquipNextItem()

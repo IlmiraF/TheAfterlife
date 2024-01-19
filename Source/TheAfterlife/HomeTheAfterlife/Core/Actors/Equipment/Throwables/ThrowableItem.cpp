@@ -59,7 +59,6 @@ void AThrowableItem::Throw()
 		Projectile->SetOwner(GetOwner());
 		Projectile->LaunchProjectile(LaunchDirection.GetSafeNormal());
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("йнкхвеярбн: %d"), GetAmmo()));
 
 	SetAmmo(GetAmmo() - 1);
 }
@@ -72,6 +71,11 @@ int32 AThrowableItem::GetAmmo() const
 void AThrowableItem::SetAmmo(int32 NewAmmo)
 {
 	CurrentAmmo = NewAmmo;
+
+	if (OnAmmoChanged.IsBound())
+	{	
+		OnAmmoChanged.Broadcast(CurrentAmmo);
+	}
 }
 
 bool AThrowableItem::CanThrow()
