@@ -11,13 +11,11 @@ UAmmoWidget* UPlayerHUDWidget::GetWidgetAmmo()
 
 void UPlayerHUDWidget::SetBombAmmo(int32 Ammo)
 {	
-	GEngine->AddOnScreenDebugMessage(0, 1.5f, FColor::Blue, FString::Printf(TEXT("PIPISI: %d"), Ammo));
 	AmmoUI = Ammo;
 }
 
 int UPlayerHUDWidget::GetBombAmmo() const
 {	
-	GEngine->AddOnScreenDebugMessage(0, 1.5f, FColor::Red, FString::Printf(TEXT("PIPISI: %d"), AmmoUI));
 	return AmmoUI;
 }
 
