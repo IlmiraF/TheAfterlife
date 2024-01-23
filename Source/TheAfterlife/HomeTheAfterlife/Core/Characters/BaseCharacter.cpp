@@ -16,6 +16,7 @@
 #include "Components/BoxComponent.h"
 #include "Engine/DamageEvents.h"
 #include "../Actors\Equipment\Weapons\MeleeWeaponItem.h"
+#include "../Actors\Equipment\Weapons\RangeWeaponItem.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -226,7 +227,63 @@ UCharacterEquipmentComponent* ABaseCharacter::GetCharacterEquipmentComponent_Mut
 
 void ABaseCharacter::Fire()
 {
-	CharacterEquipmentComponent->Fire();
+	if (CharacterEquipmentComponent->IsEquipping())
+	{
+		return;
+	}
+	ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentRangeWeapon();
+	if (IsValid(CurrentRangeWeapon))
+	{
+		CurrentRangeWeapon->StartFire();
+	}
+}
+
+void ABaseCharacter::StartAiming()
+{
+	ARangeWeaponItem* CurrentRangeWeapon = GetCharacterEquipmentComponent()->GetCurrentRangeWeapon();
+	if (!IsValid(CurrentRangeWeapon))
+	{
+		return;
+	}
+
+	bIsAiming = true;
+	CurrentAimingMovementSpeed = CurrentRangeWeapon->GetAimMovementMaxSpeed();
+	CurrentRangeWeapon->StartAim();
+	OnStartAiming();
+}
+
+void ABaseCharacter::StopAiming()
+{
+	if (!bIsAiming)
+	{
+		return;
+	}
+
+	ARangeWeaponItem* CurrentRangeWeapon = GetCharacterEquipmentComponent()->GetCurrentRangeWeapon();
+	if (IsValid(CurrentRangeWeapon))
+	{
+		CurrentRangeWeapon->StopAim();
+	}
+
+	bIsAiming = false;
+	CurrentAimingMovementSpeed = 0.0f;
+	OnStopAiming();
+}
+
+void ABaseCharacter::OnStartAiming()
+{
+	if (OnAimingStateChanged.IsBound())
+	{
+		OnAimingStateChanged.Broadcast(true);
+	}
+}
+
+void ABaseCharacter::OnStopAiming()
+{
+	if (OnAimingStateChanged.IsBound())
+	{
+		OnAimingStateChanged.Broadcast(false);
+	}
 }
 
 void ABaseCharacter::NextItem()

@@ -47,6 +47,10 @@ protected:
 	void PreviousItem();
 
 	void Fire();
+
+	void StartAiming();
+	void StopAiming();
+
 	void EquipPrimaryItem();
 
 	void HandsMeleeAttack();

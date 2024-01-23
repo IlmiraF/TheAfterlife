@@ -80,6 +80,7 @@ class UCharacterEquipmentComponent;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
 
 UCLASS()
 class THEAFTERLIFE_API ABaseCharacter : public ACharacter
@@ -120,7 +121,15 @@ public:
 
 	UCharacterEquipmentComponent* GetCharacterEquipmentComponent_Mutable() const;
 
+	FOnAimingStateChanged OnAimingStateChanged;
+
 	void Fire();
+
+	void StartAiming();
+	void StopAiming();
+
+	void OnStartAiming();
+	void OnStopAiming();
 
 	void NextItem();
 	void PreviousItem();
@@ -211,4 +220,7 @@ private:
 	FMeleeCollisionProfile MeleeCollisionProfile;
 
 	void PlayAudio(UAudioComponent* AudioComponent);
+
+	bool bIsAiming;
+	float CurrentAimingMovementSpeed;
 };
