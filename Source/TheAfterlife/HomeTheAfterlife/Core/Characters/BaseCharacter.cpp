@@ -216,13 +216,11 @@ const AZipline* ABaseCharacter::GetAvailableZipline() const
 
 const UCharacterEquipmentComponent* ABaseCharacter::GetCharacterEquipmentComponent() const
 {	
-	//return nullptr;
 	return CharacterEquipmentComponent;
 }
 
 UCharacterEquipmentComponent* ABaseCharacter::GetCharacterEquipmentComponent_Mutable() const
-{	
-	//return nullptr;
+{
 	return CharacterEquipmentComponent;
 }
 
@@ -303,14 +301,14 @@ void ABaseCharacter::HandsMeleeAttack()
 	if (IsValid(CurrentMeleeWeaponItem))
 	{	
 		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
-	
+
 		LeftMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "hand_left_collision");
 		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "hand_right_collision");
-	
+
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::HANDS);
-	
+
 		IsKeyboardEnabled = true;
-	
+
 		PlayAudio(PunchAudioComponent);
 	}
 }
@@ -321,14 +319,14 @@ void ABaseCharacter::LegsMeleeAttack()
 	if (IsValid(CurrentMeleeWeaponItem))
 	{	
 		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
-	
+
 		LeftMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "foot_left_collision");
 		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "foot_right_collision");
-	
+
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::LEGS);
-	
+
 		IsKeyboardEnabled = false;
-	
+
 		PlayAudio(PunchAudioComponent);
 	}
 }
@@ -341,7 +339,7 @@ void ABaseCharacter::ThrowBomb()
 	}
 
 	AThrowableItem* CurrentThrowableItem = CharacterEquipmentComponent->GetCurrentThrowableItem();
-	
+
 	if (IsValid(CurrentThrowableItem))
 	{
 		CurrentThrowableItem->StartThrow();

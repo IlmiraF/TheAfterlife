@@ -17,17 +17,9 @@ void AMeleeWeaponItem::StartAttack(EMeleeAttackTypes AttackType)
 
 	HitActors.Empty();
 	CurrentAttack = Attacks.Find(AttackType);
-	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Blue, FString::Printf(TEXT("ABOBA")));
 
-	if (CurrentAttack)
-	{
-		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Magenta, FString::Printf(TEXT("CurrentAttack")));
-	}
-	
 	if (CurrentAttack && IsValid(CurrentAttack->AttackMontage))
-	{	
-		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Red, FString::Printf(TEXT("ABOBA")));
-
+	{
 		UAnimInstance* CharacterAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
 		if (IsValid(CharacterAnimInstance))
 		{	
@@ -36,8 +28,6 @@ void AMeleeWeaponItem::StartAttack(EMeleeAttackTypes AttackType)
 
 			float Duration = CharacterAnimInstance->Montage_Play(CurrentAttack->AttackMontage, 1.0f, EMontagePlayReturnType::Duration);
 			CharacterAnimInstance->Montage_JumpToSection(RandomElement, CurrentAttack->AttackMontage);
-
-			GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Green, FString::Printf(TEXT("ABOBA")));
 	
 			GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AMeleeWeaponItem::OnAttackTimerElapsed, Duration, false);
 		}
