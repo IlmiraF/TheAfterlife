@@ -39,7 +39,7 @@ void UCharacterEquipmentComponent::Fire()
 {
 	if (IsValid(CurrentEquippedWeapon))
 	{
-		CurrentEquippedWeapon->Fire();
+		//CurrentEquippedWeapon->Fire();
 	}
 }
 

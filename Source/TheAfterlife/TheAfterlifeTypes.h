@@ -52,3 +52,13 @@ enum class EEquipmentSlots : uint8
 	MAX UMETA(Hidden)
 };
 
+UENUM(BlueprintType)
+enum class EReticleType : uint8
+{
+	None,
+	Default,
+	SniperRifle,
+	MAX UMETA(Hidden)
+};
+
+
