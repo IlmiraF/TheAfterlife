@@ -51,7 +51,7 @@ void UWeaponBarellComponent::LaunchProjectile(const FVector& LaunchStart, const 
 	if (IsValid(Projectile))
 	{
 		Projectile->SetOwner(GetOwningPawn());
-		//Projectile->OnProjectileHit.AddDynamic(this, &UWeaponBarellComponent::ProcessHit);
+		Projectile->OnProjectileHit.AddDynamic(this, &UWeaponBarellComponent::ProcessHit);
 		Projectile->LaunchProjectile(LaunchDirection.GetSafeNormal());
 	}
 }
