@@ -16,7 +16,7 @@ ARangeWeaponItem::ARangeWeaponItem()
 
 void ARangeWeaponItem::Fire()
 {
-	WeaponBarell->Shot();
+	//WeaponBarell->Shot();
 }
 
 EAmunitionType ARangeWeaponItem::GetAmmoType() const
