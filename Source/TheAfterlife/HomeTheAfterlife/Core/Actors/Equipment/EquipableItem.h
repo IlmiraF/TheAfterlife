@@ -27,9 +27,6 @@ public:
 	virtual void Equip();
 	virtual void UnEquip();
 
-
-	virtual EReticleType GetReticleType() const;
-
 protected:
 
 	UPROPERTY(BlueprintAssignable)
@@ -48,10 +45,6 @@ protected:
 	UAnimMontage* CharacterEquipAnimMontage;
 
 	ABaseCharacter* GetCharacterOwner() const;
-
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Reticle")
-	EReticleType ReticleType = EReticleType::None;
 
 private:
 

@@ -53,11 +53,6 @@ void AEquipableItem::UnEquip()
 	}
 }
 
-EReticleType AEquipableItem::GetReticleType() const
-{
-	return ReticleType;
-}
-
 ABaseCharacter* AEquipableItem::GetCharacterOwner() const
 {
 	return CachedCharacterOwner.IsValid() ? CachedCharacterOwner.Get() : nullptr;
