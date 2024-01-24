@@ -24,6 +24,10 @@ float UBaseCharacterMovementComponent::GetMaxSpeed() const
 	{
 		Result = MaxWallRunSpeed;
 	}
+	if (GetBaseCharacterOwner()->IsAiming())
+	{
+		Result = GetBaseCharacterOwner()->GetAimingMovementSpeed();
+	}
     return Result;
 }
 

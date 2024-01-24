@@ -270,20 +270,32 @@ void ABaseCharacter::StopAiming()
 	OnStopAiming();
 }
 
-void ABaseCharacter::OnStartAiming()
-{
-	if (OnAimingStateChanged.IsBound())
-	{
-		OnAimingStateChanged.Broadcast(true);
-	}
+void ABaseCharacter::OnStartAiming_Implementation()
+{	
+	OnStartAimingIternal();
+	//if (OnAimingStateChanged.IsBound())
+	//{
+	//	OnAimingStateChanged.Broadcast(true);
+	//}
 }
 
-void ABaseCharacter::OnStopAiming()
+void ABaseCharacter::OnStopAiming_Implementation()
+{	
+	OnStopAimingIternal();
+	//if (OnAimingStateChanged.IsBound())
+	//{
+	//	OnAimingStateChanged.Broadcast(false);
+	//}
+}
+
+float ABaseCharacter::GetAimingMovementSpeed() const
+{	
+	return CurrentAimingMovementSpeed;
+}
+
+bool ABaseCharacter::IsAiming() const
 {
-	if (OnAimingStateChanged.IsBound())
-	{
-		OnAimingStateChanged.Broadcast(false);
-	}
+	return bIsAiming;
 }
 
 void ABaseCharacter::NextItem()
@@ -316,6 +328,14 @@ void ABaseCharacter::OnDeath()
 	{
 		EnableRagdoll();
 	}
+}
+
+void ABaseCharacter::OnStartAimingIternal()
+{
+}
+
+void ABaseCharacter::OnStopAimingIternal()
+{
 }
 
 void ABaseCharacter::EquipPrimaryItem()

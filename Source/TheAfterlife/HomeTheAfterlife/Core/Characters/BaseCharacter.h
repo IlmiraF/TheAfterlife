@@ -121,15 +121,22 @@ public:
 
 	UCharacterEquipmentComponent* GetCharacterEquipmentComponent_Mutable() const;
 
-	FOnAimingStateChanged OnAimingStateChanged;
+	FOnAimingStateChanged OnAimingStateChanged; 
 
 	void Fire();
 
 	void StartAiming();
 	void StopAiming();
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Character")
 	void OnStartAiming();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Character")
 	void OnStopAiming();
+
+	float GetAimingMovementSpeed() const;
+
+	bool IsAiming() const;
 
 	void NextItem();
 	void PreviousItem();
@@ -185,6 +192,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
 	class UCharacterEquipmentComponent* CharacterEquipmentComponent;
+
+	virtual void OnStartAimingIternal();
+
+	virtual void OnStopAimingIternal();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
 	class UMeleeHitRegistrator* LeftMeleeHitRegistrator;
