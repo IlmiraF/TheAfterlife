@@ -9,9 +9,12 @@
 #include "Curves/CurveVector.h"
 #include "../Actors/Interactive/Environment/Ladder.h"
 #include "../Actors/Interactive/Environment/Zipline.h"
+#include "../Actors/Interactive/Environment/RunWall.h"
+#include "../Actors/Interactive/Environment/Beam.h"
 #include "../Actors/Interactive/InteractiveActor.h"
 #include "../../../TheAfterlifeTypes.h"
 #include "Engine/DamageEvents.h"
+#include "MotionWarpingComponent.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -24,6 +27,7 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->bCastDynamicShadow = true;
 
 	CharacterAttributesComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("Attribute Component"));
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComp"));
 }
 
 void ABaseCharacter::Jump()
@@ -193,6 +197,72 @@ const AZipline* ABaseCharacter::GetAvailableZipline() const
 	return Result;
 }
 
+void ABaseCharacter::InteractWithRunWall()
+{
+	const ARunWall* AvailableRunWall = GetAvailableRunWall();
+	if (IsValid(AvailableRunWall) && !GetBaseCharacterMovementComponent()->IsClimbing())
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Wall Run Start"));
+		GetBaseCharacterMovementComponent()->TryWallRun();
+	}
+}
+
+const ARunWall* ABaseCharacter::GetAvailableRunWall() const
+{
+	const ARunWall* Result = nullptr;
+	for (const AInteractiveActor* InteractiveActor : AvailableInteractiveActors)
+	{
+		if (InteractiveActor->IsA<ARunWall>())
+		{
+			Result = StaticCast<const ARunWall*>(InteractiveActor);
+			break;
+		}
+	}
+	return Result;
+}
+
+void ABaseCharacter::OnClimbActionStarted()
+{
+	if (!GetBaseCharacterMovementComponent()->IsClimbing() && !GetBaseCharacterMovementComponent()->IsWallRunning())
+	{
+		GetBaseCharacterMovementComponent()->ToggleClimbing(true);
+		//JumpCount = 0;
+	}
+	/*else if(GetBaseCharacterMovementComponent()->IsClimbing())
+	{
+	}*/
+}
+
+void ABaseCharacter::InteractWithBeam()
+{
+	if (GetBaseCharacterMovementComponent()->IsOnBeam())
+	{
+		GetBaseCharacterMovementComponent()->StopWalkingOnBeam();
+	}
+	else
+	{
+		const ABeam* AvailableBeam = GetAvailableBeam();
+		if (IsValid(AvailableBeam))
+		{
+			GetBaseCharacterMovementComponent()->StartWalkingOnBeam();
+		}
+	}
+}
+
+const ABeam* ABaseCharacter::GetAvailableBeam() const
+{
+	const ABeam* Result = nullptr;
+	for (const AInteractiveActor* InteractiveActor : AvailableInteractiveActors)
+	{
+		if (InteractiveActor->IsA<ABeam>())
+		{
+			Result = StaticCast<const ABeam*>(InteractiveActor);
+			break;
+		}
+	}
+	return Result;
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -201,7 +271,7 @@ void ABaseCharacter::BeginPlay()
 
 bool ABaseCharacter::CanMantle() const
 {
-	return !GetBaseCharacterMovementComponent()->IsOnLadder() && !GetBaseCharacterMovementComponent()->IsOnZipline();
+	return !GetBaseCharacterMovementComponent()->IsOnLadder() && !GetBaseCharacterMovementComponent()->IsOnZipline() && !GetBaseCharacterMovementComponent()->IsClimbing();
 }
 
 void ABaseCharacter::OnDeath()

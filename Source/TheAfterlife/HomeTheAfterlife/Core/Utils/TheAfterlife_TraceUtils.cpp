@@ -2,6 +2,7 @@
 
 
 #include "TheAfterlife_TraceUtils.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 bool TheAfterlife_TraceUtils::SweepCapsuleSingleByChannel(const UWorld* World, FHitResult& OutHit, const FVector& Start, const FVector& End, float CapsuleRadius, float CapsuleHalfHeight, const FQuat& Rot, ECollisionChannel TraceChannel, const FCollisionQueryParams& Params, const FCollisionResponseParams& ResponseParam, bool bDrawDebug, float DrawTime, FColor TraceColor, FColor HitColor)
 {
@@ -86,4 +87,18 @@ bool TheAfterlife_TraceUtils::OverlapCapsuleBlockingByProfile(const UWorld* Worl
 #endif
 
 	return bResult;
+}
+
+FHitResult TheAfterlife_TraceUtils::LineTraceSingleByObject(const UWorld* World, const FVector& Start, const FVector& End, TArray<TEnumAsByte<EObjectTypeQuery>> ClimbableSurfaceTraceTypes)
+{
+	FHitResult OutHit;
+	UKismetSystemLibrary::LineTraceSingleForObjects(World, Start, End, ClimbableSurfaceTraceTypes, false, TArray<AActor*>(), EDrawDebugTrace::ForOneFrame, OutHit, false);
+	return OutHit;
+}
+
+TArray<FHitResult> TheAfterlife_TraceUtils::SweepCapsuleMultiByObjectType(const UWorld* World, const FVector& Start, const FVector& End, TArray<TEnumAsByte<EObjectTypeQuery>> ClimbableSurfaceTraceTypes)
+{
+	TArray<FHitResult> OutCapsuleTraceHitResult;
+	UKismetSystemLibrary::CapsuleTraceMultiForObjects(World, Start, End, 30.0f, 72.0f, ClimbableSurfaceTraceTypes, false, TArray<AActor*>(), EDrawDebugTrace::ForOneFrame, OutCapsuleTraceHitResult, false, FColor::Blue, FColor::Purple);
+	return OutCapsuleTraceHitResult;
 }

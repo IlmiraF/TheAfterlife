@@ -13,19 +13,16 @@ ARunWall::ARunWall()
 	WallMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wall Mesh"));
 	WallMeshComponent->SetupAttachment(RootComponent);
 
-	LeftInteractionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("Left Interaction Volume"));
-	LeftInteractionVolume->SetupAttachment(RootComponent);
-	LeftInteractionVolume->SetCollisionProfileName(CollisionProfilePawnInteractionVolume);
-	LeftInteractionVolume->SetGenerateOverlapEvents(true);
-
-	RightInteractionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Interaction Volume"));
-	RightInteractionVolume->SetupAttachment(RootComponent);
-	RightInteractionVolume->SetCollisionProfileName(CollisionProfilePawnInteractionVolume);
-	RightInteractionVolume->SetGenerateOverlapEvents(true);
+	InteractionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("Interaction Volume"));
+	InteractionVolume->SetupAttachment(RootComponent);
+	InteractionVolume->SetCollisionProfileName(CollisionProfilePawnInteractionVolume);
+	InteractionVolume->SetGenerateOverlapEvents(true);
 }
 
 void ARunWall::OnConstruction(const FTransform& Transform)
 {
+	WallMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+
 	UStaticMesh* WallMesh = WallMeshComponent->GetStaticMesh();
 	if (IsValid(WallMesh))
 	{
@@ -33,20 +30,16 @@ void ARunWall::OnConstruction(const FTransform& Transform)
 		float MeshWidth = WallMesh->GetBoundingBox().GetSize().Y;
 		if (!FMath::IsNearlyZero(MeshHeight))
 		{
-			WallMeshComponent->SetRelativeScale3D(FVector(1.0f, WallWidth / MeshWidth, WallHeight / MeshHeight));
+			WallMeshComponent->SetRelativeScale3D(FVector(1.0f, WallWidth/ MeshWidth, WallHeight / MeshHeight));
 		}
 	}
 
-	FVector LeftBoxExtent = LeftInteractionVolume->GetUnscaledBoxExtent();
-	LeftInteractionVolume->SetBoxExtent(FVector(LeftBoxExtent.X, LeftBoxExtent.Y, WallHeight));
-	LeftInteractionVolume->SetRelativeLocation(FVector(0.0f, 0.0f, WallHeight * 0.5f));
-
-	FVector RightBoxExtent = RightInteractionVolume->GetUnscaledBoxExtent();
-	RightInteractionVolume->SetBoxExtent(FVector(RightBoxExtent.X, RightBoxExtent.Y, WallHeight));
-	RightInteractionVolume->SetRelativeLocation(FVector(0.0f, WallWidth, WallHeight * 0.5f));
+	float BoxDepthExtent = GetInteractionBox()->GetUnscaledBoxExtent().X;
+	GetInteractionBox()->SetBoxExtent(FVector(BoxDepthExtent, WallWidth * 0.5f, WallHeight * 0.5f));
+	GetInteractionBox()->SetRelativeLocation(FVector(WallMesh->GetBoundingBox().GetSize().X + BoxDepthExtent, WallWidth * 0.5f, WallHeight * 0.5f));
 }
 
-void ARunWall::BeginPlay()
+UBoxComponent* ARunWall::GetInteractionBox() const
 {
-	Super::BeginPlay();
+	return StaticCast<UBoxComponent*>(InteractionVolume);
 }

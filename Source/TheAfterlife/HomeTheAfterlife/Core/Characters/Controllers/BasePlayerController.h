@@ -38,5 +38,15 @@ protected:
 
 	void InteractWithZipline();
 
+	void InteractWithRunWall();
+
+	void ClimbMoveForward(float value);
+	void ClimbMoveRight(float value);
+	void ClimbHop();
+	void OnClimbActionStarted();
+
+	void OnBeamMoveForward(float value);
+	void OnBeamMoveRight(float value);
+
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
 };

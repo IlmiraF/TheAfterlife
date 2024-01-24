@@ -39,6 +39,7 @@ struct FMantlingSettings
 class UBaseCharacterMovementComponent;
 class UCharacterAttributeComponent;
 class AInteractiveActor;
+class UMotionWarpingComponent;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
@@ -52,6 +53,7 @@ public:
 
 	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
 	FORCEINLINE UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
+	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
 
 	virtual void MoveForward(float value) {};
 	virtual void MoveRight(float value) {};
@@ -77,6 +79,20 @@ public:
 	void InteractWithZipline();
 	const class AZipline* GetAvailableZipline() const;
 
+	void InteractWithRunWall();
+	const class ARunWall* GetAvailableRunWall() const;
+
+	virtual void ClimbMoveForward(float Value) {};
+	virtual void ClimbMoveRight(float Value) {};
+	virtual void ClimbHop() {};
+	virtual void OnClimbActionStarted();
+
+	virtual void OnBeamMoveForward(float value) {};
+	virtual void OnBeamMoveRight(float value) {};
+
+	void InteractWithBeam();
+	const class ABeam* GetAvailableBeam() const;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -90,6 +106,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
 	UCharacterAttributeComponent* CharacterAttributesComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
+	UMotionWarpingComponent* MotionWarpingComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement|Mantling")
 	FMantlingSettings HighMantleSettings;
@@ -117,5 +136,4 @@ private:
 
 	void EnableRagdoll();
 	FVector CurrentFallApex;
-
 };

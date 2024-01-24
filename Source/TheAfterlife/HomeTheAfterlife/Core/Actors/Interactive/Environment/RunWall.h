@@ -22,8 +22,6 @@ public:
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 
-	virtual void BeginPlay() override;
-
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Wall Parameters")
@@ -35,10 +33,5 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* WallMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UBoxComponent* LeftInteractionVolume;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UBoxComponent* RightInteractionVolume;
-
+	UBoxComponent* GetInteractionBox() const;
 };
