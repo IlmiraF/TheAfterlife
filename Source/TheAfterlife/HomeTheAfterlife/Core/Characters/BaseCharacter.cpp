@@ -15,6 +15,8 @@
 #include "../../../TheAfterlifeTypes.h"
 #include "Engine/DamageEvents.h"
 #include "MotionWarpingComponent.h"
+#include "../Inventory/Items/InventoryItem.h"
+#include "../Components/CharacterComponents/CharacterInventoryComponent.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -28,6 +30,7 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 
 	CharacterAttributesComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("Attribute Component"));
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComp"));
+	CharacterInventoryComponent = CreateDefaultSubobject<UCharacterInventoryComponent>(TEXT("InventoryComponent"));
 }
 
 void ABaseCharacter::Jump()
@@ -261,6 +264,28 @@ const ABeam* ABaseCharacter::GetAvailableBeam() const
 		}
 	}
 	return Result;
+}
+
+void ABaseCharacter::UseInventory(APlayerController* PlayerController)
+{
+	if (!IsValid(PlayerController))
+	{
+		return;
+	}
+	if (!CharacterInventoryComponent->IsViewVisible())
+	{
+		CharacterInventoryComponent->OpenViewInventory(PlayerController);
+		//CharacterEquipmentComponent->OpenViewEquipment(PlayerController);
+		PlayerController->SetInputMode(FInputModeGameAndUI{});
+		PlayerController->bShowMouseCursor = true;
+	}
+	else
+	{
+		CharacterInventoryComponent->CloseViewInventory();
+		//CharacterEquipmentComponent->CloseViewEquipment();
+		PlayerController->SetInputMode(FInputModeGameOnly{});
+		PlayerController->bShowMouseCursor = false;
+	}
 }
 
 void ABaseCharacter::BeginPlay()

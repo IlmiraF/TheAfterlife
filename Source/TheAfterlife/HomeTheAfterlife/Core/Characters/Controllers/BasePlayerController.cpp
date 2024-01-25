@@ -33,6 +33,7 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePlayerController::Jump);
 	InputComponent->BindAction("Mantle", EInputEvent::IE_Pressed, this, &ABasePlayerController::Mantle);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
+	InputComponent->BindAction("UseInventory", EInputEvent::IE_Pressed, this, &ABasePlayerController::UseInventory);
 }
 
 void ABasePlayerController::MoveForward(float value)
@@ -168,5 +169,13 @@ void ABasePlayerController::OnBeamMoveRight(float value)
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->OnBeamMoveRight(value);
+	}
+}
+
+void ABasePlayerController::UseInventory()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->UseInventory(this);
 	}
 }

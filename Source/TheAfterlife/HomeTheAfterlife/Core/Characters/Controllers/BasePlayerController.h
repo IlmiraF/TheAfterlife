@@ -48,5 +48,7 @@ protected:
 	void OnBeamMoveForward(float value);
 	void OnBeamMoveRight(float value);
 
+	void UseInventory();
+
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
 };

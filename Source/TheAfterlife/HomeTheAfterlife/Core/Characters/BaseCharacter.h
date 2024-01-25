@@ -40,6 +40,9 @@ class UBaseCharacterMovementComponent;
 class UCharacterAttributeComponent;
 class AInteractiveActor;
 class UMotionWarpingComponent;
+class UWidgetComponent;
+class UInventoryItem;
+class UCharacterInventoryComponent;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
@@ -93,6 +96,8 @@ public:
 	void InteractWithBeam();
 	const class ABeam* GetAvailableBeam() const;
 
+	void UseInventory(APlayerController* PlayerController);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -109,6 +114,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
 	UMotionWarpingComponent* MotionWarpingComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Components")
+	UCharacterInventoryComponent* CharacterInventoryComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement|Mantling")
 	FMantlingSettings HighMantleSettings;
@@ -128,6 +136,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Attributes")
 	class UCurveFloat* FallDamageCurve;
+
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
