@@ -384,8 +384,6 @@ void ABaseCharacter::HandsMeleeAttack()
 
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::HANDS);
 
-		IsKeyboardEnabled = true;
-
 		PlayAudio(PunchAudioComponent);
 	}
 }
@@ -401,8 +399,6 @@ void ABaseCharacter::LegsMeleeAttack()
 		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "foot_right_collision");
 
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::LEGS);
-
-		IsKeyboardEnabled = false;
 
 		PlayAudio(PunchAudioComponent);
 	}
@@ -431,7 +427,7 @@ void ABaseCharacter::PlayAudio(UAudioComponent* AudioComponent)
 	}
 }
 
-void ABaseCharacter::SetIsKeyboardEnabled(bool Enabled)
+void ABaseCharacter::SetCanMove(bool value)
 {
-	IsKeyboardEnabled = Enabled;
+	bCanMove = value;
 }

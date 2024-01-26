@@ -76,6 +76,11 @@ void AMeleeWeaponItem::ProcessHit(const FHitResult& HitResult, const FVector& Hi
 		return;
 	}
 
+	if (HitActor == GetOwner())
+	{	
+		return;
+	}
+
 	FPointDamageEvent DamageEvent;
 	DamageEvent.HitInfo = HitResult;
 	DamageEvent.ShotDirection = HitDirection;

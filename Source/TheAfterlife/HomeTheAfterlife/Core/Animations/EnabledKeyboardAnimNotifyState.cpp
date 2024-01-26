@@ -14,7 +14,7 @@ void UEnabledKeyboardAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshCo
 
 	if (BaseCharacter != NULL)
 	{
-		BaseCharacter->SetIsKeyboardEnabled(false);
+		BaseCharacter->SetCanMove(false);
 	}
 }
 
@@ -29,6 +29,6 @@ void UEnabledKeyboardAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp
 
 	if (BaseCharacter != NULL)
 	{
-		BaseCharacter->SetIsKeyboardEnabled(true);
+		BaseCharacter->SetCanMove(true);
 	}
 }

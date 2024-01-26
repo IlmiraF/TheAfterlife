@@ -8,7 +8,7 @@ UMeleeHitRegistrator::UMeleeHitRegistrator()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	SphereRadius = 10.0f;
-	SetCollisionProfileName("NoCollision");
+	SetCollisionProfileName("Weapon");
 }
 
 void UMeleeHitRegistrator::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -42,7 +42,12 @@ void UMeleeHitRegistrator::ProcessHitRegistration()
 	);
 
 	if (bHasHit)
-	{
+	{	
+		if (HitResult.GetActor() == GetOwner())
+		{	
+			return;
+		}
+
 		FVector Direction = (CurrentLocation - PreviousComponentLocation).GetSafeNormal();
 		if (OnMeleeHitRegistred.IsBound())
 		{

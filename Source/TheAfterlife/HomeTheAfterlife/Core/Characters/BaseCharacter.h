@@ -37,7 +37,7 @@ struct FMeleeCollisionProfile
 
 	FMeleeCollisionProfile()
 	{
-		Enabled = FName(TEXT("Melee"));
+		Enabled = FName(TEXT("Weapon"));
 		Disabled = FName(TEXT("NoCollision"));
 	}
 };
@@ -152,7 +152,7 @@ public:
 	void ThrowBomb();
 
 	UFUNCTION(BlueprintCallable)
-	void SetIsKeyboardEnabled(bool Enabled);
+	void SetCanMove(bool Enabled);
 
 protected:
 	virtual void BeginPlay() override;
@@ -212,7 +212,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
 	float AnimationVariable;
 
-	bool IsKeyboardEnabled;
+	bool bCanMove = true;
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
