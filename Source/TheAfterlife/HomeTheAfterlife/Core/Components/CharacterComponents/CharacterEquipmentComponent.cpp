@@ -114,8 +114,8 @@ void UCharacterEquipmentComponent::UnEquipCurrentItem()
 	}
 	if (IsValid(CurrentEquippedWeapon))
 	{
-		//CurrentEquippedWeapon->StopFire();
-		//CurrentEquippedWeapon->EndReload(false);
+		CurrentEquippedWeapon->StopFire();
+		CurrentEquippedWeapon->EndReload(false);
 		CurrentEquippedWeapon->OnAmmoChanged.Remove(OnCurrentWeaponAmmoChangedHandle);
 		//CurrentEquippedWeapon->OnReloadComplete.Remove(OnCurrentWeaponReloadedHandle);
 	}
