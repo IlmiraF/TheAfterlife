@@ -19,10 +19,15 @@ void AMeleeWeaponItem::StartAttack(EMeleeAttackTypes AttackType)
 	CurrentAttack = Attacks.Find(AttackType);
 
 	if (CurrentAttack && IsValid(CurrentAttack->AttackMontage))
-	{
+	{	
 		UAnimInstance* CharacterAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
 		if (IsValid(CharacterAnimInstance))
 		{	
+			if (CharacterAnimInstance->IsAnyMontagePlaying())
+			{
+				return;
+			}
+
 			int32 RandomIndex = FMath::RandRange(0, CurrentAttack->NameSections.Num() - 1);
 			FName RandomElement = CurrentAttack->NameSections[RandomIndex];
 

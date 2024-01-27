@@ -34,6 +34,8 @@ public:
 	void StartFire();
 	void StopFire();
 
+	void MakeShot();
+
 	void StartAim();
 	void StopAim();
 
@@ -131,7 +133,7 @@ private:
 	float GetCurrentBulletSpreadAngle() const;
 
 	bool bIsAiming;
-	void MakeShot();
+	void MakeShotAnim();
 
 	void OnShotTimerElapsed();
 	float GetShotTimerInterval() const;

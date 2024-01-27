@@ -24,12 +24,36 @@ void ARangeWeaponItem::StartFire()
 	}
 
 	bIsFiring = true;
-	MakeShot();
+	MakeShotAnim();
 }
 
 void ARangeWeaponItem::StopFire()
 {
 	bIsFiring = false;
+}
+
+void ARangeWeaponItem::MakeShot()
+{	
+	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::MakeShot() only character can be an owner of range weapon"));
+	ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
+
+	APlayerController* Controller = CharacterOwner->GetController<APlayerController>();
+	if (!IsValid(Controller))
+	{
+		return;
+	}
+
+	FVector PlayerViewPoint;
+	FRotator PlayerViewRotation;
+
+	Controller->GetPlayerViewPoint(PlayerViewPoint, PlayerViewRotation);
+
+	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
+
+	SetAmmo(Ammo - 1);
+	WeaponBarell->Shot(PlayerViewPoint, ViewDirection, GetCurrentBulletSpreadAngle());
+
+	GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARangeWeaponItem::OnShotTimerElapsed, GetShotTimerInterval(), false);
 }
 
 void ARangeWeaponItem::StartAim()
@@ -164,9 +188,9 @@ float ARangeWeaponItem::GetCurrentBulletSpreadAngle() const
 	return FMath::DegreesToRadians(AngleInDegrees);
 }
 
-void ARangeWeaponItem::MakeShot()
+void ARangeWeaponItem::MakeShotAnim()
 {
-	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::Fire() only character can be an owner of range weapon"));
+	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::MakeShotAnim() only character can be an owner of range weapon"));
 	ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
 
 	if (!CanShoot())
@@ -183,23 +207,7 @@ void ARangeWeaponItem::MakeShot()
 	CharacterOwner->PlayAnimMontage(CharacterFireMontage);
 	PlayAnimMontage(WeaponFireMontage);
 
-	APlayerController* Controller = CharacterOwner->GetController<APlayerController>();
-	if (!IsValid(Controller))
-	{
-		return;
-	}
-
-	FVector PlayerViewPoint;
-	FRotator PlayerViewRotation;
-
-	Controller->GetPlayerViewPoint(PlayerViewPoint, PlayerViewRotation);
-
-	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
-
-	SetAmmo(Ammo - 1);
-	WeaponBarell->Shot(PlayerViewPoint, ViewDirection, GetCurrentBulletSpreadAngle());
-
-	GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARangeWeaponItem::OnShotTimerElapsed, GetShotTimerInterval(), false);
+	
 }
 
 void ARangeWeaponItem::OnShotTimerElapsed()
@@ -218,7 +226,7 @@ void ARangeWeaponItem::OnShotTimerElapsed()
 	}
 	case EWeaponFireMode::FullAuto:
 	{
-		MakeShot();
+		MakeShotAnim();
 	}
 	}
 }
