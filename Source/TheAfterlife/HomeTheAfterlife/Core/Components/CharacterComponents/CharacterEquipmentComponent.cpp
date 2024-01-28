@@ -62,11 +62,12 @@ void UCharacterEquipmentComponent::Fire()
 }
 
 void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
-{
+{	
 	if (bIsEquipping)
 	{
 		return;
 	}
+	
 
 	UnEquipCurrentItem();
 	CurrentEquippedItem = ItemsArray[(uint32)Slot];
@@ -74,12 +75,13 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 	CurrentThrowableItem = Cast<AThrowableItem>(CurrentEquippedItem);
 	CurrentMeleeWeaponItem = Cast<AMeleeWeaponItem>(CurrentEquippedItem);
 
+	if (EEquipmentSlots::PRIMARY_ITEM_SLOT == Slot && CurrentThrowableItem->GetAmmo() == 0)
+	{
+		return;
+	}
+
 	if (IsValid(CurrentEquippedItem))
 	{	
-		if (CurrentThrowableItem != nullptr && CurrentThrowableItem->GetAmmo() == 0)
-		{
-			return;
-		}
 
 		UAnimMontage* EquipMontage = CurrentEquippedItem->GetCharacterEquipAnimMontage();
 		if (IsValid(EquipMontage))
@@ -94,6 +96,7 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 			AttachCurrentItemToEquippedSocket();
 		}
 		CurrentEquippedSlot = Slot;
+
 		CurrentEquippedItem->Equip();
 	}
 
@@ -160,8 +163,6 @@ void UCharacterEquipmentComponent::CreateLoadout()
 		AmunitionArray[(uint32)AmmoPair.Key] = FMath::Max(AmmoPair.Value, 0);
 		//AmunitionArray[(uint32)AmmoPair.Key] = AmmoPair.Value;
 	}
-
-	
 
 	ItemsArray.AddZeroed((uint32)EEquipmentSlots::MAX);
 	for (const TPair<EEquipmentSlots, TSubclassOf<AEquipableItem>>& ItemPair : ItemsLoadout)
@@ -231,10 +232,9 @@ void UCharacterEquipmentComponent::EquipNextItem()
 {
 	uint32 CurrentSlotIndex = (uint32)CurrentEquippedSlot;
 	uint32 NextSlotIndex = NextItemsArraySlotIndex(CurrentSlotIndex);
-
 	while (CurrentSlotIndex != NextSlotIndex
-		&& IgnoreSlotsWhileSwitch.Contains((EEquipmentSlots)NextSlotIndex)
-		&& !IsValid(ItemsArray[NextSlotIndex]))
+		&& (IgnoreSlotsWhileSwitch.Contains((EEquipmentSlots)NextSlotIndex)
+			|| !IsValid(ItemsArray[NextSlotIndex])))
 	{
 		NextSlotIndex = NextItemsArraySlotIndex(NextSlotIndex);
 	}
@@ -248,10 +248,9 @@ void UCharacterEquipmentComponent::EquipPreviousItem()
 {
 	uint32 CurrentSlotIndex = (uint32)CurrentEquippedSlot;
 	uint32 PreviousSlotIndex = PreviousItemsArraySlotIndex(CurrentSlotIndex);
-
 	while (CurrentSlotIndex != PreviousSlotIndex
-		&& IgnoreSlotsWhileSwitch.Contains((EEquipmentSlots)PreviousSlotIndex)
-		&& !IsValid(ItemsArray[PreviousSlotIndex]))
+		&& (IgnoreSlotsWhileSwitch.Contains((EEquipmentSlots)PreviousSlotIndex)
+			|| !IsValid(ItemsArray[PreviousSlotIndex])))
 	{
 		PreviousSlotIndex = PreviousItemsArraySlotIndex(PreviousSlotIndex);
 	}

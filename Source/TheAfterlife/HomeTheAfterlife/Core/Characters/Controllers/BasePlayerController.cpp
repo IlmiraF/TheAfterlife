@@ -40,8 +40,8 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("Aim", EInputEvent::IE_Released, this, &ABasePlayerController::StopAiming);
 	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::NextItem);
 	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::PreviousItem);
-	//InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
-	InputComponent->BindAction("ThrowBomb", EInputEvent::IE_Pressed, this, &ABasePlayerController::ThrowBomb);
+	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
+	//InputComponent->BindAction("ThrowBomb", EInputEvent::IE_Pressed, this, &ABasePlayerController::ThrowBomb);
 }
 
 
