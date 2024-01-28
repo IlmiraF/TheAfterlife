@@ -238,6 +238,14 @@ void ABaseCharacter::Fire()
 	}
 }
 
+void ABaseCharacter::Reload() const
+{
+	if (IsValid(CharacterEquipmentComponent->GetCurrentRangeWeapon()))
+	{
+		CharacterEquipmentComponent->ReloadCurrentRangeWeapon();
+	}
+}
+
 void ABaseCharacter::StartAiming()
 {
 	ARangeWeaponItem* CurrentRangeWeapon = GetCharacterEquipmentComponent()->GetCurrentRangeWeapon();

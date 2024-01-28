@@ -51,7 +51,13 @@ void ARangeWeaponItem::MakeShot()
 	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
 
 	SetAmmo(Ammo - 1);
+
 	WeaponBarell->Shot(PlayerViewPoint, ViewDirection, GetCurrentBulletSpreadAngle());
+
+	if (Ammo == 0 && bAutoReload)
+	{
+		CharacterOwner->Reload();
+	}
 
 	GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARangeWeaponItem::OnShotTimerElapsed, GetShotTimerInterval(), false);
 }
@@ -68,63 +74,63 @@ void ARangeWeaponItem::StopAim()
 
 void ARangeWeaponItem::StartReload()
 {
-	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::StartReload() only character can be an owner of range weapon"));
-	ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
-
-	bIsReloading = true;
-	if (IsValid(CharacterReloadMontage))
-	{
-		float MontageDuration = CharacterOwner->PlayAnimMontage(CharacterReloadMontage);
-		PlayAnimMontage(WeaponReloadMontage);
-		if (ReloadType == EReloadType::FullClip)
-		{
-			GetWorld()->GetTimerManager().SetTimer(ReloadTimer, [this]() { EndReload(true); }, MontageDuration, false);
-		}
-	}
-	else
-	{
-		EndReload(true);
-	}
+	//checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::StartReload() only character can be an owner of range weapon"));
+	//ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
+	//
+	//bIsReloading = true;
+	//if (IsValid(CharacterReloadMontage))
+	//{
+	//	float MontageDuration = CharacterOwner->PlayAnimMontage(CharacterReloadMontage);
+	//	PlayAnimMontage(WeaponReloadMontage);
+	//	if (ReloadType == EReloadType::FullClip)
+	//	{
+	//		GetWorld()->GetTimerManager().SetTimer(ReloadTimer, [this]() { EndReload(true); }, MontageDuration, false);
+	//	}
+	//}
+	//else
+	//{
+	//	EndReload(true);
+	//}
 }
 
 void ARangeWeaponItem::EndReload(bool bIsSuccess)
 {
-	if (!bIsReloading)
-	{
-		return;
-	}
-
-	if (!bIsSuccess)
-	{
-		checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::StartReload() only character can be an owner of range weapon"));
-		ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
-		CharacterOwner->StopAnimMontage(CharacterReloadMontage);
-		StopAnimMontage(WeaponReloadMontage);
-	}
-
-	if (ReloadType == EReloadType::ByBullet)
-	{
-		ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
-		UAnimInstance* CharacterAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
-		if (IsValid(CharacterAnimInstance))
-		{
-			CharacterAnimInstance->Montage_JumpToSection("ReloadEnd", CharacterReloadMontage);
-		}
-
-		UAnimInstance* WeaponAnimInstance = WeaponMesh->GetAnimInstance();
-		if (IsValid(WeaponAnimInstance))
-		{
-			WeaponAnimInstance->Montage_JumpToSection("ReloadEnd", WeaponReloadMontage);
-		}
-	}
-
-	GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);
-
-	bIsReloading = false;
-	if (bIsSuccess && OnReloadComplete.IsBound())
-	{
-		OnReloadComplete.Broadcast();
-	}
+	//if (!bIsReloading)
+	//{
+	//	return;
+	//}
+	//
+	//if (!bIsSuccess)
+	//{
+	//	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::StartReload() only character can be an owner of range weapon"));
+	//	ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
+	//	CharacterOwner->StopAnimMontage(CharacterReloadMontage);
+	//	StopAnimMontage(WeaponReloadMontage);
+	//}
+	//
+	//if (ReloadType == EReloadType::ByBullet)
+	//{
+	//	ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
+	//	UAnimInstance* CharacterAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
+	//	if (IsValid(CharacterAnimInstance))
+	//	{
+	//		CharacterAnimInstance->Montage_JumpToSection("ReloadEnd", CharacterReloadMontage);
+	//	}
+	//
+	//	UAnimInstance* WeaponAnimInstance = WeaponMesh->GetAnimInstance();
+	//	if (IsValid(WeaponAnimInstance))
+	//	{
+	//		WeaponAnimInstance->Montage_JumpToSection("ReloadEnd", WeaponReloadMontage);
+	//	}
+	//}
+	//
+	//GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);
+	//
+	//bIsReloading = false;
+	//if (bIsSuccess && OnReloadComplete.IsBound())
+	//{
+	//	OnReloadComplete.Broadcast();
+	//}
 }
 
 int32 ARangeWeaponItem::GetAmmo() const
@@ -198,7 +204,7 @@ void ARangeWeaponItem::MakeShotAnim()
 		StopFire();
 		if (Ammo == 0 && bAutoReload)
 		{
-			//CharacterOwner->Reload();
+			CharacterOwner->Reload();
 		}
 		return;
 	}

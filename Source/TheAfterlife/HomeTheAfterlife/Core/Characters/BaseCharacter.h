@@ -125,6 +125,8 @@ public:
 
 	void Fire();
 
+	void Reload() const;
+
 	void StartAiming();
 	void StopAiming();
 

@@ -8,6 +8,24 @@ ARangeWeaponItem* UCharacterEquipmentComponent::GetCurrentRangeWeapon() const
 	return CurrentEquippedWeapon;
 }
 
+void UCharacterEquipmentComponent::ReloadCurrentRangeWeapon()
+{
+	check(IsValid(CurrentEquippedWeapon));
+	int32 AvalibleAmunition = GetAvailableAmunitionForCurrentWeapon();
+	
+	if (AvalibleAmunition <= 0)
+	{
+		return;
+	}
+
+	int32 CurrentAmmo = CurrentEquippedWeapon->GetAmmo();
+	int32 AmmoToReload = CurrentEquippedWeapon->GetMaxAmmo() - CurrentAmmo;
+	int ReloadedAmmo = FMath::Min(AvalibleAmunition, AmmoToReload);
+
+	AmunitionArray[(uint32)CurrentEquippedWeapon->GetAmmoType()] -= ReloadedAmmo;
+	CurrentEquippedWeapon->SetAmmo(ReloadedAmmo + CurrentAmmo);
+}
+
 AThrowableItem* UCharacterEquipmentComponent::GetCurrentThrowableItem() const
 {
 	return CurrentThrowableItem;
@@ -136,12 +154,14 @@ void UCharacterEquipmentComponent::BeginPlay()
 
 void UCharacterEquipmentComponent::CreateLoadout()
 {
-
 	AmunitionArray.AddZeroed((uint32)EAmunitionType::MAX);
 	for (const TPair<EAmunitionType, int32>& AmmoPair : MaxAmunitionAmount)
 	{
 		AmunitionArray[(uint32)AmmoPair.Key] = FMath::Max(AmmoPair.Value, 0);
+		//AmunitionArray[(uint32)AmmoPair.Key] = AmmoPair.Value;
 	}
+
+	
 
 	ItemsArray.AddZeroed((uint32)EEquipmentSlots::MAX);
 	for (const TPair<EEquipmentSlots, TSubclassOf<AEquipableItem>>& ItemPair : ItemsLoadout)
@@ -158,6 +178,8 @@ void UCharacterEquipmentComponent::CreateLoadout()
 		ItemsArray[(uint32)ItemPair.Key] = Item;
 	}
 }
+
+
 
 void UCharacterEquipmentComponent::EquipAnimationFinished()
 {
@@ -200,8 +222,9 @@ void UCharacterEquipmentComponent::OnWeaponAmmoChanged(int32 Ammo)
 }
 
 int32 UCharacterEquipmentComponent::GetAvailableAmunitionForCurrentWeapon()
-{
-	return AmunitionArray[(uint32)GetCurrentThrowableItem()->GetAmmo()-1];
+{	
+	check(IsValid(GetCurrentRangeWeapon()));
+	return AmunitionArray[(uint32)GetCurrentRangeWeapon()->GetAmmoType()];
 }
 
 void UCharacterEquipmentComponent::EquipNextItem()

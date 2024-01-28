@@ -21,7 +21,10 @@ class THEAFTERLIFE_API UCharacterEquipmentComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+
 	ARangeWeaponItem* GetCurrentRangeWeapon() const;
+
+	void ReloadCurrentRangeWeapon();
 
 	AThrowableItem* GetCurrentThrowableItem() const;
 
@@ -66,6 +69,7 @@ private:
 	TItemsArray ItemsArray;
 
 	void CreateLoadout();
+
 	void EquipAnimationFinished();
 
 	UFUNCTION()
