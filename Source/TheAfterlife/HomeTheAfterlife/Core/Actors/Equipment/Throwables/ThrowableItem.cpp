@@ -12,7 +12,6 @@ void AThrowableItem::StartThrow()
 	ABaseCharacter* CharacterOwner = GetCharacterOwner();
 
 	CharacterOwner->PlayAnimMontage(ThrowItemMontage);
-	//PlayAnimMontage(ThrowItemMontage);
 }
 
 void AThrowableItem::Throw()

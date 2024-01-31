@@ -7,10 +7,12 @@
 #include <TheAfterlife/HomeTheAfterlife/Core/Actors/Projectiles/Projectile.h>
 #include <Kismet/GameplayStatics.h>
 
-void UWeaponBarellComponent::Shot(FVector ShotStart, FVector ShotDirection, float SpreadAngle)
+void UWeaponBarellComponent::Shot(FVector ShotDirection, float SpreadAngle)
 {
 	for (int i = 0; i < BulletsPerShot; i++)
-	{
+	{	
+		FVector ShotStart = GetComponentLocation();
+
 		ShotDirection += GetBulletSpreadOffset(FMath::RandRange(0.0f, SpreadAngle), ShotDirection.ToOrientationRotator());
 		ShotDirection = ShotDirection.GetSafeNormal();
 

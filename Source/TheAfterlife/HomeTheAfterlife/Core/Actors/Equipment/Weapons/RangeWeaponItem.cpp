@@ -52,7 +52,7 @@ void ARangeWeaponItem::MakeShot()
 
 	SetAmmo(Ammo - 1);
 
-	WeaponBarell->Shot(PlayerViewPoint, ViewDirection, GetCurrentBulletSpreadAngle());
+	WeaponBarell->Shot(ViewDirection, GetCurrentBulletSpreadAngle());
 
 	if (Ammo == 0 && bAutoReload)
 	{

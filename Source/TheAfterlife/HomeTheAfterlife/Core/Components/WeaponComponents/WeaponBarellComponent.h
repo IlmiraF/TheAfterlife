@@ -39,7 +39,7 @@ class THEAFTERLIFE_API UWeaponBarellComponent : public USceneComponent
 
 public:	
 
-	void Shot(FVector ShotStart, FVector ShotDirection, float SpreadAngle);
+	void Shot(FVector ShotDirection, float SpreadAngle);
 
 protected:
 

@@ -41,5 +41,5 @@ protected:
 
 private: 
 
-	int32 CurrentAmmo = 1;
+	int32 CurrentAmmo = 3;
 };
