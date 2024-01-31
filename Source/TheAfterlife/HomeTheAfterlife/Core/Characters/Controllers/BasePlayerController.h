@@ -23,6 +23,7 @@ public:
 
 protected:
 
+
 	virtual void SetupInputComponent() override;
 
 	void MoveForward(float value);
@@ -49,4 +50,6 @@ protected:
 	void OnBeamMoveRight(float value);
 
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
+
+
 };

@@ -170,3 +170,5 @@ void ABasePlayerController::OnBeamMoveRight(float value)
 		CachedBaseCharacter->OnBeamMoveRight(value);
 	}
 }
+
+
