@@ -19,6 +19,11 @@ ATutorialCollider::ATutorialCollider()
 	Collider->OnComponentEndOverlap.AddDynamic(this, &ATutorialCollider::OnOverlapEnd);
 }
 
+void ATutorialCollider::BeginPlay()
+{
+	
+}
+
 void ATutorialCollider::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!IsValid(OtherActor))
@@ -58,5 +63,18 @@ void ATutorialCollider::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 	UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetComponentByClass<UPlayerUIComponent>();
 
 	PlayerUIComponent->GetHintsWidget()->UpdateVisible(false);
+
+	Bird = FindObject<ABird>(ANY_PACKAGE, TEXT("BP_Bird"));
+
+	if (IsValid(Bird))
+	{	
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Kurwa bober"));
+		Bird->SetNewPoint(ColliderIndex + 1);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Kurwa kret"));
+	}
+	
 }
 
