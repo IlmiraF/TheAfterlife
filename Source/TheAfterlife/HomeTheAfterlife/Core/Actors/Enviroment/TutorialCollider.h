@@ -17,8 +17,6 @@ public:
 
 	ATutorialCollider();
 
-	virtual void BeginPlay() override;
-
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* Collider;
 

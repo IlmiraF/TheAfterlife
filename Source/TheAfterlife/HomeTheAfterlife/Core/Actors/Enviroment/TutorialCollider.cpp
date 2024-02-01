@@ -5,23 +5,18 @@
 #include <TheAfterlife/HomeTheAfterlife/Core/Characters/PlayerCharacter.h>
 #include <TheAfterlife/HomeTheAfterlife/Core/Characters/Controllers/BasePlayerController.h>
 #include <TheAfterlife/HomeTheAfterlife/Core/Components/CharacterComponents/PlayerUIComponent.h>
+#include "EngineUtils.h"
 #include "../../../UI\Widget\HintsWidget.h"
 
 // Sets default values
 ATutorialCollider::ATutorialCollider()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
 	RootComponent = Collider;
 
 	Collider->OnComponentBeginOverlap.AddDynamic(this, &ATutorialCollider::OnOverlapBegin);
 	Collider->OnComponentEndOverlap.AddDynamic(this, &ATutorialCollider::OnOverlapEnd);
-}
-
-void ATutorialCollider::BeginPlay()
-{
-	
 }
 
 void ATutorialCollider::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -31,7 +26,6 @@ void ATutorialCollider::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 		return;
 	}
 
-	//check(GetOwner()->IsA<APlayerCharacter>());
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
 
 	if (!IsValid(PlayerCharacter))
@@ -52,7 +46,6 @@ void ATutorialCollider::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 		return;
 	}
 
-	//check(GetOwner()->IsA<APlayerCharacter>());
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
 
 	if (!IsValid(PlayerCharacter))
@@ -64,17 +57,14 @@ void ATutorialCollider::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 
 	PlayerUIComponent->GetHintsWidget()->UpdateVisible(false);
 
-	Bird = FindObject<ABird>(ANY_PACKAGE, TEXT("BP_Bird"));
+	for (TActorIterator<ABird> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		Bird = *ActorItr;
+		break;
+	}
 
 	if (IsValid(Bird))
-	{	
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Kurwa bober"));
+	{
 		Bird->SetNewPoint(ColliderIndex + 1);
 	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Kurwa kret"));
-	}
-	
 }
-
