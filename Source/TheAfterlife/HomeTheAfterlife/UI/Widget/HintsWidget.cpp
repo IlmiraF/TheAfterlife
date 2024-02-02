@@ -8,16 +8,24 @@ void UHintsWidget::UpdateHint(FString newHint)
 	Hint = newHint;
 }
 
-void UHintsWidget::UpdateVisible(bool Visible)
+bool UHintsWidget::UpdateVisible(bool Visible)
 {	
 	bIsVisible = Visible;
 
 	if (bIsVisible == true)
 	{
 		this->SetVisibility(ESlateVisibility::Visible);
+
+		if (OnVisibleKurwa.IsBound())
+		{
+			OnVisibleKurwa.Broadcast();
+		}
+		
 	}
 	else
 	{
 		this->SetVisibility(ESlateVisibility::Hidden);
 	}
+
+	return bIsVisible;
 }

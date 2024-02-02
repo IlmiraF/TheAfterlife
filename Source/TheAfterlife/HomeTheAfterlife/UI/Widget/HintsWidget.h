@@ -6,9 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "HintsWidget.generated.h"
 
-/**
- * 
- */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnVisible);
+
 UCLASS()
 class THEAFTERLIFE_API UHintsWidget : public UUserWidget
 {
@@ -25,7 +25,10 @@ public:
 	UFUNCTION()
 	void UpdateHint(FString newHint);
 
-	UFUNCTION()
-	void UpdateVisible(bool Visible);
-	
+	UFUNCTION(BlueprintCallable)
+	bool UpdateVisible(bool Visible);
+
+	UPROPERTY(BlueprintAssignable)
+	FOnVisible OnVisibleKurwa;
+
 };
