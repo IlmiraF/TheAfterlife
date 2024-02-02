@@ -31,9 +31,19 @@ private:
 	float Speed = 30.0f;
 
 	UPROPERTY(EditDefaultsOnly)
+	float SinusoidHeight = 3.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float SinusoidFrequency = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly)
 	float DeltaPosition = 10.0f;
 
 	int32 CurrnetIndex = 0;
 
 	void Fly(float DeltaTime);
+
+	float GetSinusoidOffset(float DeltaTime, float Height, float Frequency);
+
+	float CurrentTime;
 };

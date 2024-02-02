@@ -10,7 +10,6 @@ ABird::ABird()
 void ABird::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ABird::Tick(float DeltaTime)
@@ -24,13 +23,12 @@ void ABird::Tick(float DeltaTime)
 void ABird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void ABird::SetNewPoint(int32 Index)
-{	
+{
 	if (Index > CurrnetIndex)
-	{	
+	{
 		CurrnetIndex = Index;
 	}
 }
@@ -53,6 +51,20 @@ void ABird::Fly(float DeltaTime)
 
 	FVector CurrentLocation = GetActorLocation();
 	CurrentLocation += Direction * Speed * DeltaTime;
+
+	float SinusoidOffset = GetSinusoidOffset(DeltaTime, SinusoidHeight, SinusoidFrequency);
+	CurrentLocation.Z += SinusoidOffset;
+
 	SetActorLocationAndRotation(CurrentLocation, RotationQuat, false, 0, ETeleportType::None);
-	
+}
+
+float ABird::GetSinusoidOffset(float DeltaTime, float Height, float Frequency)
+{
+	CurrentTime += DeltaTime;
+
+	float Angle = CurrentTime * Frequency * 2 * PI;
+
+	float Offset = Height * FMath::Sin(Angle);
+
+	return Offset;
 }
