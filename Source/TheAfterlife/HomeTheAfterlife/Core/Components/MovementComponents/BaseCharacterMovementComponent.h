@@ -28,7 +28,6 @@ enum class ECustomMovementMode : uint8
 	CMOVE_None = 0 UMETA(DisplayName = "None"),
 	CMOVE_Mantling UMETA(DisplayName = "Mantling"),
 	CMOVE_Ladder UMETA(DisplayName = "Ladder"),
-	CMOVE_Zipline UMETA(DisplayName = "Zipline"),
 	CMOVE_WallRun	UMETA(DisplayName = "WallRun"),
 	CMOVE_Parkour UMETA(DisplayName = "Parkour"),
 	CMOVE_OnBeam UMETA(DisplayName = "OnBeam"),
@@ -47,7 +46,6 @@ enum class EDetachFromLadderMethod : uint8
 /**
  * 
  */
-
 UCLASS()
 class THEAFTERLIFE_API UBaseCharacterMovementComponent : public UCharacterMovementComponent
 {
@@ -66,11 +64,6 @@ public:
 	const class ALadder* GetCurrentLadder();
 	float GetLadderSpeedRatio() const;
 	float GetActorToCurrentLadderProjection(const FVector& Location) const;
-
-	void AttachToZipline(const class AZipline* Zipline);
-	void DetachFromZipline();
-	float GetActorToCurrentZiplineProjection(const FVector& Location) const;
-	bool IsOnZipline() const;
 
 	virtual void PhysicsRotation(float DeltaTime) override;
 
@@ -101,7 +94,6 @@ protected:
 
 	void PhysMantling(float DeltaTime, int32 Iterations);
 	void PhysLadder(float DeltaTime, int32 Iterations);
-	void PhysZipline(float DeltaTime, int32 Iterations);
 	void PhysWallRun(float DeltaTime, int32 Iterations);
 	void PhysClimb(float DeltaTime, int32 Iterations);
 	void PhysBeam(float DeltaTime, int32 Iterations);
@@ -127,12 +119,6 @@ protected:
 	UPROPERTY(Category = "Character Movement: Ladder", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
 	float JumpOffFromLadderSpeed = 500.0f;
 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character movement: Zipline", meta = (ClampMin = 0.0f, UIMin = 0.0f))
-	float MaxSpeedOnZipline = 1000.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character movement: Zipline", meta = (ClampMin = 0.0f, UIMin = 0.0f))
-	float ZiplineToCharacterOffset = 60.0f;
 
 
 	UPROPERTY(EditDefaultsOnly, Category = "Character Movement: WallRun") 
@@ -184,6 +170,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing")
 	UAnimMontage* HopLeftMontage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing")
+	UAnimMontage* HopUpMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing")
+	UAnimMontage* HopDownMontage;
+
 
 	UPROPERTY(Category = "Character Movement: On Beam", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
 	float OnBeamMaxSpeed = 100.0f;
@@ -194,7 +186,6 @@ private:
 	FTimerHandle MantlingTimer;
 
 	const ALadder* CurrentLadder = nullptr;
-	const AZipline* CurrentZipline = nullptr;
 
 	FRotator ForceTargetRotation = FRotator::ZeroRotator;
 	bool bForceRotation = false;
@@ -209,16 +200,15 @@ private:
 	UFUNCTION()
 	void OnClimbMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	bool bIsHopping = false;
-	FVector CurrentClimbableSurfaceNormal;
-	FVector CurrentClimbableSurfaceLocation;
-	TArray<FHitResult> ClimbableSurfacesTracedResults;
-	TArray<FHitResult> GetClimbableSurfaces();
+	FVector CurrentClimbableSurfaceNormal = FVector::ZeroVector;
+	FVector CurrentClimbableSurfaceLocation = FVector::ZeroVector;
+	FHitResult ClimbableSurfacesTracedResults;
+	FHitResult GetClimbableSurfaces();
 	void ProcessClimbableSurfaceInfo();
 	bool ShouldStopClimbing();
 	bool CheckHasReachedFloor();
 	bool CheckHasReachedLedge();
 	FHitResult TraceFromEyeHeight(float TraceDistance, float TraceStartOffset = 0.f);
-	FHitResult TraceFromEyeHeightHop(float TraceDistance);
 	void StartClimbing();
 	void StopClimbing();
 
@@ -229,8 +219,12 @@ private:
 
 	void HandleHopRight();
 	void HandleHopLeft();
+	void HandleHopUp();
+	void HandleHopDown();
+	bool CheckCanHopUp(FVector& OutHopUpTargetPosition);
 	bool CheckCanHopRight(FVector& OutHopUpTargetPosition);
 	bool CheckCanHopLeft(FVector& OutHopUpTargetPosition);
+	bool CheckCanHopDown(FVector& OutHopUpTargetPosition);
 	void SetMotionWarpTarget(const FName& InWarpTargetName, const FVector& InTargetPosition);
 
 	//Beam

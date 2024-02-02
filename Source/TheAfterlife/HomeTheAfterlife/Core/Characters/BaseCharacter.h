@@ -76,9 +76,6 @@ public:
 	void InteractWithLadder();
 	const class ALadder* GetAvailableLadder() const;
 
-	void InteractWithZipline();
-	const class AZipline* GetAvailableZipline() const;
-
 	void InteractWithRunWall();
 	const class ARunWall* GetAvailableRunWall() const;
 

@@ -8,7 +8,6 @@
 #include "../Components/AdditionalComponents/LedgeDetectorComponent.h"
 #include "Curves/CurveVector.h"
 #include "../Actors/Interactive/Environment/Ladder.h"
-#include "../Actors/Interactive/Environment/Zipline.h"
 #include "../Actors/Interactive/Environment/RunWall.h"
 #include "../Actors/Interactive/Environment/Beam.h"
 #include "../Actors/Interactive/InteractiveActor.h"
@@ -167,36 +166,6 @@ const ALadder* ABaseCharacter::GetAvailableLadder() const
 	return Result;
 }
 
-void ABaseCharacter::InteractWithZipline()
-{
-	if (GetBaseCharacterMovementComponent()->IsOnZipline())
-	{
-		GetBaseCharacterMovementComponent()->DetachFromZipline();
-	}
-	else
-	{
-		const AZipline* AvailableZipline = GetAvailableZipline();
-		if (IsValid(AvailableZipline))
-		{
-			GetBaseCharacterMovementComponent()->AttachToZipline(AvailableZipline);
-		}
-	}
-}
-
-const AZipline* ABaseCharacter::GetAvailableZipline() const
-{
-	const AZipline* Result = nullptr;
-	for (const AInteractiveActor* InteractiveActor : AvailableInteractiveActors)
-	{
-		if (InteractiveActor->IsA<AZipline>())
-		{
-			Result = StaticCast<const AZipline*>(InteractiveActor);
-			break;
-		}
-	}
-	return Result;
-}
-
 void ABaseCharacter::InteractWithRunWall()
 {
 	const ARunWall* AvailableRunWall = GetAvailableRunWall();
@@ -271,7 +240,7 @@ void ABaseCharacter::BeginPlay()
 
 bool ABaseCharacter::CanMantle() const
 {
-	return !GetBaseCharacterMovementComponent()->IsOnLadder() && !GetBaseCharacterMovementComponent()->IsOnZipline() && !GetBaseCharacterMovementComponent()->IsClimbing();
+	return !GetBaseCharacterMovementComponent()->IsOnLadder();// && !GetBaseCharacterMovementComponent()->IsClimbing();
 }
 
 void ABaseCharacter::OnDeath()

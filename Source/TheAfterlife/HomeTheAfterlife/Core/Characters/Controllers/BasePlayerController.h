@@ -36,8 +36,6 @@ protected:
 	void ClimbLadderUp(float value);
 	void InteractWithLadder();
 
-	void InteractWithZipline();
-
 	void InteractWithRunWall();
 
 	void ClimbMoveForward(float value);
