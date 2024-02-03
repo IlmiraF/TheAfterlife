@@ -12,7 +12,6 @@
 #include "../Actors/Interactive/Environment/RunWall.h"
 #include "../Actors/Interactive/Environment/Beam.h"
 #include "../Actors/Interactive/InteractiveActor.h"
-#include "../Components\CharacterComponents\PlayerUIComponent.h"
 #include "../../../TheAfterlifeTypes.h"
 #include "Engine/DamageEvents.h"
 #include "MotionWarpingComponent.h"
@@ -29,7 +28,6 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 
 	CharacterAttributesComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("Attribute Component"));
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComp"));
-	PlayerUIComponent = CreateDefaultSubobject<UPlayerUIComponent>(TEXT("PlayerUIComponent"));
 }
 
 void ABaseCharacter::Jump()

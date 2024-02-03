@@ -2,11 +2,10 @@
 
 
 #include "TutorialCollider.h"
-#include <TheAfterlife/HomeTheAfterlife/Core/Characters/PlayerCharacter.h>
-#include <TheAfterlife/HomeTheAfterlife/Core/Characters/Controllers/BasePlayerController.h>
-#include <TheAfterlife/HomeTheAfterlife/Core/Components/CharacterComponents/PlayerUIComponent.h>
+#include "../../Characters/PlayerCharacter.h"
+#include "../../Characters/Controllers/BasePlayerController.h"
 #include "EngineUtils.h"
-#include "../../../UI\Widget\HintsWidget.h"
+#include "../../UI/Widget/HintsWidget.h"
 
 // Sets default values
 ATutorialCollider::ATutorialCollider()
@@ -33,10 +32,17 @@ void ATutorialCollider::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 		return;
 	}
 
-	UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetComponentByClass<UPlayerUIComponent>();
+	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(PlayerCharacter->GetController());
 
-	PlayerUIComponent->GetHintsWidget()->UpdateHint(TutorialText);
-	PlayerUIComponent->GetHintsWidget()->UpdateVisible(true);
+	if (IsValid(BasePlayerController))
+	{
+		BasePlayerController->UpdateHintsWidget(TutorialText, true);
+	}
+
+	//UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetComponentByClass<UPlayerUIComponent>();
+
+	//PlayerUIComponent->GetHintsWidget()->UpdateHint(TutorialText);
+	//PlayerUIComponent->GetHintsWidget()->UpdateVisible(true);
 }
 
 void ATutorialCollider::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -53,9 +59,16 @@ void ATutorialCollider::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 		return;
 	}
 
-	UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetComponentByClass<UPlayerUIComponent>();
+	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(PlayerCharacter->GetController());
 
-	PlayerUIComponent->GetHintsWidget()->UpdateVisible(false);
+	if (IsValid(BasePlayerController))
+	{
+		BasePlayerController->UpdateHintsWidget("", false);
+	}
+
+	//UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetComponentByClass<UPlayerUIComponent>();
+
+	//PlayerUIComponent->GetHintsWidget()->UpdateVisible(false);
 
 	for (TActorIterator<ABird> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include <TheAfterlife/HomeTheAfterlife/Core/Components/CharacterComponents/PlayerUIComponent.h>
 #include "BaseCharacter.generated.h"
 
 
@@ -108,9 +107,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
 	UCharacterAttributeComponent* CharacterAttributesComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
-	UPlayerUIComponent* PlayerUIComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
 	UMotionWarpingComponent* MotionWarpingComponent;

@@ -21,6 +21,8 @@ public:
 
 	virtual void SetPawn(APawn* InPawn) override;
 
+	void UpdateHintsWidget(FString TutorialText, bool Visibility);
+
 protected:
 
 
@@ -51,5 +53,12 @@ protected:
 
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
+	TSubclassOf<class UPlayerHUDWidget> PlayerHUDWidgetClass;
 
+private:
+
+	void CreateAndInitializeWidgets();
+
+	UPlayerHUDWidget* PlayerHUDWidget = nullptr;
 };

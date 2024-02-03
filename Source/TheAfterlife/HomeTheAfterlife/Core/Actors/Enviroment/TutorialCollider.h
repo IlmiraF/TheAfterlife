@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include <Components/BoxComponent.h>
+#include "Components/BoxComponent.h"
 #include <TheAfterlife/HomeTheAfterlife/Core/Characters/Birds/Bird.h>
 #include "TutorialCollider.generated.h"
 
