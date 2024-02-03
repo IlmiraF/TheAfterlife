@@ -7,7 +7,7 @@
 #include "HintsWidget.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnVisible);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnVisible, bool, IsVisible);
 
 UCLASS()
 class THEAFTERLIFE_API UHintsWidget : public UUserWidget
@@ -26,7 +26,7 @@ public:
 	void UpdateHint(FString newHint);
 
 	UFUNCTION(BlueprintCallable)
-	bool UpdateVisible(bool Visible);
+	void UpdateVisible(bool Visible);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnVisible OnVisible;
