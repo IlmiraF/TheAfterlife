@@ -29,6 +29,6 @@ public:
 	bool UpdateVisible(bool Visible);
 
 	UPROPERTY(BlueprintAssignable)
-	FOnVisible OnVisibleKurwa;
+	FOnVisible OnVisible;
 
 };

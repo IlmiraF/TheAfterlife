@@ -16,11 +16,10 @@ bool UHintsWidget::UpdateVisible(bool Visible)
 	{
 		this->SetVisibility(ESlateVisibility::Visible);
 
-		if (OnVisibleKurwa.IsBound())
-		{
-			OnVisibleKurwa.Broadcast();
+		if (OnVisible.IsBound())
+		{	;
+			OnVisible.Broadcast();
 		}
-		
 	}
 	else
 	{
