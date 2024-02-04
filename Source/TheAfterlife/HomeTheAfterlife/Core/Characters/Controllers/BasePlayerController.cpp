@@ -194,12 +194,12 @@ void ABasePlayerController::CreateAndInitializeWidgets()
 }
 
 void ABasePlayerController::UpdateHintsWidget(FString TutorialText, bool Visibility)
-{
+{	
 	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
-	{
+	{	
 		UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
 		if (IsValid(HintsWidget))
-		{
+		{	
 			HintsWidget->UpdateHint(TutorialText);
 			HintsWidget->UpdateVisible(Visibility);
 		}
