@@ -15,7 +15,6 @@ class THEAFTERLIFE_API UCharacterAttributeComponent : public UActorComponent, pu
 
 public:
 	UCharacterAttributeComponent();
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	FOnDeathEventSignature OnDeathEvent;
 	FOnHealthChanged OnHealthChangedEvent;
@@ -27,6 +26,10 @@ public:
 	virtual void OnLevelDeserialized_Implementation() override;
 
 	void AddHealth(float HealthToAdd);
+
+	float GetHealthPercent() const;
+
+	float GetBalancePercent() const;
 
 protected:
 

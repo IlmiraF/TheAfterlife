@@ -291,17 +291,14 @@ void UBaseCharacterMovementComponent::StartWalkingOnBeam()
 {
 	SetMovementMode(MOVE_Custom, (uint8)ECustomMovementMode::CMOVE_OnBeam);
 	StartBalancingDirection = UKismetMathLibrary::RandomBool() ? 1.0f : -1.0f;
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("StartBeam"));
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("StartBeam"));
 }
 
 void UBaseCharacterMovementComponent::StopWalkingOnBeam()
 {
-	FVector Start = UpdatedComponent->GetComponentLocation();
-	FVector FallDirection = Start - StartBalancingDirection * UpdatedComponent->GetRightVector() * 100.0f;
-	GetOwner()->SetActorLocation(FallDirection);
 	OnBeamDirection = 0.0f;
-	SetMovementMode(MOVE_Falling);
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("StopBeam"));
+	SetMovementMode(MOVE_Walking);
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("StopBeam"));
 }
 
 float UBaseCharacterMovementComponent::GetOnBeamDirection() const
@@ -612,12 +609,16 @@ void UBaseCharacterMovementComponent::PhysBeam(float DeltaTime, int32 Iterations
 
 	OnBeamDirection += DeltaTime * 10.0f * StartBalancingDirection;
 
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, FString::Printf(TEXT("%f"), OnBeamDirection));
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, FString::Printf(TEXT("%f"), OnBeamDirection));
 
 	if (FMath::Abs(OnBeamDirection) >= 45.0f)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, FString::Printf(TEXT("%f"), OnBeamDirection));
-		StopWalkingOnBeam();
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, FString::Printf(TEXT("%f"), OnBeamDirection));
+		//StopWalkingOnBeam();
+		FVector Start = UpdatedComponent->GetComponentLocation();
+		FVector FallDirection = Start - StartBalancingDirection * UpdatedComponent->GetRightVector() * 100.0f;
+		GetOwner()->SetActorLocation(FallDirection);
+		SetMovementMode(MOVE_Falling);
 	}
 
 	FHitResult Hit;
@@ -937,7 +938,7 @@ bool UBaseCharacterMovementComponent::CheckCanHopUp(FVector& OutHopUpTargetPosit
 {
 	FHitResult HopHit;
 	const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
-	const FVector Start = ComponentLocation + UpdatedComponent->GetUpVector() * 200.0f;
+	const FVector Start = ComponentLocation + UpdatedComponent->GetUpVector() * 240.0f;
 	const FVector End = Start + UpdatedComponent->GetForwardVector() * 30.0f;
 	FCollisionShape CollisionShape = FCollisionShape::MakeSphere(ClimbCapsuleTraceRadius);
 	GetWorld()->SweepSingleByObjectType(HopHit, Start, End, FQuat::Identity, ECC_Parkour, CollisionShape);
@@ -962,7 +963,7 @@ bool UBaseCharacterMovementComponent::CheckCanHopRight(FVector& OutHopRightTarge
 {
 	FHitResult HopHit;
 	const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
-	const FVector Start = ComponentLocation + UpdatedComponent->GetUpVector() * 100.0f + UpdatedComponent->GetRightVector() * 300.0f;
+	const FVector Start = ComponentLocation + UpdatedComponent->GetUpVector() * 80.0f + UpdatedComponent->GetRightVector() * 300.0f;
 	const FVector End = Start + UpdatedComponent->GetForwardVector() * 30.0f;
 	FCollisionShape CollisionShape = FCollisionShape::MakeSphere(ClimbCapsuleTraceRadius);
 	GetWorld()->SweepSingleByObjectType(HopHit, Start, End, FQuat::Identity, ECC_Parkour, CollisionShape);
@@ -987,7 +988,7 @@ bool UBaseCharacterMovementComponent::CheckCanHopLeft(FVector& OutHopLeftTargetP
 {
 	FHitResult HopHit;
 	const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
-	const FVector Start = ComponentLocation + UpdatedComponent->GetUpVector() * 100.0f - UpdatedComponent->GetRightVector() * 300.0f;
+	const FVector Start = ComponentLocation + UpdatedComponent->GetUpVector() * 80.0f - UpdatedComponent->GetRightVector() * 300.0f;
 	const FVector End = Start + UpdatedComponent->GetForwardVector() * 30.0f;
 	FCollisionShape CollisionShape = FCollisionShape::MakeSphere(ClimbCapsuleTraceRadius);
 	GetWorld()->SweepSingleByObjectType(HopHit, Start, End, FQuat::Identity, ECC_Parkour, CollisionShape);
