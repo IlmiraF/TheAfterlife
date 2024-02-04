@@ -26,7 +26,6 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAxis("OnBeamMoveRight", this, &ABasePlayerController::OnBeamMoveRight);
 
 	InputComponent->BindAction("InteractWithLadder", EInputEvent::IE_Pressed, this, &ABasePlayerController::InteractWithLadder);
-	InputComponent->BindAction("InteractWithZipline", EInputEvent::IE_Released, this, &ABasePlayerController::InteractWithZipline);
 	InputComponent->BindAction("InteractWithRunWall", EInputEvent::IE_Released, this, &ABasePlayerController::InteractWithRunWall);
 	InputComponent->BindAction("ClimbHop", EInputEvent::IE_Pressed, this, &ABasePlayerController::ClimbHop);
 	InputComponent->BindAction("Climb", EInputEvent::IE_Pressed, this, &ABasePlayerController::OnClimbActionStarted);
@@ -104,14 +103,6 @@ void ABasePlayerController::InteractWithLadder()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->InteractWithLadder();
-	}
-}
-
-void ABasePlayerController::InteractWithZipline()
-{
-	if (CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->InteractWithZipline();
 	}
 }
 
