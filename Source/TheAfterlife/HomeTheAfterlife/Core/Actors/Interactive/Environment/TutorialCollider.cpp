@@ -39,11 +39,6 @@ void ATutorialCollider::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 	{
 		BasePlayerController->UpdateHintsWidget(TutorialText, true);
 	}
-
-	//UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetComponentByClass<UPlayerUIComponent>();
-
-	//PlayerUIComponent->GetHintsWidget()->UpdateHint(TutorialText);
-	//PlayerUIComponent->GetHintsWidget()->UpdateVisible(true);
 }
 
 void ATutorialCollider::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -64,12 +59,8 @@ void ATutorialCollider::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 
 	if (IsValid(BasePlayerController))
 	{
-		BasePlayerController->UpdateHintsWidget("", false);
+		BasePlayerController->UpdateHintsWidget(TutorialText, false);
 	}
-
-	//UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetComponentByClass<UPlayerUIComponent>();
-
-	//PlayerUIComponent->GetHintsWidget()->UpdateVisible(false);
 
 	for (TActorIterator<ABird> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{

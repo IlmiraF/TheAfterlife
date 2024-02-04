@@ -1,21 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// out your copyright notice in the Description page of Project Settings.
 
 
 #include "BasePlayerController.h"
 #include "../Controllers/BasePlayerController.h"
 #include "GameFramework/PlayerInput.h"
-#include "../../UI/Widget/AmmoWidget.h"
-#include "../../UI/Widget/PlayerHUDWidget.h"
-#include "Kismet/GameplayStatics.h"
-#include "../../Subsystems/SaveSubsystem/SaveSubsystem.h"
-#include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "../BaseCharacter.h"
+#include "../../UI/Widget/PlayerHUDWidget.h"
+#include "../../UI/Widget/HintsWidget.h"
 
 void ABasePlayerController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
 	CachedBaseCharacter = Cast<ABaseCharacter>(InPawn);
-	if (CachedBaseCharacter.IsValid() && IsLocalController())
+	if (CachedBaseCharacter.IsValid())
 	{
 		CreateAndInitializeWidgets();
 	}
@@ -41,22 +38,7 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePlayerController::Jump);
 	InputComponent->BindAction("Mantle", EInputEvent::IE_Pressed, this, &ABasePlayerController::Mantle);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
-	InputComponent->BindAction("QuickSaveGame", EInputEvent::IE_Pressed, this, &ABasePlayerController::QuickSaveGame);
-	InputComponent->BindAction("QuickLoadGame", EInputEvent::IE_Pressed, this, &ABasePlayerController::QuickLoadGame);
-
-	//FInputActionBinding& ToggleMenuBinding = InputComponent->BindAction("ToggleMainMenu", EInputEvent::IE_Pressed, this, &ABasePlayerController::ToggleMainMenu);
-	//ToggleMenuBinding.bExecuteWhenPaused = true;
-
-	InputComponent->BindAction("Punch", EInputEvent::IE_Pressed, this, &ABasePlayerController::HandsMeleeAttack);
-	InputComponent->BindAction("Kick", EInputEvent::IE_Pressed, this, &ABasePlayerController::LegsMeleeAttack);
-	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ABasePlayerController::Fire);
-	InputComponent->BindAction("Aim", EInputEvent::IE_Pressed, this, &ABasePlayerController::StartAiming);
-	InputComponent->BindAction("Aim", EInputEvent::IE_Released, this, &ABasePlayerController::StopAiming);
-	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::NextItem);
-	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::PreviousItem);
-	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
 }
-
 
 void ABasePlayerController::MoveForward(float value)
 {
@@ -186,143 +168,40 @@ void ABasePlayerController::OnBeamMoveRight(float value)
 	}
 }
 
-void ABasePlayerController::QuickSaveGame()
-{
-	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
-	SaveSubsystem->SaveGame();
-}
-
-void ABasePlayerController::QuickLoadGame()
-{
-	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
-	SaveSubsystem->LoadLastGame();
-}
-
-void ABasePlayerController::NextItem()
-{
-	if (CachedBaseCharacter.IsValid())
-	{	
-		CachedBaseCharacter->NextItem();
-	}
-}
-
-void ABasePlayerController::PreviousItem()
-{
-	if (CachedBaseCharacter.IsValid())
-	{	
-		CachedBaseCharacter->PreviousItem();
-	}
-}
-
-void ABasePlayerController::Fire()
-{
-	if(CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->Fire();
-	}
-}
-
-void ABasePlayerController::StartAiming()
-{
-	if (CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->StartAiming();
-	}
-}
-
-void ABasePlayerController::StopAiming()
-{
-	if (CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->StopAiming();
-	}
-}
-
-void ABasePlayerController::EquipPrimaryItem()
-{
-	if (CachedBaseCharacter.IsValid())
-	{	
-		CachedBaseCharacter->EquipPrimaryItem();
-	}
-}
-
-void ABasePlayerController::HandsMeleeAttack()
-{
-	if (CachedBaseCharacter.IsValid())
-	{	
-		CachedBaseCharacter->HandsMeleeAttack();
-	}
-}
-
-void ABasePlayerController::LegsMeleeAttack()
-{
-	if (CachedBaseCharacter.IsValid())
-	{	
-		CachedBaseCharacter->LegsMeleeAttack();
-	}
-}
-
-void ABasePlayerController::ThrowBomb()
-{
-	if (CachedBaseCharacter.IsValid())
-	{	
-		CachedBaseCharacter->ThrowBomb();
-	}
-}
-
 void ABasePlayerController::CreateAndInitializeWidgets()
 {
-	/*if (!IsValid(MainMenuWidget))
-	{
-		MainMenuWidget = CreateWidget<UUserWidget>(GetWorld(), MainMenuWidgetClass);
-	}*/
-
 	if (!IsValid(PlayerHUDWidget))
 	{
 		PlayerHUDWidget = CreateWidget<UPlayerHUDWidget>(GetWorld(), PlayerHUDWidgetClass);
+
 		if (IsValid(PlayerHUDWidget))
 		{
 			PlayerHUDWidget->AddToViewport();
 		}
 	}
 
-	if (CachedBaseCharacter.IsValid() && IsValid(PlayerHUDWidget))
+	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
 	{
-		UAmmoWidget* AmmoWidget = PlayerHUDWidget->GetWidgetAmmo();
-		if (IsValid(AmmoWidget))
-		{	
-			UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent_Mutable();
-			CharacterEquipment->WeaponAmmoChanged.AddUFunction(AmmoWidget, FName("UpdateAmmoCount"));
-			CharacterEquipment->WeaponAmmoChanged.AddUFunction(PlayerHUDWidget, FName("SetBombAmmo"));
+		UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
+		if (IsValid(HintsWidget))
+		{
+			HintsWidget->UpdateVisible(false);
 		}
-
 	}
 
 	SetInputMode(FInputModeGameOnly{});
 	bShowMouseCursor = false;
 }
 
-void ABasePlayerController::ToggleMainMenu()
-{
-	/*if (!IsValid(MainMenuWidget) || !IsValid(PlayerHUDWidget))
-	{
-		return;
+void ABasePlayerController::UpdateHintsWidget(FString TutorialText, bool Visibility)
+{	
+	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
+	{	
+		UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
+		if (IsValid(HintsWidget))
+		{	
+			HintsWidget->UpdateHint(TutorialText);
+			HintsWidget->UpdateVisible(Visibility);
+		}
 	}
-
-	if (MainMenuWidget->IsVisible())
-	{
-		MainMenuWidget->RemoveFromParent();
-		PlayerHUDWidget->AddToViewport();
-		SetInputMode(FInputModeGameOnly{});
-		SetPause(false);
-		bShowMouseCursor = false;
-	}
-	else
-	{
-		MainMenuWidget->AddToViewport();
-		PlayerHUDWidget->RemoveFromParent();
-		SetInputMode(FInputModeGameAndUI{});
-		SetPause(true);
-		bShowMouseCursor = true;
-	}*/
 }
