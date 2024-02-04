@@ -4,6 +4,7 @@
 #include "UObject/WeakObjectPtrTemplates.h"
 #include "Components/CapsuleComponent.h"
 #include "../../Characters/BaseCharacter.h"
+#include "../../Components/MovementComponents/BaseCharacterMovementComponent.h"
 
 
 UCharacterAttributeComponent::UCharacterAttributeComponent()
@@ -11,10 +12,14 @@ UCharacterAttributeComponent::UCharacterAttributeComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UCharacterAttributeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+float UCharacterAttributeComponent::GetHealthPercent() const
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	GEngine->AddOnScreenDebugMessage(0, 0.5f, FColor::Red, FString::Printf(TEXT("Current Health: %f"), Health));
+	return Health / MaxHealth;
+}
+
+float UCharacterAttributeComponent::GetBalancePercent() const
+{
+	return CachedBaseCharacterOwner->GetBaseCharacterMovementComponent()->GetOnBeamDirection();
 }
 
 void UCharacterAttributeComponent::BeginPlay()

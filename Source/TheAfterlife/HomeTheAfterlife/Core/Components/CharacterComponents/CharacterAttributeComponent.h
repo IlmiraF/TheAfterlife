@@ -13,11 +13,14 @@ class THEAFTERLIFE_API UCharacterAttributeComponent : public UActorComponent
 
 public:
 	UCharacterAttributeComponent();
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	FOnDeathEventSignature OnDeathEvent;
 
 	bool IsAlive() { return Health > 0.0f; };
+
+	float GetHealthPercent() const;
+
+	float GetBalancePercent() const;
 
 protected:
 

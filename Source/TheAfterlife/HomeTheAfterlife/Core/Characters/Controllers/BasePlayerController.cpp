@@ -1,15 +1,21 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// out your copyright notice in the Description page of Project Settings.
 
 
 #include "BasePlayerController.h"
 #include "../Controllers/BasePlayerController.h"
 #include "GameFramework/PlayerInput.h"
 #include "../BaseCharacter.h"
+#include "../../UI/Widget/PlayerHUDWidget.h"
+#include "../../UI/Widget/HintsWidget.h"
 
 void ABasePlayerController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
 	CachedBaseCharacter = Cast<ABaseCharacter>(InPawn);
+	if (CachedBaseCharacter.IsValid())
+	{
+		CreateAndInitializeWidgets();
+	}
 }
 
 void ABasePlayerController::SetupInputComponent()
@@ -159,5 +165,43 @@ void ABasePlayerController::OnBeamMoveRight(float value)
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->OnBeamMoveRight(value);
+	}
+}
+
+void ABasePlayerController::CreateAndInitializeWidgets()
+{
+	if (!IsValid(PlayerHUDWidget))
+	{
+		PlayerHUDWidget = CreateWidget<UPlayerHUDWidget>(GetWorld(), PlayerHUDWidgetClass);
+
+		if (IsValid(PlayerHUDWidget))
+		{
+			PlayerHUDWidget->AddToViewport();
+		}
+	}
+
+	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
+	{
+		UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
+		if (IsValid(HintsWidget))
+		{
+			HintsWidget->UpdateVisible(false);
+		}
+	}
+
+	SetInputMode(FInputModeGameOnly{});
+	bShowMouseCursor = false;
+}
+
+void ABasePlayerController::UpdateHintsWidget(FString TutorialText, bool Visibility)
+{
+	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
+	{
+		UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
+		if (IsValid(HintsWidget))
+		{
+			HintsWidget->UpdateHint(TutorialText);
+			HintsWidget->UpdateVisible(Visibility);
+		}
 	}
 }

@@ -240,7 +240,7 @@ void ABaseCharacter::BeginPlay()
 
 bool ABaseCharacter::CanMantle() const
 {
-	return !GetBaseCharacterMovementComponent()->IsOnLadder();// && !GetBaseCharacterMovementComponent()->IsClimbing();
+	return !GetBaseCharacterMovementComponent()->IsOnLadder() && !GetBaseCharacterMovementComponent()->IsClimbing();
 }
 
 void ABaseCharacter::OnDeath()
