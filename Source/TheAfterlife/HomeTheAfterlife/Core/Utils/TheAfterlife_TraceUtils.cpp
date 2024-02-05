@@ -92,13 +92,13 @@ bool TheAfterlife_TraceUtils::OverlapCapsuleBlockingByProfile(const UWorld* Worl
 FHitResult TheAfterlife_TraceUtils::LineTraceSingleByObject(const UWorld* World, const FVector& Start, const FVector& End, TArray<TEnumAsByte<EObjectTypeQuery>> ClimbableSurfaceTraceTypes)
 {
 	FHitResult OutHit;
-	UKismetSystemLibrary::LineTraceSingleForObjects(World, Start, End, ClimbableSurfaceTraceTypes, false, TArray<AActor*>(), EDrawDebugTrace::ForOneFrame, OutHit, false);
+	UKismetSystemLibrary::LineTraceSingleForObjects(World, Start, End, ClimbableSurfaceTraceTypes, false, TArray<AActor*>(), EDrawDebugTrace::None, OutHit, false);
 	return OutHit;
 }
 
 TArray<FHitResult> TheAfterlife_TraceUtils::SweepCapsuleMultiByObjectType(const UWorld* World, const FVector& Start, const FVector& End, TArray<TEnumAsByte<EObjectTypeQuery>> ClimbableSurfaceTraceTypes)
 {
 	TArray<FHitResult> OutCapsuleTraceHitResult;
-	UKismetSystemLibrary::CapsuleTraceMultiForObjects(World, Start, End, 30.0f, 72.0f, ClimbableSurfaceTraceTypes, false, TArray<AActor*>(), EDrawDebugTrace::ForOneFrame, OutCapsuleTraceHitResult, false, FColor::Blue, FColor::Purple);
+	UKismetSystemLibrary::CapsuleTraceMultiForObjects(World, Start, End, 30.0f, 72.0f, ClimbableSurfaceTraceTypes, false, TArray<AActor*>(), EDrawDebugTrace::None, OutCapsuleTraceHitResult, false, FColor::Blue, FColor::Purple);
 	return OutCapsuleTraceHitResult;
 }

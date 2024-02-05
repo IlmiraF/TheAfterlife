@@ -638,7 +638,7 @@ bool UBaseCharacterMovementComponent::IsWallOnSideTrace(FHitResult& WallHit, boo
 
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetBaseCharacterOwner());
-	return TheAfterlife_TraceUtils::SweepCapsuleSingleByChannel(GetWorld(), WallHit, Start, End, 30.0f, 42.0f, FQuat::Identity, ECC_Visibility, Params, FCollisionResponseParams::DefaultResponseParam, true, 5.0f);
+	return TheAfterlife_TraceUtils::SweepCapsuleSingleByChannel(GetWorld(), WallHit, Start, End, 30.0f, 42.0f, FQuat::Identity, ECC_Visibility, Params, FCollisionResponseParams::DefaultResponseParam, false, 5.0f);
 	//return GetWorld()->LineTraceSingleByChannel(WallHit, Start, End, ECC_Visibility, Params);
 }
 
