@@ -61,7 +61,7 @@ void APlayerCharacter::LookUp(float value)
 
 void APlayerCharacter::Jump()
 {
-	if (!GetBaseCharacterMovementComponent()->CanStartClimbing() && !GetBaseCharacterMovementComponent()->IsClimbing() && !GetBaseCharacterMovementComponent()->IsCrouching())
+	if (!GetBaseCharacterMovementComponent()->CanStartClimbing() && !GetBaseCharacterMovementComponent()->IsClimbing() && !GetBaseCharacterMovementComponent()->IsCrouching() && !GetBaseCharacterMovementComponent()->IsOnBeam())
 	{
 		Super::Jump();
 		JumpCount++;
