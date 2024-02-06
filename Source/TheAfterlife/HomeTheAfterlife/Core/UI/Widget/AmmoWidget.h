@@ -16,7 +16,7 @@ class THEAFTERLIFE_API UAmmoWidget : public UUserWidget
 	
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ammo")
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ammo")
 	int32 Ammo;
 
 	UFUNCTION(BlueprintCallable)
