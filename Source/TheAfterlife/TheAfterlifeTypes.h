@@ -16,7 +16,7 @@ UENUM(BlueprintType)
 enum class EEquipableItemType : uint8
 {
 	NONE,
-	PISTOL,
+	SLINGSHOT,
 	THROWABLE,
 	MELEE
 };
@@ -26,7 +26,7 @@ UENUM(BlueprintType)
 enum class EAmunitionType : uint8
 {
 	NONE,
-	PISTOL,
+	SLINGSHOT,
 	MAX UMETA(Hidden)
 };
 
@@ -60,5 +60,3 @@ enum class EReticleType : uint8
 	SniperRifle,
 	MAX UMETA(Hidden)
 };
-
-

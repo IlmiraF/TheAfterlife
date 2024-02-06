@@ -41,7 +41,6 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::NextItem);
 	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::PreviousItem);
 	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
-	//InputComponent->BindAction("ThrowBomb", EInputEvent::IE_Pressed, this, &ABasePlayerController::ThrowBomb);
 }
 
 
@@ -210,14 +209,6 @@ void ABasePlayerController::CreateAndInitializeWidgets()
 
 	if (CachedBaseCharacter.IsValid() && IsValid(PlayerHUDWidget))
 	{
-		//UReticleWidget* ReticleWidget = PlayerHUDWidget->GetReticleWidget();
-		//if (IsValid(ReticleWidget))
-		//{
-		//	CachedBaseCharacter->OnAimingStateChanged.AddUFunction(ReticleWidget, FName("OnAimingStateChanged"));
-		//	UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent_Mutable();
-		//	CharacterEquipment->OnEquippedItemChanged.AddUFunction(ReticleWidget, FName("OnEquippedItemChanged"));
-		//}
-
 		UAmmoWidget* AmmoWidget = PlayerHUDWidget->GetWidgetAmmo();
 		if (IsValid(AmmoWidget))
 		{	

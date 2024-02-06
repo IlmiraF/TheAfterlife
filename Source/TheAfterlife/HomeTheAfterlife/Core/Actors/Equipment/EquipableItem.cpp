@@ -1,5 +1,5 @@
 #include "EquipableItem.h"
-#include <TheAfterlife/HomeTheAfterlife/Core/Characters/BaseCharacter.h>
+#include "TheAfterlife/HomeTheAfterlife/Core/Characters/BaseCharacter.h"
 
 
 void AEquipableItem::SetOwner(AActor* NewOwner)

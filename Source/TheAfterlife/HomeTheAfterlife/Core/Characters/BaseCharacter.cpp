@@ -281,19 +281,11 @@ void ABaseCharacter::StopAiming()
 void ABaseCharacter::OnStartAiming_Implementation()
 {	
 	OnStartAimingIternal();
-	//if (OnAimingStateChanged.IsBound())
-	//{
-	//	OnAimingStateChanged.Broadcast(true);
-	//}
 }
 
 void ABaseCharacter::OnStopAiming_Implementation()
 {	
 	OnStopAimingIternal();
-	//if (OnAimingStateChanged.IsBound())
-	//{
-	//	OnAimingStateChanged.Broadcast(false);
-	//}
 }
 
 float ABaseCharacter::GetAimingMovementSpeed() const

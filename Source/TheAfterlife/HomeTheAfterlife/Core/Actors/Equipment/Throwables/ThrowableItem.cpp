@@ -1,6 +1,6 @@
 #include "ThrowableItem.h"
-#include <TheAfterlife/HomeTheAfterlife/Core/Characters/BaseCharacter.h>
-#include <TheAfterlife/HomeTheAfterlife/Core/Actors/Projectiles/Projectile.h>
+#include "TheAfterlife/HomeTheAfterlife/Core/Characters/BaseCharacter.h"
+#include "TheAfterlife/HomeTheAfterlife/Core/Actors/Projectiles/Projectile.h"
 
 void AThrowableItem::StartThrow()
 {

@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../../../../TheAfterlifeTypes.h"
-#include <TheAfterlife/HomeTheAfterlife/Core/Characters/BaseCharacter.h>
+#include "TheAfterlife/HomeTheAfterlife/Core/Characters/BaseCharacter.h"
 #include "EquipableItem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquipmentStateChanged, bool, bIsEquipped);

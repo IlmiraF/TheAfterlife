@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include <TheAfterlife\HomeTheAfterlife\Core\Actors\Equipment\EquipableItem.h>
-#include <TheAfterlife/HomeTheAfterlife/Core/Components/WeaponComponents/MeleeHitRegistrator.h>
-#include <TheAfterlife/TheAfterlifeTypes.h>
+#include "TheAfterlife\HomeTheAfterlife\Core\Actors\Equipment\EquipableItem.h"
+#include "TheAfterlife/HomeTheAfterlife/Core/Components/WeaponComponents/MeleeHitRegistrator.h"
+#include "TheAfterlife/TheAfterlifeTypes.h"
 #include "MeleeWeaponItem.generated.h"
 
 

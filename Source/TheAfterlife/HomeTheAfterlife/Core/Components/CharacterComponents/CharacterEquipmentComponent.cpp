@@ -161,7 +161,6 @@ void UCharacterEquipmentComponent::CreateLoadout()
 	for (const TPair<EAmunitionType, int32>& AmmoPair : MaxAmunitionAmount)
 	{
 		AmunitionArray[(uint32)AmmoPair.Key] = FMath::Max(AmmoPair.Value, 0);
-		//AmunitionArray[(uint32)AmmoPair.Key] = AmmoPair.Value;
 	}
 
 	ItemsArray.AddZeroed((uint32)EEquipmentSlots::MAX);

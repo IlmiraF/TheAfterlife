@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "WeaponBarellComponent.h"
 #include "../Source\TheAfterlife\TheAfterlifeTypes.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/DamageEvents.h"
-#include "WeaponBarellComponent.h"
 #include <TheAfterlife/HomeTheAfterlife/Core/Actors/Projectiles/Projectile.h>
 #include <Kismet/GameplayStatics.h>
 

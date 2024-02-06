@@ -1,6 +1,7 @@
+#include "ExplosiveComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystem.h"
-#include "ExplosiveComponent.h"
+
 
 void UExplosiveComponent::Explode(AController* Controller)
 {	
