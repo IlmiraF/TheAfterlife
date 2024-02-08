@@ -312,6 +312,7 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CharacterAttributesComponent->OnDeathEvent.AddUObject(this, &ABaseCharacter::OnDeath);
 	PunchAudioComponent->SetSound(PunchSoundBase);
 }
 
