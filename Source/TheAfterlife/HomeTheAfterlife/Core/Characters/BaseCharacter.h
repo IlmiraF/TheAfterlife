@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "Components/AudioComponent.h"
 #include "Engine/DataTable.h"
+#include "AIController.h"
+#include "TheAfterlife\TheAfterlifeTypes.h"
 #include "BaseCharacter.generated.h"
 
 
@@ -83,12 +85,14 @@ typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
 
 UCLASS()
-class THEAFTERLIFE_API ABaseCharacter : public ACharacter
+class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
 public:
 	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
+
+	virtual void PossessedBy(AController* NewController) override;
 
 	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
 	FORCEINLINE UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
@@ -156,6 +160,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCanMove(bool Enabled);
 
+	virtual FGenericTeamId GetGenericTeamId() const override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -215,6 +221,9 @@ protected:
 	float AnimationVariable;
 
 	bool bCanMove = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Team")
+	ETeams Team = ETeams::ENEMY;
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;

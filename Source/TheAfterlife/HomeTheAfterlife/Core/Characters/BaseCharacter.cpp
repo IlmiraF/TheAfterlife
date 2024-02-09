@@ -17,6 +17,7 @@
 #include "Engine/DamageEvents.h"
 #include "../Actors\Equipment\Weapons\MeleeWeaponItem.h"
 #include "../Actors\Equipment\Weapons\RangeWeaponItem.h"
+#include <AIController.h>
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -46,6 +47,19 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 
 	PunchAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PunchAudioComponent"));
 	PunchAudioComponent->SetupAttachment(GetRootComponent());
+}
+
+void ABaseCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	AAIController* AIController = Cast<AAIController>(NewController);
+
+	if (IsValid(AIController))
+	{
+		FGenericTeamId TeamId((uint8)Team);
+		AIController->SetGenericTeamId(TeamId);
+	}
 }
 
 void ABaseCharacter::Jump()
@@ -431,4 +445,9 @@ void ABaseCharacter::PlayAudio(UAudioComponent* AudioComponent)
 void ABaseCharacter::SetCanMove(bool value)
 {
 	bCanMove = value;
+}
+
+FGenericTeamId ABaseCharacter::GetGenericTeamId() const
+{
+	return FGenericTeamId((uint8)Team);
 }

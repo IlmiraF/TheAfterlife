@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "HomeTheAfterlife/Core/Components/WeaponComponents/WeaponBarellComponent.h"
+#include "TheAfterlifeTypes.h"
 #include "Turret.generated.h"
 
 UENUM(BlueprintType)
@@ -21,6 +22,8 @@ class THEAFTERLIFE_API ATurret : public APawn
 
 public:
 	ATurret();
+
+	virtual void PossessedBy(AController* NewController) override;
 
 	virtual void Tick(float DeltaTime) override;
 
@@ -65,6 +68,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret parameters | Fire", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float FireDelayTime = 1.5f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret parameters | Team")
+	ETeams Team = ETeams::ENEMY;
+
 
 private:
 

@@ -1,6 +1,7 @@
 #include "Turret.h"
+#include "AIController.h"
 
-ATurret::ATurret()
+ATurret::ATurret() 
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -15,6 +16,19 @@ ATurret::ATurret()
 
 	WeaponBarell = CreateDefaultSubobject<UWeaponBarellComponent>(TEXT("Weapon Barrel"));
 	WeaponBarell->SetupAttachment(TurretBarrelComponent);
+}
+
+void ATurret::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	AAIController* AIController = Cast<AAIController>(NewController);
+
+	if (IsValid(AIController))
+	{
+		FGenericTeamId TeamId((uint8)Team);
+		AIController->SetGenericTeamId(TeamId);
+	}
 }
 
 

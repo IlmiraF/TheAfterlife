@@ -60,3 +60,11 @@ enum class EReticleType : uint8
 	SniperRifle,
 	MAX UMETA(Hidden)
 };
+
+UENUM(BlueprintType)
+enum  class ETeams: uint8
+{
+	PLAYER,
+	NPC,
+	ENEMY
+};
