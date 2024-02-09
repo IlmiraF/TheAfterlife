@@ -9,8 +9,6 @@
 #include "../../../Subsystems/SaveSubsystem/SaveSubsystem.h"
 #include "../../../../../TheAfterlifeTypes.h"
 
-bool AAutoSaveVolume::bIsSaved = false;
-
 AAutoSaveVolume::AAutoSaveVolume()
 {
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("VolumeRoot"));
@@ -42,9 +40,10 @@ void AAutoSaveVolume::OnInteractionVolumeOverlapBegin(UPrimitiveComponent* Overl
 		return;
 	}
 
+	bIsSaved = true;
+
 	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
 	SaveSubsystem->SaveGame();
-	bIsSaved = true;
 }
 
 bool AAutoSaveVolume::IsOverlappingCharacterCapsule(AActor* OtherActor, UPrimitiveComponent* OtherComp)

@@ -14,7 +14,17 @@ UCharacterAttributeComponent::UCharacterAttributeComponent()
 void UCharacterAttributeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	GEngine->AddOnScreenDebugMessage(0, 0.5f, FColor::Red, FString::Printf(TEXT("Current Health: %f"), Health));
+	GEngine->AddOnScreenDebugMessage(0, 0.5f, FColor::Red, FString::Printf(TEXT("Current Health: %f"), GetHealthPercent()));
+}
+
+float UCharacterAttributeComponent::GetHealthPercent() const
+{
+	return Health / MaxHealth;
+}
+
+void UCharacterAttributeComponent::OnLevelDeserialized_Implementation()
+{
+	OnHealthChanged();
 }
 
 void UCharacterAttributeComponent::BeginPlay()
@@ -29,6 +39,23 @@ void UCharacterAttributeComponent::BeginPlay()
 	CachedBaseCharacterOwner->OnTakeAnyDamage.AddDynamic(this, &UCharacterAttributeComponent::OnTakeAnyDamage);
 }
 
+void UCharacterAttributeComponent::OnHealthChanged()
+{
+	if (OnHealthChangedEvent.IsBound())
+	{
+		OnHealthChangedEvent.Broadcast(GetHealthPercent());
+	}
+
+	if (Health <= 0.0f)
+	{
+		//UE_LOG(LogDamage, Warning, TEXT("UCharacterAttributeComponent::OnTakeAnyDamage character %s is killed by an actor %s"), *CachedBaseCharacterOwner->GetName(), *DamageCauser->GetName());
+		if (OnDeathEvent.IsBound())
+		{
+			OnDeathEvent.Broadcast();
+		}
+	}
+}
+
 void UCharacterAttributeComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {	
 	if (!IsAlive())
@@ -39,14 +66,5 @@ void UCharacterAttributeComponent::OnTakeAnyDamage(AActor* DamagedActor, float D
 	UE_LOG(LogDamage, Warning, TEXT("UCharacterAttributesComponent::OnTakeAnyDamage %s recevied %.2f amount of damage from %s"), *CachedBaseCharacterOwner->GetName(), Damage, *DamageCauser->GetName());
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
 
-	if (Health <= 0.0f)
-	{	
-		UE_LOG(LogDamage, Warning, TEXT("UCharacterAttributesComponent::OnTakeAnyDamage character %s is killed by an actor %s"), *CachedBaseCharacterOwner->GetName(), *DamageCauser->GetName());
-
-
-		if (OnDeathEvent.IsBound())
-		{
-			OnDeathEvent.Broadcast();
-		}
-	}
+	OnHealthChanged();
 }

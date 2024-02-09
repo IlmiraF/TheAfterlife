@@ -239,6 +239,8 @@ const ABeam* ABaseCharacter::GetAvailableBeam() const
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CharacterAttributesComponent->OnDeathEvent.AddUObject(this, &ABaseCharacter::OnDeath);
 	
 }
 

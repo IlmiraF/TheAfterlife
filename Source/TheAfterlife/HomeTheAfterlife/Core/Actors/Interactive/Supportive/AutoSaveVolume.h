@@ -31,5 +31,5 @@ protected:
 
 private:
 
-	static bool bIsSaved;
+	bool bIsSaved = false;
 };

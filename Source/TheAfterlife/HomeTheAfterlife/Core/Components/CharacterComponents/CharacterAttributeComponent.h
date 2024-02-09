@@ -2,12 +2,14 @@
 
 #include "Components/ActorComponent.h"
 #include "CoreMinimal.h"
+#include "../../Subsystems/SaveSubsystem/SaveSubsystemInterface.h"
 #include "CharacterAttributeComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnDeathEventSignature)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class THEAFTERLIFE_API UCharacterAttributeComponent : public UActorComponent
+class THEAFTERLIFE_API UCharacterAttributeComponent : public UActorComponent, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
@@ -16,8 +18,13 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	FOnDeathEventSignature OnDeathEvent;
+	FOnHealthChanged OnHealthChangedEvent;
 
-	bool IsAlive() { return Health > 0.0f; };
+	bool IsAlive() { return Health > 0.0f; }
+
+	float GetHealthPercent() const;
+
+	virtual void OnLevelDeserialized_Implementation() override;
 
 protected:
 
@@ -28,7 +35,10 @@ protected:
 
 private:
 
+	UPROPERTY(SaveGame)
 	float Health = 0.0f;
+
+	void OnHealthChanged();
 
 	UFUNCTION()
 	void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
