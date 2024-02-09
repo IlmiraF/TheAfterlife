@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h"
 #include "BaseCharacter.generated.h"
 
 USTRUCT(BlueprintType)
@@ -44,12 +45,14 @@ class UMotionWarpingComponent;
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
 UCLASS()
-class THEAFTERLIFE_API ABaseCharacter : public ACharacter
+class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
+
+	virtual void OnLevelDeserialized_Implementation() override;
 
 	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
 	FORCEINLINE UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };

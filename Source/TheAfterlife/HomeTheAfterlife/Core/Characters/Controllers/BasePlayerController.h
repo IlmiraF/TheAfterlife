@@ -46,5 +46,8 @@ protected:
 	void OnBeamMoveForward(float value);
 	void OnBeamMoveRight(float value);
 
+	void QuickSaveGame();
+	void QuickLoadGame();
+
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
 };

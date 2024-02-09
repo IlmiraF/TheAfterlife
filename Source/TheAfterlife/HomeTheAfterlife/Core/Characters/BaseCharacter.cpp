@@ -29,6 +29,10 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComp"));
 }
 
+void ABaseCharacter::OnLevelDeserialized_Implementation()
+{
+}
+
 void ABaseCharacter::Jump()
 {
 	Super::Jump();
