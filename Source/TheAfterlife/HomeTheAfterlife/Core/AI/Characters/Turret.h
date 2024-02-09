@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "HomeTheAfterlife/Core/Components/WeaponComponents/WeaponBarellComponent.h"
-#include "TheAfterlifeTypes.h"
+#include "TheAfterlife/HomeTheAfterlife/Core/Components/WeaponComponents/WeaponBarellComponent.h"
+#include "TheAfterlife/TheAfterlifeTypes.h"
 #include "Turret.generated.h"
 
 UENUM(BlueprintType)

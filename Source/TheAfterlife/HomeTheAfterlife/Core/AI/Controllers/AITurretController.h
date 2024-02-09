@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "TheAfterlife/Turret.h"
+#include "TheAfterlife\HomeTheAfterlife\Core\AI\Characters\Turret.h"
 #include "AITurretController.generated.h"
 
 

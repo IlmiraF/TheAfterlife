@@ -3,6 +3,7 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "AITurretController.h"
+#include "TheAfterlife/HomeTheAfterlife/Core/AI/Characters/Turret.h"
 
 AAITurretController::AAITurretController()
 {
