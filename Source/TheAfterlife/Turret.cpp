@@ -49,6 +49,16 @@ void ATurret::SetCurrentTarget(AActor* NewTarget)
 	SetCurrentTurretState(NewState);
 }
 
+FVector ATurret::GetPawnViewLocation() const
+{
+	return WeaponBarell->GetComponentLocation();
+}
+
+FRotator ATurret::GetViewRotation() const
+{
+	return WeaponBarell->GetComponentRotation();
+}
+
 void ATurret::SearchingMovement(float DeltaTime)
 {
 	FRotator TurretBaseRotation = TurretBaseComponent->GetRelativeRotation();
@@ -60,14 +70,59 @@ void ATurret::SearchingMovement(float DeltaTime)
 	TurretBarrelComponent->SetRelativeRotation(TurretBarrelRotation);
 }
 
-void ATurret::FiringMovement(float DealtaTime)
+void ATurret::FiringMovement(float DeltaTime)
 {
+	FVector BaseLookAtDirection = (CurrentTarget->GetActorLocation() - TurretBaseComponent->GetComponentLocation()).GetSafeNormal2D();
+	FQuat LookAtQuat = BaseLookAtDirection.ToOrientationQuat();
+	FQuat TargetQuat = FMath::QInterpTo(TurretBaseComponent->GetComponentQuat(), LookAtQuat, DeltaTime, BaseFiringInterpSpeed);
+	TurretBaseComponent->SetWorldRotation(TargetQuat);
+
+	FVector BarellLookAtDirection = (CurrentTarget->GetActorLocation() - TurretBarrelComponent->GetComponentLocation()).GetSafeNormal();
+	float LookAtPitchAngle = BarellLookAtDirection.ToOrientationRotator().Pitch;
+
+	FRotator BarellLocalRotation = TurretBarrelComponent->GetRelativeRotation();
+	BarellLocalRotation.Pitch = FMath::FInterpTo(BarellLocalRotation.Pitch, LookAtPitchAngle, DeltaTime, BarellPitchRotationRate);
+	TurretBarrelComponent->SetRelativeRotation(BarellLocalRotation);
 }
 
 void ATurret::SetCurrentTurretState(ETurretState NewState)
 {
+	bool bIsStateChanged = NewState != CurrentTurretState;
 
 	CurrentTurretState = NewState;
+
+	if (!bIsStateChanged)
+	{
+		return;
+	}
+
+	switch (CurrentTurretState)
+	{
+		case SEARCHING:
+		{	
+			GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
+			break;
+		}
+		case FIRING:
+		{	
+			GetWorld() ->GetTimerManager().SetTimer(ShotTimer, this, &ATurret::MakeShot, GetFireInterval(), true, FireDelayTime);
+			break;
+		}
+		default:
+			break;
+	}
+}
+
+float ATurret::GetFireInterval() const
+{
+	return 60.0f/RateOfFire;
+}
+
+void ATurret::MakeShot()
+{	
+	FVector ShotDirection = WeaponBarell->GetComponentRotation().RotateVector(FVector::ForwardVector);
+	float SpreadAngle = FMath::DegreesToRadians(BulletSpreadAngle);
+	WeaponBarell->Shot(ShotDirection, SpreadAngle);
 }
 
 

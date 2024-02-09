@@ -26,6 +26,10 @@ public:
 
 	void SetCurrentTarget(AActor* NewTarget);
 
+	virtual FVector GetPawnViewLocation() const override;
+
+	virtual FRotator GetViewRotation() const override;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -42,6 +46,9 @@ protected:
 	float BaseSearchingRotationRate = 60.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret parameters", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float BaseFiringInterpSpeed = 5.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret parameters", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float BarellPitchRotationRate = 60.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret parameters", meta = (ClampMax = 90.0f, UIMax = 90.0f))
@@ -49,6 +56,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret parameters", meta = (ClampMin = -30.0f, UIMin = -30.0f))
 	float MinBarellPitchBarell = -30.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret parameters | Fire", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float RateOfFire = 300.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret parameters | Fire", meta = (ClampMin = 1.0f, UIMin = 1.0f))
+	float BulletSpreadAngle = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret parameters | Fire", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float FireDelayTime = 1.5f;
 
 private:
 
@@ -60,4 +76,10 @@ private:
 	ETurretState CurrentTurretState = ETurretState::SEARCHING;
 
 	AActor* CurrentTarget = nullptr;
+
+	float GetFireInterval() const;
+
+	FTimerHandle ShotTimer;
+
+	void MakeShot();
 };
