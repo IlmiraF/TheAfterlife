@@ -4,9 +4,9 @@
 #include "BasePlayerController.h"
 #include "../Controllers/BasePlayerController.h"
 #include "GameFramework/PlayerInput.h"
-#include "TheAfterlife\HomeTheAfterlife\Core\UI\Widget\AmmoWidget.h"
-#include "TheAfterlife\HomeTheAfterlife\Core\UI\Widget\PlayerHUDWidget.h"
-#include "TheAfterlife\HomeTheAfterlife\Core\Components\CharacterComponents\CharacterEquipmentComponent.h"
+#include "../../UI/Widget/AmmoWidget.h"
+#include "../../UI/Widget/PlayerHUDWidget.h"
+#include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "../BaseCharacter.h"
 
 

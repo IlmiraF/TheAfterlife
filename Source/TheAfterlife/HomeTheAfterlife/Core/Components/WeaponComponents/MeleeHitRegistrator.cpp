@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "MeleeHitRegistrator.h"
-#include "TheAfterlife\HomeTheAfterlife\Core\Utils\TheAfterlife_TraceUtils.h"
-#include "../Source\TheAfterlife\TheAfterlifeTypes.h"
-
+#include "../../Utils/TheAfterlife_TraceUtils.h"
+#include "../../../../TheAfterlifeTypes.h"
 
 UMeleeHitRegistrator::UMeleeHitRegistrator()
 {

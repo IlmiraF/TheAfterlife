@@ -3,8 +3,6 @@
 #include "CoreMinimal.h"
 #include "../../../../TheAfterlifeTypes.h"
 #include "Components/ActorComponent.h"
-#include <TheAfterlife/HomeTheAfterlife/Core/Actors/Equipment/Throwables/ThrowableItem.h>
-#include <TheAfterlife/HomeTheAfterlife/Core/Actors/Equipment/Weapons/MeleeWeaponItem.h>
 #include "CharacterEquipmentComponent.generated.h"
 
 typedef TArray<class AEquipableItem*, TInlineAllocator<(uint32)EEquipmentSlots::MAX>> TItemsArray;
@@ -26,11 +24,11 @@ public:
 
 	void ReloadCurrentRangeWeapon();
 
-	AThrowableItem* GetCurrentThrowableItem() const;
+	class AThrowableItem* GetCurrentThrowableItem() const;
 
 	EEquipableItemType GetCurrentEquippedItemType() const;
 
-	AMeleeWeaponItem* GetCurrentMeleeWeaponItem() const;
+	class AMeleeWeaponItem* GetCurrentMeleeWeaponItem() const;
 
 	bool IsEquipping() const;
 

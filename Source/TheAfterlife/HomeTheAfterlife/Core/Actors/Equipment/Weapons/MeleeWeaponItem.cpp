@@ -1,6 +1,7 @@
 #include "MeleeWeaponItem.h"
+#include "../../../Components/WeaponComponents/MeleeHitRegistrator.h"
 #include "Engine/DamageEvents.h"
-#include "TheAfterlife/HomeTheAfterlife/Core/Characters/BaseCharacter.h"
+#include "../../../Characters/BaseCharacter.h"
 
 AMeleeWeaponItem::AMeleeWeaponItem()
 {

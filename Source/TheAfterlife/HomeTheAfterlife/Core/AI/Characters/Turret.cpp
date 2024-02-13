@@ -1,4 +1,5 @@
 #include "Turret.h"
+#include "../../Components/WeaponComponents/WeaponBarellComponent.h"
 #include "AIController.h"
 
 ATurret::ATurret() 

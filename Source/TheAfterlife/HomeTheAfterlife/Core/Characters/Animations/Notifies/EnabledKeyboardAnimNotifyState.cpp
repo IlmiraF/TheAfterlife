@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "EnabledKeyboardAnimNotifyState.h"
-#include "../../Core\Characters\BaseCharacter.h"
+#include "../../BaseCharacter.h"
 
 
 void UEnabledKeyboardAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)

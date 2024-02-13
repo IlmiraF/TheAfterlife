@@ -2,9 +2,9 @@
 
 
 #include "AnimNotify_FireSlingshot.h"
-#include <TheAfterlife/HomeTheAfterlife/Core/Characters/BaseCharacter.h>
-#include "../../../Components\CharacterComponents\CharacterEquipmentComponent.h"
-#include "../../../Actors\Equipment\Weapons\RangeWeaponItem.h"
+#include "../../BaseCharacter.h"
+#include "../../../Components/CharacterComponents/CharacterEquipmentComponent.h"
+#include "../../../Actors/Equipment/Weapons/RangeWeaponItem.h"
 
 
 void UAnimNotify_FireSlingshot::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)

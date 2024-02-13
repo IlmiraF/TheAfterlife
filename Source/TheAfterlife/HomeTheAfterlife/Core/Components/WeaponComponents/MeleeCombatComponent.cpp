@@ -5,8 +5,6 @@
 #include <GameFramework/Character.h>
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
-#include "../../Characters\BaseCharacter.h"
-
 
 // Sets default values for this component's properties
 UMeleeCombatComponent::UMeleeCombatComponent()

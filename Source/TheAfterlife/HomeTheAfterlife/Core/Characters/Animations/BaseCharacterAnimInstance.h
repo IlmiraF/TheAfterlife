@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "../Source\TheAfterlife\TheAfterlifeTypes.h"
+#include "../../../../TheAfterlifeTypes.h"
 #include "BaseCharacterAnimInstance.generated.h"
 
 UCLASS()

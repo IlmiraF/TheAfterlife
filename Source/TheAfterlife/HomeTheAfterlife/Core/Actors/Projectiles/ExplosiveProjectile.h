@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TheAfterlife/HomeTheAfterlife/Core/Actors/Projectiles/Projectile.h"
+#include "Projectile.h"
 #include "ExplosiveProjectile.generated.h"
 
 

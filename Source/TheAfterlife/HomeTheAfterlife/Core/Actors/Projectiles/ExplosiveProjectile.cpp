@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ExplosiveProjectile.h"
-#include "../../Components\WeaponComponents\ExplosiveComponent.h"
+#include "../../Components/WeaponComponents/ExplosiveComponent.h"
 
 AExplosiveProjectile::AExplosiveProjectile()
 {

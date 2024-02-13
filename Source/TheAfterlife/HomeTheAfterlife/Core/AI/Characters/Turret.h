@@ -4,8 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "TheAfterlife/HomeTheAfterlife/Core/Components/WeaponComponents/WeaponBarellComponent.h"
-#include "TheAfterlife/TheAfterlifeTypes.h"
+#include "../../../../TheAfterlifeTypes.h"
 #include "Turret.generated.h"
 
 UENUM(BlueprintType)
@@ -43,7 +42,7 @@ protected:
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UWeaponBarellComponent* WeaponBarell;
+	class UWeaponBarellComponent* WeaponBarell;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret parameters", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float BaseSearchingRotationRate = 60.0f;

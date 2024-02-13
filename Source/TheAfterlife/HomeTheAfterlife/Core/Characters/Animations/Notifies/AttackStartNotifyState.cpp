@@ -1,8 +1,8 @@
 #include "AttackStartNotifyState.h"
-#include "../../Core\Characters\BaseCharacter.h"
 #include "Engine.h"
-#include <TheAfterlife/HomeTheAfterlife/Core/Actors/Equipment/Weapons/MeleeWeaponItem.h>
-#include "../../Core\Components\CharacterComponents\CharacterEquipmentComponent.h"
+#include "../../BaseCharacter.h"
+#include "../../../Actors/Equipment/Weapons/MeleeWeaponItem.h"
+#include "../../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 
 void UAttackStartNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {

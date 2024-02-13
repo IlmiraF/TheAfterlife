@@ -1,5 +1,7 @@
 #include "RangeWeaponItem.h"
-#include "../../../Components\WeaponComponents\WeaponBarellComponent.h"
+#include "../../../Components/WeaponComponents/WeaponBarellComponent.h"
+#include "../../../Characters/BaseCharacter.h"
+
 
 ARangeWeaponItem::ARangeWeaponItem()
 {
@@ -35,7 +37,7 @@ void ARangeWeaponItem::StopFire()
 void ARangeWeaponItem::MakeShot()
 {	
 	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::MakeShot() only character can be an owner of range weapon"));
-	ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
+	ABaseCharacter* CharacterOwner = GetCharacterOwner();
 
 	APlayerController* Controller = CharacterOwner->GetController<APlayerController>();
 	if (!IsValid(Controller))
@@ -197,7 +199,7 @@ float ARangeWeaponItem::GetCurrentBulletSpreadAngle() const
 void ARangeWeaponItem::MakeShotAnim()
 {
 	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::MakeShotAnim() only character can be an owner of range weapon"));
-	ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
+	ABaseCharacter* CharacterOwner = GetCharacterOwner();
 
 	if (!CanShoot())
 	{
@@ -225,15 +227,16 @@ void ARangeWeaponItem::OnShotTimerElapsed()
 
 	switch (WeaponFireMode)
 	{
-	case EWeaponFireMode::Single:
-	{
-		StopFire();
-		break;
-	}
-	case EWeaponFireMode::FullAuto:
-	{
-		MakeShotAnim();
-	}
+		case EWeaponFireMode::Single:
+		{
+			StopFire();
+			break;
+		}
+		case EWeaponFireMode::FullAuto:
+		{
+			MakeShotAnim();
+			break;
+		}
 	}
 }
 

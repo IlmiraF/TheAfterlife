@@ -1,6 +1,8 @@
 #include "CharacterEquipmentComponent.h"
-#include "../../Actors\Equipment\Weapons\RangeWeaponItem.h"
-#include "../../Characters\BaseCharacter.h"
+#include "../../Actors/Equipment/Throwables/ThrowableItem.h"
+#include "../../Actors/Equipment/Weapons/MeleeWeaponItem.h"
+#include "../../Actors/Equipment/Weapons/RangeWeaponItem.h"
+#include "../../Characters/BaseCharacter.h"
 
 
 ARangeWeaponItem* UCharacterEquipmentComponent::GetCurrentRangeWeapon() const

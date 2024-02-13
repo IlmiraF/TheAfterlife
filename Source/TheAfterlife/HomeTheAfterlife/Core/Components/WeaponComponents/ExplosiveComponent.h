@@ -44,9 +44,4 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Explosion | VFX")
 	UParticleSystem* ExplosionVFX;
-
-public:	
-
-
-		
 };

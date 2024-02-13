@@ -1,7 +1,7 @@
 #include "PlayerHUDWidget.h"
-#include "../../Characters\BaseCharacter.h"
-#include "..\..\Components\CharacterComponents\CharacterAttributeComponent.h"
-#include "../../../Core\UI\Widget\AmmoWidget.h"
+#include "../../Characters/BaseCharacter.h"
+#include "../../Components/CharacterComponents/CharacterAttributeComponent.h"
+#include "../../../Core/UI/Widget/AmmoWidget.h"
 #include "Blueprint/WidgetTree.h"
 
 UAmmoWidget* UPlayerHUDWidget::GetWidgetAmmo()

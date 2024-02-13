@@ -3,7 +3,7 @@
 
 #include "BaseCharacterAnimInstance.h"
 #include "../BaseCharacter.h"
-#include "../Source\TheAfterlife\TheAfterlifeTypes.h"
+#include "../../../../TheAfterlifeTypes.h"
 #include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "../../Components/MovementComponents/BaseCharacterMovementComponent.h"
 

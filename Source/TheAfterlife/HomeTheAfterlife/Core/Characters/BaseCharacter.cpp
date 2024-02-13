@@ -5,7 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
 #include "../Components/CharacterComponents/CharacterAttributeComponent.h"
-#include "../Components\CharacterComponents\CharacterEquipmentComponent.h"
+#include "../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "../Components/AdditionalComponents/LedgeDetectorComponent.h"
 #include "Curves/CurveVector.h"
 #include "../Actors/Interactive/Environment/Ladder.h"
@@ -13,11 +13,13 @@
 #include "../Actors/Interactive/InteractiveActor.h"
 #include "../../../TheAfterlifeTypes.h"
 #include "../Components/WeaponComponents/MeleeCombatComponent.h"
+#include "../Components/WeaponComponents/MeleeHitRegistrator.h"
 #include "Components/BoxComponent.h"
 #include "Engine/DamageEvents.h"
-#include "../Actors\Equipment\Weapons\MeleeWeaponItem.h"
-#include "../Actors\Equipment\Weapons\RangeWeaponItem.h"
-#include <AIController.h>
+#include "../Actors/Equipment/Weapons/MeleeWeaponItem.h"
+#include "../Actors/Equipment/Weapons/RangeWeaponItem.h"
+#include "../Actors/Equipment/Throwables/ThrowableItem.h"
+#include "AIController.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))

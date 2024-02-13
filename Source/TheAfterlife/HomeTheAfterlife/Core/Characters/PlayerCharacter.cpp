@@ -5,8 +5,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
-#include "TheAfterlife/HomeTheAfterlife/Core/Actors/Equipment/Weapons/RangeWeaponItem.h"
-#include "../Components\CharacterComponents\CharacterEquipmentComponent.h"
+#include "../Actors/Equipment/Weapons/RangeWeaponItem.h"
+#include "../Components/CharacterComponents/CharacterEquipmentComponent.h"
 
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)

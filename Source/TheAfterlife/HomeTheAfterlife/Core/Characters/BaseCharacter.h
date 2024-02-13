@@ -7,7 +7,7 @@
 #include "Components/AudioComponent.h"
 #include "Engine/DataTable.h"
 #include "AIController.h"
-#include "TheAfterlife\TheAfterlifeTypes.h"
+#include "../../../TheAfterlifeTypes.h"
 #include "BaseCharacter.generated.h"
 
 
