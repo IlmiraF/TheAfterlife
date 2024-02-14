@@ -3,6 +3,8 @@
 
 #include "BaseCharacterAnimInstance.h"
 #include "../BaseCharacter.h"
+#include "../../../../TheAfterlifeTypes.h"
+#include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "../../Components/MovementComponents/BaseCharacterMovementComponent.h"
 
 void UBaseCharacterAnimInstance::NativeBeginPlay()
@@ -15,6 +17,7 @@ void UBaseCharacterAnimInstance::NativeBeginPlay()
 void UBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
+
 	if (!CachedBaseCharacter.IsValid())
 	{
 		return;
@@ -25,15 +28,13 @@ void UBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsFalling = CharacterMovement->IsFalling();
 	bIsCrouching = CharacterMovement->IsCrouching();
 	bIsOnLadder = CharacterMovement->IsOnLadder();
-	bIsClimbing = CharacterMovement->IsClimbing();
-	bIsOnBeam = CharacterMovement->IsOnBeam();
+
 	if (bIsOnLadder)
 	{
 		LadderSpeedRatio = CharacterMovement->GetLadderSpeedRatio();
 	}
-	if (bIsOnBeam)
-	{
-		OnBeamDirection = CharacterMovement->GetOnBeamDirection();
-	}
-	ClimbVelocity = CharacterMovement->GetUnrotatedClimbVelocity();
+
+	const UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent();
+	
+	CurrentEquippedItemType = CharacterEquipment->GetCurrentEquippedItemType();
 }

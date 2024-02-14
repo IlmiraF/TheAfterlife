@@ -4,14 +4,17 @@
 #include "BasePlayerController.h"
 #include "../Controllers/BasePlayerController.h"
 #include "GameFramework/PlayerInput.h"
+#include "../../UI/Widget/AmmoWidget.h"
+#include "../../UI/Widget/PlayerHUDWidget.h"
+#include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "../BaseCharacter.h"
-#include "Kismet/GameplayStatics.h"
-#include "../../Subsystems/SaveSubsystem/SaveSubsystem.h"
+
 
 void ABasePlayerController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
 	CachedBaseCharacter = Cast<ABaseCharacter>(InPawn);
+	CreateAndInitializeWidgets();
 }
 
 void ABasePlayerController::SetupInputComponent()
@@ -22,21 +25,24 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAxis("Turn", this, &ABasePlayerController::Turn);
 	InputComponent->BindAxis("LookUp", this, &ABasePlayerController::LookUp);
 	InputComponent->BindAxis("ClimbLadderUp", this, &ABasePlayerController::ClimbLadderUp);
-	InputComponent->BindAxis("ClimbMoveForward", this, &ABasePlayerController::ClimbMoveForward);
-	InputComponent->BindAxis("ClimbMoveRight", this, &ABasePlayerController::ClimbMoveRight);
-	InputComponent->BindAxis("OnBeamMoveForward", this, &ABasePlayerController::OnBeamMoveForward);
-	InputComponent->BindAxis("OnBeamMoveRight", this, &ABasePlayerController::OnBeamMoveRight);
 
 	InputComponent->BindAction("InteractWithLadder", EInputEvent::IE_Pressed, this, &ABasePlayerController::InteractWithLadder);
-	InputComponent->BindAction("InteractWithRunWall", EInputEvent::IE_Released, this, &ABasePlayerController::InteractWithRunWall);
-	InputComponent->BindAction("ClimbHop", EInputEvent::IE_Pressed, this, &ABasePlayerController::ClimbHop);
-	InputComponent->BindAction("Climb", EInputEvent::IE_Pressed, this, &ABasePlayerController::OnClimbActionStarted);
+	InputComponent->BindAction("InteractWithZipline", EInputEvent::IE_Released, this, &ABasePlayerController::InteractWithZipline);
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePlayerController::Jump);
 	InputComponent->BindAction("Mantle", EInputEvent::IE_Pressed, this, &ABasePlayerController::Mantle);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
-	InputComponent->BindAction("QuickSaveGame", EInputEvent::IE_Pressed, this, &ABasePlayerController::QuickSaveGame);
-	InputComponent->BindAction("QuickLoadGame", EInputEvent::IE_Pressed, this, &ABasePlayerController::QuickLoadGame);
+
+
+	InputComponent->BindAction("Punch", EInputEvent::IE_Pressed, this, &ABasePlayerController::HandsMeleeAttack);
+	InputComponent->BindAction("Kick", EInputEvent::IE_Pressed, this, &ABasePlayerController::LegsMeleeAttack);
+	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ABasePlayerController::Fire);
+	InputComponent->BindAction("Aim", EInputEvent::IE_Pressed, this, &ABasePlayerController::StartAiming);
+	InputComponent->BindAction("Aim", EInputEvent::IE_Released, this, &ABasePlayerController::StopAiming);
+	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::NextItem);
+	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::PreviousItem);
+	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
 }
+
 
 void ABasePlayerController::MoveForward(float value)
 {
@@ -110,70 +116,106 @@ void ABasePlayerController::InteractWithLadder()
 	}
 }
 
-void ABasePlayerController::InteractWithRunWall()
+void ABasePlayerController::InteractWithZipline()
 {
 	if (CachedBaseCharacter.IsValid())
 	{
-		CachedBaseCharacter->InteractWithRunWall();
+		CachedBaseCharacter->InteractWithZipline();
 	}
 }
 
-void ABasePlayerController::ClimbMoveForward(float value)
+void ABasePlayerController::NextItem()
+{
+	if (CachedBaseCharacter.IsValid())
+	{	
+		CachedBaseCharacter->NextItem();
+	}
+}
+
+void ABasePlayerController::PreviousItem()
+{
+	if (CachedBaseCharacter.IsValid())
+	{	
+		CachedBaseCharacter->PreviousItem();
+	}
+}
+
+void ABasePlayerController::Fire()
+{
+	if(CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->Fire();
+	}
+}
+
+void ABasePlayerController::StartAiming()
 {
 	if (CachedBaseCharacter.IsValid())
 	{
-		CachedBaseCharacter->ClimbMoveForward(value);
+		CachedBaseCharacter->StartAiming();
 	}
 }
 
-void ABasePlayerController::ClimbMoveRight(float value)
+void ABasePlayerController::StopAiming()
 {
 	if (CachedBaseCharacter.IsValid())
 	{
-		CachedBaseCharacter->ClimbMoveRight(value);
+		CachedBaseCharacter->StopAiming();
 	}
 }
 
-void ABasePlayerController::ClimbHop()
+void ABasePlayerController::EquipPrimaryItem()
 {
 	if (CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->ClimbHop();
+	{	
+		CachedBaseCharacter->EquipPrimaryItem();
 	}
 }
 
-void ABasePlayerController::OnClimbActionStarted()
+void ABasePlayerController::HandsMeleeAttack()
 {
 	if (CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->OnClimbActionStarted();
+	{	
+		CachedBaseCharacter->HandsMeleeAttack();
 	}
 }
 
-void ABasePlayerController::OnBeamMoveForward(float value)
+void ABasePlayerController::LegsMeleeAttack()
 {
 	if (CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->OnBeamMoveForward(value);
+	{	
+		CachedBaseCharacter->LegsMeleeAttack();
 	}
 }
 
-void ABasePlayerController::OnBeamMoveRight(float value)
+void ABasePlayerController::ThrowBomb()
 {
 	if (CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->OnBeamMoveRight(value);
+	{	
+		CachedBaseCharacter->ThrowBomb();
 	}
 }
 
-void ABasePlayerController::QuickSaveGame()
+void ABasePlayerController::CreateAndInitializeWidgets()
 {
-	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
-	SaveSubsystem->SaveGame();
-}
+	if (!IsValid(PlayerHUDWidget))
+	{
+		PlayerHUDWidget = CreateWidget<UPlayerHUDWidget>(GetWorld(), PlayerHudWidgetClass);
+		if (IsValid(PlayerHUDWidget))
+		{
+			PlayerHUDWidget->AddToViewport();
+		}
+	}
 
-void ABasePlayerController::QuickLoadGame()
-{
-	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
-	SaveSubsystem->LoadLastGame();
+	if (CachedBaseCharacter.IsValid() && IsValid(PlayerHUDWidget))
+	{
+		UAmmoWidget* AmmoWidget = PlayerHUDWidget->GetWidgetAmmo();
+		if (IsValid(AmmoWidget))
+		{	
+			UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent_Mutable();
+			CharacterEquipment->WeaponAmmoChanged.AddUFunction(AmmoWidget, FName("UpdateAmmoCount"));
+			CharacterEquipment->WeaponAmmoChanged.AddUFunction(PlayerHUDWidget, FName("SetBombAmmo"));
+		}
+
+	}
 }

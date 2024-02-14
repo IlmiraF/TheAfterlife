@@ -5,6 +5,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
+#include "../Actors/Equipment/Weapons/RangeWeaponItem.h"
+#include "../Components/CharacterComponents/CharacterEquipmentComponent.h"
 
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -23,11 +25,13 @@ APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 
 	GetCharacterMovement()->bOrientRotationToMovement = 1;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
+
+	Team = ETeams::PLAYER;
 }
 
 void APlayerCharacter::MoveForward(float value)
 {
-	if ((GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling()) && !FMath::IsNearlyZero(value, 1e-6f))
+	if ((GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling()) && !FMath::IsNearlyZero(value, 1e-6f) && bCanMove)
 	{
 		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
 		FVector ForwardVector = YawRotator.RotateVector(FVector::ForwardVector);
@@ -37,7 +41,7 @@ void APlayerCharacter::MoveForward(float value)
 
 void APlayerCharacter::MoveRight(float value)
 {
-	if ((GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling()) && !FMath::IsNearlyZero(value, 1e-6f))
+	if ((GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling()) && !FMath::IsNearlyZero(value, 1e-6f) && bCanMove)
 	{
 		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
 		FVector RightVector = YawRotator.RotateVector(FVector::RightVector);
@@ -57,17 +61,14 @@ void APlayerCharacter::LookUp(float value)
 
 void APlayerCharacter::Jump()
 {
-	if (!GetBaseCharacterMovementComponent()->CanStartClimbing() && !GetBaseCharacterMovementComponent()->IsClimbing() && !GetBaseCharacterMovementComponent()->IsCrouching())
+	Super::Jump();
+	JumpCount++;
+	if (JumpCount == 2)
 	{
-		Super::Jump();
+		PlayAnimMontage(DoubleJumpMontage);
+		FVector JumpForce = GetVelocity() + FVector(0.0f, 0.0f, 300.f);
+		LaunchCharacter(JumpForce, false, true);
 		JumpCount++;
-		if (JumpCount == 2)
-		{
-			PlayAnimMontage(DoubleJumpMontage);
-			//FVector JumpForce = GetVelocity() + FVector(0.0f, 0.0f, 300.f);
-			//LaunchCharacter(JumpForce, false, true);
-			JumpCount++;
-		}
 	}
 }
 
@@ -77,52 +78,41 @@ void APlayerCharacter::Landed(const FHitResult& Hit)
 	JumpCount = 0;
 }
 
-void APlayerCharacter::ClimbMoveForward(float value)
+void APlayerCharacter::OnStartAimingIternal()
 {
-	if (GetBaseCharacterMovementComponent()->IsClimbing() && !FMath::IsNearlyZero(value, 1e-6f))
+	Super::OnStartAimingIternal();
+
+	APlayerController* PlayerController = GetController<APlayerController>();
+
+	if (!IsValid(PlayerController))
 	{
-		//FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
-		FVector ForwardVector = FVector::CrossProduct(
-			-GetBaseCharacterMovementComponent()->GetClimbableSurfaceNormal(),
-			GetActorRightVector());
-		AddMovementInput(ForwardVector, value * 0.01f);
+		return;
+	}
+
+	APlayerCameraManager* CameraManager = PlayerController->PlayerCameraManager;
+
+	if (IsValid(CameraManager))
+	{
+		ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentRangeWeapon();
+		CameraManager->SetFOV(CurrentRangeWeapon->GetAimFOV());
 	}
 }
 
-void APlayerCharacter::ClimbMoveRight(float value)
-{
-	if (GetBaseCharacterMovementComponent()->IsClimbing() && !FMath::IsNearlyZero(value, 1e-6f))
-	{
-		const FVector RightVector = FVector::CrossProduct(
-			-GetBaseCharacterMovementComponent()->GetClimbableSurfaceNormal(),
-			-GetActorUpVector());
-		AddMovementInput(RightVector, value);
-	}
-}
+void APlayerCharacter::OnStopAimingIternal()
+{	
+	Super::OnStopAimingIternal();
 
-void APlayerCharacter::ClimbHop()
-{
-	if (GetBaseCharacterMovementComponent()->IsClimbing())
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (!IsValid(PlayerController))
 	{
-		GetBaseCharacterMovementComponent()->RequestHopping();
+		return;
 	}
-}
 
-void APlayerCharacter::OnBeamMoveForward(float value)
-{
-	if (GetBaseCharacterMovementComponent()->IsOnBeam() && !FMath::IsNearlyZero(value, 1e-6f))
+	APlayerCameraManager* CameraManager = PlayerController->PlayerCameraManager;
+	if (IsValid(CameraManager))
 	{
-		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
-		FVector ForwardVector = YawRotator.RotateVector(FVector::ForwardVector);
-		AddMovementInput(ForwardVector, value);
-	}
-}
-
-void APlayerCharacter::OnBeamMoveRight(float value)
-{
-	if (GetBaseCharacterMovementComponent()->IsOnBeam() && !FMath::IsNearlyZero(value, 1e-6f))
-	{
-		GetBaseCharacterMovementComponent()->SetBalancingDirection(value);
+		ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentRangeWeapon();
+		CameraManager->UnlockFOV();
 	}
 }
 

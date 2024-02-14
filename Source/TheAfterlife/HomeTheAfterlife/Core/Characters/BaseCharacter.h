@@ -4,8 +4,45 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h"
+#include "Components/AudioComponent.h"
+#include "Engine/DataTable.h"
+#include "AIController.h"
+#include "../../../TheAfterlifeTypes.h"
 #include "BaseCharacter.generated.h"
+
+
+USTRUCT(BlueprintType)
+struct FPlayerAttackMontage : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* Montage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 AnimSectionCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString Description;
+};
+
+USTRUCT(BlueprintType)
+struct FMeleeCollisionProfile
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Enabled;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Disabled;
+
+	FMeleeCollisionProfile()
+	{
+		Enabled = FName(TEXT("Weapon"));
+		Disabled = FName(TEXT("NoCollision"));
+	}
+};
 
 USTRUCT(BlueprintType)
 struct FMantlingSettings
@@ -40,23 +77,25 @@ struct FMantlingSettings
 class UBaseCharacterMovementComponent;
 class UCharacterAttributeComponent;
 class AInteractiveActor;
-class UMotionWarpingComponent;
+class UMeleeCombatComponent;
+class UCharacterEquipmentComponent;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
+
 UCLASS()
-class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public ISaveSubsystemInterface
+class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
 public:
 	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 
-	virtual void OnLevelDeserialized_Implementation() override;
+	virtual void PossessedBy(AController* NewController) override;
 
 	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
 	FORCEINLINE UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
-	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
 
 	virtual void MoveForward(float value) {};
 	virtual void MoveRight(float value) {};
@@ -79,19 +118,49 @@ public:
 	void InteractWithLadder();
 	const class ALadder* GetAvailableLadder() const;
 
-	void InteractWithRunWall();
-	const class ARunWall* GetAvailableRunWall() const;
+	void InteractWithZipline();
+	const class AZipline* GetAvailableZipline() const;
 
-	virtual void ClimbMoveForward(float Value) {};
-	virtual void ClimbMoveRight(float Value) {};
-	virtual void ClimbHop() {};
-	virtual void OnClimbActionStarted();
+	const UCharacterEquipmentComponent* GetCharacterEquipmentComponent() const;
 
-	virtual void OnBeamMoveForward(float value) {};
-	virtual void OnBeamMoveRight(float value) {};
+	UCharacterEquipmentComponent* GetCharacterEquipmentComponent_Mutable() const;
 
-	void InteractWithBeam();
-	const class ABeam* GetAvailableBeam() const;
+	FOnAimingStateChanged OnAimingStateChanged; 
+
+	void Fire();
+
+	void Reload() const;
+
+	void StartAiming();
+	void StopAiming();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Character")
+	void OnStartAiming();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Character")
+	void OnStopAiming();
+
+	float GetAimingMovementSpeed() const;
+
+	bool IsAiming() const;
+
+	void NextItem();
+	void PreviousItem();
+
+	void EquipPrimaryItem();
+
+	void MeleeAttackStart();
+	void MeleeAttackFinish();
+
+	void HandsMeleeAttack();
+	void LegsMeleeAttack();
+
+	void ThrowBomb();
+
+	UFUNCTION(BlueprintCallable)
+	void SetCanMove(bool Enabled);
+
+	virtual FGenericTeamId GetGenericTeamId() const override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -106,9 +175,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
 	UCharacterAttributeComponent* CharacterAttributesComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
-	UMotionWarpingComponent* MotionWarpingComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement|Mantling")
 	FMantlingSettings HighMantleSettings;
@@ -126,8 +192,38 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
 	class UAnimMontage* OnDeathAnimMontage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
+	class UAnimMontage* MeleeCombatMontage;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Attributes")
 	class UCurveFloat* FallDamageCurve;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
+	class UCharacterEquipmentComponent* CharacterEquipmentComponent;
+
+	virtual void OnStartAimingIternal();
+
+	virtual void OnStopAimingIternal();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
+	class UMeleeHitRegistrator* LeftMeleeHitRegistrator;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
+	class UMeleeHitRegistrator* RightMeleeHitRegistrator;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Audio")
+	class USoundBase* PunchSoundBase;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
+	class UDataTable* PlayerAttackDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
+	float AnimationVariable;
+
+	bool bCanMove = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Team")
+	ETeams Team = ETeams::ENEMY;
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
@@ -136,4 +232,17 @@ private:
 
 	void EnableRagdoll();
 	FVector CurrentFallApex;
+
+	UAudioComponent* PunchAudioComponent;
+
+	FPlayerAttackMontage* AttackMontage;
+
+	bool IsAnimationBlended;
+
+	FMeleeCollisionProfile MeleeCollisionProfile;
+
+	void PlayAudio(UAudioComponent* AudioComponent);
+
+	bool bIsAiming;
+	float CurrentAimingMovementSpeed;
 };

@@ -26,6 +26,8 @@ public:
 
 	virtual void OnLevelDeserialized_Implementation() override;
 
+	float GetHealthPercnet() const;
+
 protected:
 
 	virtual void BeginPlay() override;

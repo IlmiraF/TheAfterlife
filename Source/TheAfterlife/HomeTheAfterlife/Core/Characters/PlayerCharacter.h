@@ -43,4 +43,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Jump")
 	class UAnimMontage* DoubleJumpMontage;
+
+	virtual void OnStartAimingIternal() override;
+	virtual void OnStopAimingIternal() override;
 };

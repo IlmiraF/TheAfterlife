@@ -22,6 +22,10 @@ public:
 	virtual void SetPawn(APawn* InPawn) override;
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
+	TSubclassOf<class UPlayerHUDWidget> PlayerHudWidgetClass;
+
+protected:
 
 	virtual void SetupInputComponent() override;
 
@@ -49,5 +53,28 @@ protected:
 	void QuickSaveGame();
 	void QuickLoadGame();
 
+	void NextItem();
+	void PreviousItem();
+
+	void Fire();
+
+	void StartAiming();
+	void StopAiming();
+
+	void EquipPrimaryItem();
+
+	void HandsMeleeAttack();
+	void LegsMeleeAttack();
+
+	void ThrowBomb();
+
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
+
+private:
+
+	void CreateAndInitializeWidgets();
+
+	class UPlayerHUDWidget* PlayerHUDWidget = nullptr;
+
+	bool bIgnoreCameraPitch = false;
 };

@@ -4,11 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "../../../../TheAfterlifeTypes.h"
 #include "BaseCharacterAnimInstance.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class THEAFTERLIFE_API UBaseCharacterAnimInstance : public UAnimInstance
 {
@@ -35,16 +33,7 @@ protected:
 	float LadderSpeedRatio = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
-	bool bIsClimbing = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
-	FVector ClimbVelocity;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
-	bool bIsOnBeam = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
-	float OnBeamDirection = 0.0f;
+	EEquipableItemType CurrentEquippedItemType = EEquipableItemType::NONE;
 
 private:
 	TWeakObjectPtr<class ABaseCharacter> CachedBaseCharacter;
