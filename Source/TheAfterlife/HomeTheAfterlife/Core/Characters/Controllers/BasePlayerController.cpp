@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerInput.h"
 #include "../../UI/Widget/AmmoWidget.h"
 #include "../../UI/Widget/PlayerHUDWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "../../Subsystems/SaveSubsystem/SaveSubsystem.h"
 #include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "../BaseCharacter.h"
 
@@ -25,12 +27,20 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAxis("Turn", this, &ABasePlayerController::Turn);
 	InputComponent->BindAxis("LookUp", this, &ABasePlayerController::LookUp);
 	InputComponent->BindAxis("ClimbLadderUp", this, &ABasePlayerController::ClimbLadderUp);
+	InputComponent->BindAxis("ClimbMoveForward", this, &ABasePlayerController::ClimbMoveForward);
+	InputComponent->BindAxis("ClimbMoveRight", this, &ABasePlayerController::ClimbMoveRight);
+	InputComponent->BindAxis("OnBeamMoveForward", this, &ABasePlayerController::OnBeamMoveForward);
+	InputComponent->BindAxis("OnBeamMoveRight", this, &ABasePlayerController::OnBeamMoveRight);
 
 	InputComponent->BindAction("InteractWithLadder", EInputEvent::IE_Pressed, this, &ABasePlayerController::InteractWithLadder);
-	InputComponent->BindAction("InteractWithZipline", EInputEvent::IE_Released, this, &ABasePlayerController::InteractWithZipline);
+	InputComponent->BindAction("InteractWithRunWall", EInputEvent::IE_Released, this, &ABasePlayerController::InteractWithRunWall);
+	InputComponent->BindAction("ClimbHop", EInputEvent::IE_Pressed, this, &ABasePlayerController::ClimbHop);
+	InputComponent->BindAction("Climb", EInputEvent::IE_Pressed, this, &ABasePlayerController::OnClimbActionStarted);
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePlayerController::Jump);
 	InputComponent->BindAction("Mantle", EInputEvent::IE_Pressed, this, &ABasePlayerController::Mantle);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
+	InputComponent->BindAction("QuickSaveGame", EInputEvent::IE_Pressed, this, &ABasePlayerController::QuickSaveGame);
+	InputComponent->BindAction("QuickLoadGame", EInputEvent::IE_Pressed, this, &ABasePlayerController::QuickLoadGame);
 
 
 	InputComponent->BindAction("Punch", EInputEvent::IE_Pressed, this, &ABasePlayerController::HandsMeleeAttack);
@@ -116,12 +126,72 @@ void ABasePlayerController::InteractWithLadder()
 	}
 }
 
-void ABasePlayerController::InteractWithZipline()
+void ABasePlayerController::InteractWithRunWall()
 {
 	if (CachedBaseCharacter.IsValid())
 	{
-		CachedBaseCharacter->InteractWithZipline();
+		CachedBaseCharacter->InteractWithRunWall();
 	}
+}
+
+void ABasePlayerController::ClimbMoveForward(float value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->ClimbMoveForward(value);
+	}
+}
+
+void ABasePlayerController::ClimbMoveRight(float value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->ClimbMoveRight(value);
+	}
+}
+
+void ABasePlayerController::ClimbHop()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->ClimbHop();
+	}
+}
+
+void ABasePlayerController::OnClimbActionStarted()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->OnClimbActionStarted();
+	}
+}
+
+void ABasePlayerController::OnBeamMoveForward(float value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->OnBeamMoveForward(value);
+	}
+}
+
+void ABasePlayerController::OnBeamMoveRight(float value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->OnBeamMoveRight(value);
+	}
+}
+
+void ABasePlayerController::QuickSaveGame()
+{
+	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
+	SaveSubsystem->SaveGame();
+}
+
+void ABasePlayerController::QuickLoadGame()
+{
+	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
+	SaveSubsystem->LoadLastGame();
 }
 
 void ABasePlayerController::NextItem()

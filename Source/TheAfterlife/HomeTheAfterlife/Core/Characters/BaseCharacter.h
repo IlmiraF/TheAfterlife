@@ -8,6 +8,7 @@
 #include "Engine/DataTable.h"
 #include "AIController.h"
 #include "../../../TheAfterlifeTypes.h"
+#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h"
 #include "BaseCharacter.generated.h"
 
 
@@ -79,23 +80,27 @@ class UCharacterAttributeComponent;
 class AInteractiveActor;
 class UMeleeCombatComponent;
 class UCharacterEquipmentComponent;
+class UMotionWarpingComponent;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
 
 UCLASS()
-class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface
+class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 
+	virtual void OnLevelDeserialized_Implementation() override;
+
 	virtual void PossessedBy(AController* NewController) override;
 
 	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
 	FORCEINLINE UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
+	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
 
 	virtual void MoveForward(float value) {};
 	virtual void MoveRight(float value) {};
@@ -118,8 +123,19 @@ public:
 	void InteractWithLadder();
 	const class ALadder* GetAvailableLadder() const;
 
-	void InteractWithZipline();
-	const class AZipline* GetAvailableZipline() const;
+	void InteractWithRunWall();
+	const class ARunWall* GetAvailableRunWall() const;
+
+	virtual void ClimbMoveForward(float Value) {};
+	virtual void ClimbMoveRight(float Value) {};
+	virtual void ClimbHop() {};
+	virtual void OnClimbActionStarted();
+
+	virtual void OnBeamMoveForward(float value) {};
+	virtual void OnBeamMoveRight(float value) {};
+
+	void InteractWithBeam();
+	const class ABeam* GetAvailableBeam() const;
 
 	const UCharacterEquipmentComponent* GetCharacterEquipmentComponent() const;
 
@@ -175,6 +191,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
 	UCharacterAttributeComponent* CharacterAttributesComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
+	UMotionWarpingComponent* MotionWarpingComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement|Mantling")
 	FMantlingSettings HighMantleSettings;

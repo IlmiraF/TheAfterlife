@@ -61,14 +61,17 @@ void APlayerCharacter::LookUp(float value)
 
 void APlayerCharacter::Jump()
 {
-	Super::Jump();
-	JumpCount++;
-	if (JumpCount == 2)
+	if (!GetBaseCharacterMovementComponent()->CanStartClimbing() && !GetBaseCharacterMovementComponent()->IsClimbing() && !GetBaseCharacterMovementComponent()->IsCrouching())
 	{
-		PlayAnimMontage(DoubleJumpMontage);
-		FVector JumpForce = GetVelocity() + FVector(0.0f, 0.0f, 300.f);
-		LaunchCharacter(JumpForce, false, true);
+		Super::Jump();
 		JumpCount++;
+		if (JumpCount == 2)
+		{
+			PlayAnimMontage(DoubleJumpMontage);
+			//FVector JumpForce = GetVelocity() + FVector(0.0f, 0.0f, 300.f);
+			//LaunchCharacter(JumpForce, false, true);
+			JumpCount++;
+		}
 	}
 }
 
@@ -76,6 +79,55 @@ void APlayerCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 	JumpCount = 0;
+}
+
+void APlayerCharacter::ClimbMoveForward(float value)
+{
+	if (GetBaseCharacterMovementComponent()->IsClimbing() && !FMath::IsNearlyZero(value, 1e-6f))
+	{
+		//FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
+		FVector ForwardVector = FVector::CrossProduct(
+			-GetBaseCharacterMovementComponent()->GetClimbableSurfaceNormal(),
+			GetActorRightVector());
+		AddMovementInput(ForwardVector, value * 0.01f);
+	}
+}
+
+void APlayerCharacter::ClimbMoveRight(float value)
+{
+	if (GetBaseCharacterMovementComponent()->IsClimbing() && !FMath::IsNearlyZero(value, 1e-6f))
+	{
+		const FVector RightVector = FVector::CrossProduct(
+			-GetBaseCharacterMovementComponent()->GetClimbableSurfaceNormal(),
+			-GetActorUpVector());
+		AddMovementInput(RightVector, value);
+	}
+}
+
+void APlayerCharacter::ClimbHop()
+{
+	if (GetBaseCharacterMovementComponent()->IsClimbing())
+	{
+		GetBaseCharacterMovementComponent()->RequestHopping();
+	}
+}
+
+void APlayerCharacter::OnBeamMoveForward(float value)
+{
+	if (GetBaseCharacterMovementComponent()->IsOnBeam() && !FMath::IsNearlyZero(value, 1e-6f))
+	{
+		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
+		FVector ForwardVector = YawRotator.RotateVector(FVector::ForwardVector);
+		AddMovementInput(ForwardVector, value);
+	}
+}
+
+void APlayerCharacter::OnBeamMoveRight(float value)
+{
+	if (GetBaseCharacterMovementComponent()->IsOnBeam() && !FMath::IsNearlyZero(value, 1e-6f))
+	{
+		GetBaseCharacterMovementComponent()->SetBalancingDirection(value);
+	}
 }
 
 void APlayerCharacter::OnStartAimingIternal()

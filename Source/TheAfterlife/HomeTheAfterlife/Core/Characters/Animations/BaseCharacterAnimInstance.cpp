@@ -28,11 +28,19 @@ void UBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsFalling = CharacterMovement->IsFalling();
 	bIsCrouching = CharacterMovement->IsCrouching();
 	bIsOnLadder = CharacterMovement->IsOnLadder();
+	bIsClimbing = CharacterMovement->IsClimbing();
+	bIsOnBeam = CharacterMovement->IsOnBeam();
 
 	if (bIsOnLadder)
 	{
 		LadderSpeedRatio = CharacterMovement->GetLadderSpeedRatio();
 	}
+
+	if (bIsOnBeam)
+	{
+		OnBeamDirection = CharacterMovement->GetOnBeamDirection();
+	}
+	ClimbVelocity = CharacterMovement->GetUnrotatedClimbVelocity();
 
 	const UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent();
 	

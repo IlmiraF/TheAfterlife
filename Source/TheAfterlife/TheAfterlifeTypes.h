@@ -4,6 +4,7 @@
 #define ECC_InteractionVolume ECC_GameTraceChannel2
 #define ECC_Bullet ECC_GameTraceChannel3
 #define ECC_Melee ECC_GameTraceChannel4
+#define ECC_Parkour ECC_GameTraceChannel7
 
 const FName CollisionProfilePawn = FName("Pawn");
 const FName CollisionProfileRagdoll = FName("Ragdoll");

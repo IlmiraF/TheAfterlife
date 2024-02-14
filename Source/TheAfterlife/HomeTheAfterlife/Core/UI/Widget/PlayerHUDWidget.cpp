@@ -29,7 +29,7 @@ float UPlayerHUDWidget::GetHealthPercent() const
 	if (IsValid(Character))
 	{
 		const UCharacterAttributeComponent* CharacterAttribute = Character->GetCharacterAttributeComponent();
-		Result = CharacterAttribute->GetHealthPercnet();
+		Result = CharacterAttribute->GetHealthPercent();
 	}
 
 	return Result;
