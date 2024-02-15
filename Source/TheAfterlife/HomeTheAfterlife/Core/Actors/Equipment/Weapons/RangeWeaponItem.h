@@ -36,6 +36,8 @@ public:
 
 	void MakeShot();
 
+	bool IsFiring() const;
+
 	void StartAim();
 	void StopAim();
 

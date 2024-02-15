@@ -2,17 +2,18 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "BaseAIController.h"
+#include "TheAfterlife\HomeTheAfterlife\Core\AI\Characters\Turret.h"
 #include "AITurretController.generated.h"
 
-class ATurret;
+
+
 UCLASS()
-class THEAFTERLIFE_API AAITurretController : public AAIController
+class THEAFTERLIFE_API AAITurretController : public ABaseAIController
 {
 	GENERATED_BODY()
 
 public:
-
-	AAITurretController();
 
 	virtual void SetPawn(APawn* InPawn) override;
 

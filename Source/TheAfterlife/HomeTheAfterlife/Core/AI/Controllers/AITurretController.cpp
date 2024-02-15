@@ -1,22 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "AITurretController.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AIPerceptionComponent.h"
-#include "../Characters/Turret.h"
-
-AAITurretController::AAITurretController()
-{
-	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("TurretPerceprion"));
-}
+#include "Perception/AISense_Sight.h"
+#include "AITurretController.h"
+#include "TheAfterlife/HomeTheAfterlife/Core/AI/Characters/Turret.h"
 
 void AAITurretController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
-
 	if (IsValid(InPawn))
 	{
-		checkf(InPawn->IsA<ATurret>(), TEXT("AAITurretController::SetPawn AAITurretController can possess only Turret"));
+		checkf(InPawn->IsA<ATurret>(), TEXT("AAITurretController::SetPawn AAITurretController can possess only Turrets"));
 		CachedTurret = StaticCast<ATurret*>(InPawn);
 	}
 	else
@@ -26,28 +21,15 @@ void AAITurretController::SetPawn(APawn* InPawn)
 }
 
 void AAITurretController::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
-{	
+{
+	Super::ActorsPerceptionUpdated(UpdatedActors);
+
 	if (!CachedTurret.IsValid())
 	{
 		return;
 	}
 
-	TArray<AActor*> SeenActors;
-	PerceptionComponent->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), SeenActors);
-
-	AActor* ClosestActor = nullptr;
-	float MinSquaredDistance = FLT_MAX;
-	FVector TurretLocation = CachedTurret->GetActorLocation();
-
-	for (AActor* SeenActor : SeenActors)
-	{	
-		float CurrentSquaredDistance = (TurretLocation - SeenActor->GetActorLocation()).SizeSquared();
-		if (CurrentSquaredDistance < MinSquaredDistance)
-		{
-			MinSquaredDistance = CurrentSquaredDistance;
-			ClosestActor = SeenActor;
-		}
-	}
-
+	AActor* ClosestActor = GetClosestSesnedActor(UAISense_Sight::StaticClass());
 	CachedTurret->SetCurrentTarget(ClosestActor);
 }
+

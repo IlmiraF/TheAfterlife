@@ -39,22 +39,26 @@ void ARangeWeaponItem::MakeShot()
 	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::MakeShot() only character can be an owner of range weapon"));
 	ABaseCharacter* CharacterOwner = GetCharacterOwner();
 
-	APlayerController* Controller = CharacterOwner->GetController<APlayerController>();
-	if (!IsValid(Controller))
+	FVector ShotLocation;
+	FRotator ShotRotation;
+
+	if (CharacterOwner->IsPlayerControlled())
 	{
-		return;
+		APlayerController* Controller = CharacterOwner->GetController<APlayerController>();
+		Controller->GetPlayerViewPoint(ShotLocation, ShotRotation);
+	}
+	else
+	{
+		ShotLocation = WeaponBarell->GetComponentLocation();
+		ShotRotation = CharacterOwner->GetBaseAimRotation();
 	}
 
-	FVector PlayerViewPoint;
-	FRotator PlayerViewRotation;
 
-	Controller->GetPlayerViewPoint(PlayerViewPoint, PlayerViewRotation);
-
-	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
+	FVector ShotDirection = ShotRotation.RotateVector(FVector::ForwardVector);
 
 	SetAmmo(Ammo - 1);
 
-	WeaponBarell->Shot(ViewDirection, GetCurrentBulletSpreadAngle());
+	WeaponBarell->Shot(ShotDirection, GetCurrentBulletSpreadAngle());
 
 	if (Ammo == 0 && bAutoReload)
 	{
@@ -62,6 +66,11 @@ void ARangeWeaponItem::MakeShot()
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARangeWeaponItem::OnShotTimerElapsed, GetShotTimerInterval(), false);
+}
+
+bool ARangeWeaponItem::IsFiring() const
+{
+	return bIsFiring;
 }
 
 void ARangeWeaponItem::StartAim()

@@ -155,6 +155,7 @@ void UCharacterEquipmentComponent::BeginPlay()
 	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("UCharacterEquipmentComponent::BeginPlay() CharacterEquipmentComponent can be used only with a BaseCharacter"));
 	CachedBaseCharacter = StaticCast<ABaseCharacter*>(GetOwner());
 	CreateLoadout();
+	AutoEquip();
 }
 
 void UCharacterEquipmentComponent::CreateLoadout()
@@ -181,7 +182,13 @@ void UCharacterEquipmentComponent::CreateLoadout()
 	}
 }
 
-
+void UCharacterEquipmentComponent::AutoEquip()
+{
+	if (AutoEquipInSlot != EEquipmentSlots::NONE)
+	{
+		EquipItemInSlot(AutoEquipInSlot);
+	}
+}
 
 void UCharacterEquipmentComponent::EquipAnimationFinished()
 {

@@ -19,6 +19,10 @@ const FName PickableItemProfile = FName(TEXT("PickableItem"));
 
 const FName DebugCategoryCharacterAttributes = FName("CharacterAttributes");
 
+const FName BB_CurrentTarget = FName("CurrentTarget");
+const FName BB_NextLocation = FName("NextLocation");
+
+
 UENUM(BlueprintType)
 enum class EEquipableItemType : uint8
 {

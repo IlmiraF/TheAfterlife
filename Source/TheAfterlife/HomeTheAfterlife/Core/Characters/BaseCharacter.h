@@ -138,6 +138,9 @@ public:
 	void StartAiming();
 	void StopAiming();
 
+	void StartFire();
+	void StopFire();
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Character")
 	void OnStartAiming();
 

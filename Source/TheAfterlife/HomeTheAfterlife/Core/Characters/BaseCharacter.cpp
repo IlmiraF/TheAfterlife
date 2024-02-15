@@ -304,6 +304,28 @@ void ABaseCharacter::Fire()
 	}
 }
 
+void ABaseCharacter::StartFire()
+{
+	if (CharacterEquipmentComponent->IsEquipping())
+	{
+		return;
+	}
+	ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentRangeWeapon();
+	if (IsValid(CurrentRangeWeapon))
+	{
+		CurrentRangeWeapon->StartFire();
+	}
+}
+
+void ABaseCharacter::StopFire()
+{
+	ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentRangeWeapon();
+	if (IsValid(CurrentRangeWeapon))
+	{
+		CurrentRangeWeapon->StopFire();
+	}
+}
+
 void ABaseCharacter::Reload() const
 {
 	if (IsValid(CharacterEquipmentComponent->GetCurrentRangeWeapon()))
