@@ -3,7 +3,6 @@
 
 #include "MovingPlatform.h"
 #include "Components/StaticMeshComponent.h"
-#include "PlatformTrigger.h"
 
 void AMovingPlatform::Tick(float DeltaTime)
 {
@@ -55,19 +54,14 @@ void AMovingPlatform::BeginPlay()
 	}
 	
 	StartLocation = GetActorLocation();
-
-	if (IsValid(PlatformTrigger))
-	{
-		PlatformTrigger->OnTriggerActivated.AddDynamic(this, &AMovingPlatform::OnPlatformTriggerActivated);
-	}
 }
 
 void AMovingPlatform::OnPlatformTriggerActivated(bool bIsActivated)
 {
+	Super::OnPlatformTriggerActivated(bIsActivated);
 	bIsForwardBackward = !bIsForwardBackward;
-	if(bIsFirstTime)
+	if (bIsFirstTime)
 	{
-		SetActorTickEnabled(true);
 		bIsFirstTime = false;
 		MovePlatform();
 	}

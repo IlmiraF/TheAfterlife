@@ -7,11 +7,6 @@
 void ARotatingPlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	FRotator NewRotation = GetActorRotation();
-
-	NewRotation.Yaw += YawValue * DeltaTime;
-
-	SetActorRotation(NewRotation);
 	PlatformTimeline.TickTimeline(DeltaTime);
 }
 
@@ -23,40 +18,36 @@ void ARotatingPlatform::BeginPlay()
 		FOnTimelineFloatStatic OnTimelineUpdate;
 		OnTimelineUpdate.BindUFunction(this, FName("TickPlatformTimeline"));
 		PlatformTimeline.AddInterpFloat(MovementCurve, OnTimelineUpdate);
+
+		//FOnTimelineEventStatic OnTimelineFinished;
+		//OnTimelineFinished.BindUFunction(this, FName("OnPlatfromEndReached"));
+		//PlatformTimeline.SetTimelineFinishedFunc(OnTimelineFinished);
 	}
 }
 
-void ARotatingPlatform::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ARotatingPlatform::OnPlatformTriggerActivated(bool bIsActivated)
 {
-	Super::OnTriggerOverlapBegin(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-	SetActorTickEnabled(true);
-	BaseCharacter = Cast<APlayerCharacter>(OtherActor);
-	if (!BaseCharacter.IsValid())
+	Super::OnPlatformTriggerActivated(bIsActivated);
+	bIsReached = !bIsReached;
+	if (bIsReached)
 	{
-		return;
+		PlatformTimeline.Play();
 	}
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ARotatingPlatform::BlowWind, WindDelay, true);
-}
-
-void ARotatingPlatform::OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	GetWorldTimerManager().ClearTimer(TimerHandle);
-	Super::OnTriggerOverlapEnd(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
+	else
+	{
+		PlatformTimeline.Reverse();
+	}
 }
 
 void ARotatingPlatform::TickPlatformTimeline(float Value)
 {
-	FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Value);
-	if (BaseCharacter.IsValid())
-	{
-		BaseCharacter->SetActorLocation(NewLocation);
-	}
+	float NewValue = FMath::Lerp(First, Second, Value);
+	FRotator NewRotation = GetActorRotation();
+	NewRotation.Pitch = NewValue;
+	SetActorRotation(NewRotation);
 }
 
-void ARotatingPlatform::BlowWind()
-{
-	StartLocation = BaseCharacter->GetActorLocation();
-	FVector WindDirection = FVector::ForwardVector * FMath::RandRange(-1, 1) + FVector::RightVector * FMath::RandRange(-1, 1);
-	EndLocation = StartLocation + WindDirection * WindForce;
-	PlatformTimeline.PlayFromStart();
-}
+//void ARotatingPlatform::OnPlatfromEndReached()
+//{
+//	SetActorTickEnabled(false);
+//}

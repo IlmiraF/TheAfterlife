@@ -22,33 +22,27 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	virtual void OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
-	virtual void OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rotation Settings")
-	float YawValue = 60.0f;
+	virtual void OnPlatformTriggerActivated(bool bIsActivated) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Platform movement")
 	UCurveFloat* MovementCurve;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rotation Settings")
-	float WindForce = 200.0f;
+	float First = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rotation Settings")
-	float WindDelay = 2.0f;
+	float Second = 90.0f;
 
 private:
-	TWeakObjectPtr<class APlayerCharacter> BaseCharacter;
 
-	FTimerHandle TimerHandle;
+	bool bIsReached = false;
+
 	FTimeline PlatformTimeline;
 
 	UFUNCTION()
 	void TickPlatformTimeline(float Value);
 
-	void BlowWind();
+	//UFUNCTION()
+	//void OnPlatfromEndReached();
 
-	FVector StartLocation = FVector::ZeroVector;
-	FVector EndLocation = FVector::ZeroVector;
 };

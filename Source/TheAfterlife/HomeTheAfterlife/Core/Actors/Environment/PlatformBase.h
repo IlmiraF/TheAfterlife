@@ -8,6 +8,7 @@
 
 class UBoxComponent;
 class UStaticMeshComponent;
+class APlatformTrigger;
 UCLASS()
 class THEAFTERLIFE_API APlatformBase : public AActor
 {
@@ -18,6 +19,9 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Platform movement")
+	APlatformTrigger* PlatformTrigger;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Platform movement")
 	UStaticMeshComponent* PlatformMesh;
@@ -30,5 +34,8 @@ protected:
 
 	UFUNCTION()
 	virtual void OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	virtual void OnPlatformTriggerActivated(bool bIsActivated);
 
 };

@@ -18,7 +18,6 @@ enum class EPlatformBehavior : uint8
 /**
  * 
  */
-class APlatformTrigger;
 class UStaticMeshComponent;
 UCLASS()
 class THEAFTERLIFE_API AMovingPlatform : public APlatformBase
@@ -32,9 +31,6 @@ public:
 	void MovePlatform();
 
 protected:
-
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Platform movement")
-	APlatformTrigger* PlatformTrigger;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Platform movement")
 	UCurveFloat* MovementCurve;
@@ -53,15 +49,16 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	virtual void OnPlatformTriggerActivated(bool bIsActivated) override;
+
 private:
-	UFUNCTION()
-	void OnPlatformTriggerActivated(bool bIsActivated);
 
 	UFUNCTION()
 	void TickPlatformTimeline(float Value);
 
 	UFUNCTION()
 	void OnPlatfromEndReached();
+
 	FTimeline PlatformTimeline;
 
 	FVector StartLocation = FVector::ZeroVector;
