@@ -6,8 +6,8 @@ AProjectile::AProjectile()
 {
     CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComponent"));
     CollisionComponent->InitSphereRadius(5.0f);
-    CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-    CollisionComponent->SetCollisionResponseToAllChannels(ECR_Block);
+    CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
     SetRootComponent(CollisionComponent);
 
     ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
@@ -16,9 +16,12 @@ AProjectile::AProjectile()
 }
 
 void AProjectile::LaunchProjectile(FVector Diretion)
-{
+{   
+    CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
     ProjectileMovementComponent->Velocity = Diretion * ProjectileMovementComponent->InitialSpeed;
     CollisionComponent->IgnoreActorWhenMoving(GetOwner(), true);
+    GetWorldTimerManager().SetTimer(CollisionTimerHandle, this, &AProjectile::EnableCollision, 0.01f, false);
     OnProjectileLaunched();
 
 }
@@ -41,3 +44,10 @@ void AProjectile::OnCollisionHit(UPrimitiveComponent* HitComponent, AActor* Othe
         OnProjectileHit.Broadcast(Hit, ProjectileMovementComponent->Velocity.GetSafeNormal());
     }
 }
+
+void AProjectile::EnableCollision()
+{
+    CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    CollisionComponent->SetCollisionResponseToAllChannels(ECR_Block);
+}
+

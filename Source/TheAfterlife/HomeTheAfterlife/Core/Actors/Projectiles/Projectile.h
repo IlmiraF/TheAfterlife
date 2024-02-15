@@ -39,4 +39,8 @@ private:
 	UFUNCTION()
 	void OnCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	void EnableCollision();
+
+	FTimerHandle CollisionTimerHandle;
+
 };
