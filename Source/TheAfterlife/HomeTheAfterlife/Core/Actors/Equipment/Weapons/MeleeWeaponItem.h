@@ -40,6 +40,8 @@ public:
 
 	void SetIsHitRegistrationEnabled(bool bIsRegistrationEnabled);
 
+	bool IsAttacking();
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Melee attack")
@@ -58,4 +60,6 @@ private:
 	FMeleeAttackDescription* CurrentAttack;
 	void OnAttackTimerElapsed();
 	FTimerHandle AttackTimer;
+
+	bool bIsAttacking;
 };

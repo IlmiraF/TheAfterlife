@@ -34,7 +34,7 @@ void AMeleeWeaponItem::StartAttack(EMeleeAttackTypes AttackType)
 
 			float Duration = CharacterAnimInstance->Montage_Play(CurrentAttack->AttackMontage, 1.0f, EMontagePlayReturnType::Duration);
 			CharacterAnimInstance->Montage_JumpToSection(RandomElement, CurrentAttack->AttackMontage);
-	
+			bIsAttacking = true;
 			GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AMeleeWeaponItem::OnAttackTimerElapsed, Duration, false);
 		}
 		else
@@ -51,6 +51,11 @@ void AMeleeWeaponItem::SetIsHitRegistrationEnabled(bool bIsRegistrationEnabled)
 	{
 		HitRegistrator->SetIsHitRegistrationEnabled(bIsRegistrationEnabled);
 	}
+}
+
+bool AMeleeWeaponItem::IsAttacking()
+{
+	return bIsAttacking;
 }
 
 void AMeleeWeaponItem::BeginPlay()
@@ -103,4 +108,5 @@ void AMeleeWeaponItem::OnAttackTimerElapsed()
 {
 	CurrentAttack = nullptr;
 	SetIsHitRegistrationEnabled(false);
+	bIsAttacking = false;
 }
