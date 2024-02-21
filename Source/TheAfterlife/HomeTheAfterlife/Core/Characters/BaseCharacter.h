@@ -156,9 +156,6 @@ public:
 
 	void EquipPrimaryItem();
 
-	void MeleeAttackStart();
-	void MeleeAttackFinish();
-
 	void HandsMeleeAttack();
 	void LegsMeleeAttack();
 
@@ -222,12 +219,6 @@ protected:
 	virtual void OnStartAimingIternal();
 
 	virtual void OnStopAimingIternal();
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
-	class UMeleeHitRegistrator* LeftMeleeHitRegistrator;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
-	class UMeleeHitRegistrator* RightMeleeHitRegistrator;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Audio")
 	class USoundBase* PunchSoundBase;

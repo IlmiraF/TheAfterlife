@@ -47,6 +47,7 @@ enum class EMeleeAttackTypes : uint8
 	NONE,
 	HANDS,
 	LEGS,
+	SWORD,
 	MAX UMETA(Hidden)
 };
 

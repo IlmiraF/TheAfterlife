@@ -21,6 +21,17 @@ void AMeleeWeaponItem::StartAttack(EMeleeAttackTypes AttackType)
 
 	if (CurrentAttack && IsValid(CurrentAttack->AttackMontage))
 	{	
+		if (AttackType == EMeleeAttackTypes::HANDS)
+		{
+			HitRegistrators[0]->AttachToComponent(CachedBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "hand_right_collision");
+			HitRegistrators[1]->AttachToComponent(CachedBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "hand_left_collision");
+		}
+		else if (AttackType == EMeleeAttackTypes::LEGS)
+		{
+			HitRegistrators[0]->AttachToComponent(CachedBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "foot_right_collision");
+			HitRegistrators[1]->AttachToComponent(CachedBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "foot_left_collision");
+		}
+
 		UAnimInstance* CharacterAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
 		if (IsValid(CharacterAnimInstance))
 		{	
@@ -50,12 +61,18 @@ void AMeleeWeaponItem::SetIsHitRegistrationEnabled(bool bIsRegistrationEnabled)
 	for (UMeleeHitRegistrator* HitRegistrator : HitRegistrators)
 	{
 		HitRegistrator->SetIsHitRegistrationEnabled(bIsRegistrationEnabled);
+		HitRegistrator->SetNotifyRigidBodyCollision(bIsRegistrationEnabled);
 	}
 }
 
 bool AMeleeWeaponItem::IsAttacking()
 {
 	return bIsAttacking;
+}
+
+void AMeleeWeaponItem::SetCharacter(ABaseCharacter* BaseCharacter)
+{
+	CachedBaseCharacter = BaseCharacter;
 }
 
 void AMeleeWeaponItem::BeginPlay()
@@ -67,6 +84,7 @@ void AMeleeWeaponItem::BeginPlay()
 	{
 		HitRegistrator->OnMeleeHitRegistred.AddUFunction(this, FName("ProcessHit"));
 	}
+
 }
 
 void AMeleeWeaponItem::ProcessHit(const FHitResult& HitResult, const FVector& HitDirection)

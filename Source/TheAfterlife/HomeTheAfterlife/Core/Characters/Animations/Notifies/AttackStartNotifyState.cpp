@@ -22,7 +22,6 @@ void UAttackStartNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 	if (IsValid(MeleeWeapon))
 	{
 		MeleeWeapon->SetIsHitRegistrationEnabled(true);
-		CharacterOwner->MeleeAttackStart();
 	}
 }
 
@@ -44,6 +43,5 @@ void UAttackStartNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimS
 	if (IsValid(MeleeWeapon))
 	{
 		MeleeWeapon->SetIsHitRegistrationEnabled(false);
-		CharacterOwner->MeleeAttackFinish();
 	}
 }

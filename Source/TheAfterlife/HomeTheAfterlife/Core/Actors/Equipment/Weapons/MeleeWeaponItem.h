@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "../EquipableItem.h"
 #include "../../../../../TheAfterlifeTypes.h"
+#include "TheAfterlife\HomeTheAfterlife\Core\Characters\BaseCharacter.h"
 #include "MeleeWeaponItem.generated.h"
 
 
@@ -42,6 +43,8 @@ public:
 
 	bool IsAttacking();
 
+	void SetCharacter(ABaseCharacter* BaseCharacter);
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Melee attack")
@@ -62,4 +65,6 @@ private:
 	FTimerHandle AttackTimer;
 
 	bool bIsAttacking;
+
+	TWeakObjectPtr<class ABaseCharacter> CachedBaseCharacter;
 };
