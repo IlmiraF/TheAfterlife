@@ -70,6 +70,11 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		return;
 	}
 	
+	if (CurrentEquippedItem == ItemsArray[(uint32)Slot])
+	{
+		return;
+	}
+
 	UnEquipCurrentItem();
 	
 	CurrentEquippedItem = ItemsArray[(uint32)Slot];
