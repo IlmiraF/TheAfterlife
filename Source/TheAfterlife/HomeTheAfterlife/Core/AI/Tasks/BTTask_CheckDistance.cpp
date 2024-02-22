@@ -38,7 +38,12 @@ EBTNodeResult::Type UBTTask_CheckDistance::ExecuteTask(UBehaviorTreeComponent& O
 	float DistSq = FVector::DistSquared(CurrentTarget->GetActorLocation(), Character->GetActorLocation());
 
 
-	if (DistSq > FMath::Square(Distance))
+	if (DistSq > FMath::Square(MaxDistance))
+	{
+		return EBTNodeResult::Failed;
+	}
+
+	if (DistSq < FMath::Square(MinDistance))
 	{
 		return EBTNodeResult::Failed;
 	}

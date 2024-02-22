@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_CheckDistance.generated.h"
+#include "BTTask_Fire.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THEAFTERLIFE_API UBTTask_CheckDistance : public UBTTaskNode
+class THEAFTERLIFE_API UBTTask_Fire : public UBTTaskNode
 {
 	GENERATED_BODY()
-	
+
 public:
 
-	UBTTask_CheckDistance();
+	UBTTask_Fire();
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
@@ -24,8 +24,6 @@ public:
 	FBlackboardKeySelector TargetKey;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
-	float MaxDistance = 300.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
-	float MinDistance = 100.0f;
+	float MaxFireDistance = 800.0f;
+	
 };

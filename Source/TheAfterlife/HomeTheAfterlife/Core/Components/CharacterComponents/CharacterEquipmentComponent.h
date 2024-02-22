@@ -37,8 +37,6 @@ public:
 
 	void Fire();
 
-	void SwitchItem(EEquipmentSlots Slot);
-
 	void EquipItemInSlot(EEquipmentSlots Slot);
 
 	void AttachCurrentItemToEquippedSocket();

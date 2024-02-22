@@ -7,7 +7,7 @@
 
 UBTService_MeleeAttack::UBTService_MeleeAttack()
 {
-	NodeName = "MeleeAttack";
+	NodeName = "Melee Attack";
 }
 
 void UBTService_MeleeAttack::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -42,6 +42,11 @@ void UBTService_MeleeAttack::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 
 
 	if (!IsValid(CurrentTarget))
+	{
+		return;
+	}
+
+	if (MeleeWeapon->IsAttacking())
 	{
 		return;
 	}

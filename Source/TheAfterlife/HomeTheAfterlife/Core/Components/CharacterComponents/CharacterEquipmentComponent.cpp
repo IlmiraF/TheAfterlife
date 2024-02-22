@@ -70,12 +70,13 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		return;
 	}
 	
-
 	UnEquipCurrentItem();
+	
 	CurrentEquippedItem = ItemsArray[(uint32)Slot];
 	CurrentEquippedWeapon = Cast<ARangeWeaponItem>(CurrentEquippedItem);
 	CurrentThrowableItem = Cast<AThrowableItem>(CurrentEquippedItem);
 	CurrentMeleeWeaponItem = Cast<AMeleeWeaponItem>(CurrentEquippedItem);
+
 
 	if (EEquipmentSlots::PRIMARY_ITEM_SLOT == Slot && CurrentThrowableItem->GetAmmo() == 0)
 	{
@@ -108,6 +109,7 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		//OnCurrentWeaponReloadedHandle = CurrentEquippedWeapon->OnReloadComplete.AddUFunction(this, FName("OnWeaponReloadComplete"));
 		OnWeaponAmmoChanged(CurrentThrowableItem->GetAmmo());
 	}
+
 }
 
 void UCharacterEquipmentComponent::AttachCurrentItemToEquippedSocket()
