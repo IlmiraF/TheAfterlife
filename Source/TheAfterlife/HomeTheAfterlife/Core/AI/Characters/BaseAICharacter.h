@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "..\..\Characters\BaseCharacter.h"
-#include "TheAfterlife\HomeTheAfterlife\Core\Components\CharacterComponents/AIPatrollingComponent.h"
+#include "..\..\Components\CharacterComponents/AIPatrollingComponent.h"
 #include "BaseAICharacter.generated.h"
 
 UCLASS()

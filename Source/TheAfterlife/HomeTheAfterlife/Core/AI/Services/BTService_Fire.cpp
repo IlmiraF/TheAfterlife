@@ -2,8 +2,8 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "../../Characters/BaseCharacter.h"
-#include "TheAfterlife/HomeTheAfterlife/Core/Actors/Equipment/Weapons/RangeWeaponItem.h"
-#include "TheAfterlife\HomeTheAfterlife\Core\Components\CharacterComponents\CharacterEquipmentComponent.h"
+#include "../../Actors/Equipment/Weapons/RangeWeaponItem.h"
+#include "../../Components\CharacterComponents\CharacterEquipmentComponent.h"
 
 
 UBTService_Fire::UBTService_Fire()

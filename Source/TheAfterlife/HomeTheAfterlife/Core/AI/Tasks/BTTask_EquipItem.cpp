@@ -1,7 +1,7 @@
 #include "BTTask_EquipItem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"
-#include "TheAfterlife/HomeTheAfterlife/Core/Characters/BaseCharacter.h"
+#include "../../Characters/BaseCharacter.h"
 
 UBTTask_EquipItem::UBTTask_EquipItem()
 {

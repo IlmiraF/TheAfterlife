@@ -2,8 +2,8 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "../../Characters/BaseCharacter.h"
-#include "TheAfterlife\HomeTheAfterlife\Core\Components\CharacterComponents\CharacterEquipmentComponent.h"
-#include "TheAfterlife/HomeTheAfterlife/Core/Actors/Equipment/Weapons/MeleeWeaponItem.h"
+#include "../../Components\CharacterComponents\CharacterEquipmentComponent.h"
+#include "../../Actors/Equipment/Weapons/MeleeWeaponItem.h"
 
 UBTService_MeleeAttack::UBTService_MeleeAttack()
 {

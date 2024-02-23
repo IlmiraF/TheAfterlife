@@ -2,8 +2,8 @@
 
 #include "AIController.h"
 #include "BehaviorTree\BlackboardComponent.h"
-#include "TheAfterlife\HomeTheAfterlife\Core\Characters\BaseCharacter.h"
-#include "TheAfterlife\HomeTheAfterlife\Core\Components\CharacterComponents\CharacterAttributeComponent.h"
+#include "../../Characters\BaseCharacter.h"
+#include "../../Components\CharacterComponents\CharacterAttributeComponent.h"
 #include "BTTask_CheckPlayerIsAlive.h"
 
 UBTTask_CheckPlayerIsAlive::UBTTask_CheckPlayerIsAlive()

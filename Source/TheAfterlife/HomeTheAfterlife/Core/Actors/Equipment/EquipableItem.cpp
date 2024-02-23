@@ -1,5 +1,5 @@
 #include "EquipableItem.h"
-#include "../../Characters/BaseCharacter.h"
+#include "..\..\..\Core\Characters\BaseCharacter.h"
 
 void AEquipableItem::SetOwner(AActor* NewOwner)
 {

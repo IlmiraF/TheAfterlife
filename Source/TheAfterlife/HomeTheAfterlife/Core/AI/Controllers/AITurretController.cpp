@@ -4,7 +4,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISense_Sight.h"
 #include "AITurretController.h"
-#include "TheAfterlife/HomeTheAfterlife/Core/AI/Characters/Turret.h"
+#include "../../AI/Characters/Turret.h"
 
 void AAITurretController::SetPawn(APawn* InPawn)
 {
