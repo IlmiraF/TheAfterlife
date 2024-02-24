@@ -89,7 +89,6 @@ bool FGameSaveData::Serialize(FArchive& Archive)
 	Super::Serialize(Archive);
 	Archive << LevelName;
 	Archive << PersistentLevel;
-	Archive << StreamingLevels;
 	Archive << GameInstance;
 	Archive << StartTransform;
 	return true;

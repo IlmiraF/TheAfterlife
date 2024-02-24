@@ -7,7 +7,6 @@
 #include "SaveData.h"
 #include "SaveSubsystem.generated.h"
 
-class UStreamingLevelObserver;
 UCLASS()
 class THEAFTERLIFE_API USaveSubsystem : public UGameInstanceSubsystem
 {
@@ -32,9 +31,6 @@ public:
 	void DeserializeLevel(ULevel* Level, const ULevelStreaming* StreamingLevel = nullptr);
 
 private:
-	void CreateStreamingLevelObservers(UWorld* World);
-	void RemoveStreamingLevelObservers();
-
 	void SerializeGame();
 	void DeserializeGame();
 	void WriteSaveToFile();
@@ -45,9 +41,6 @@ private:
 	int32 GetNextSaveId() const;
 	void OnActorSpawned(AActor* SpawnedActor);
 	void NotifyActorsAndComponents(AActor* Actor);
-
-	UPROPERTY(Transient)
-	TArray<UStreamingLevelObserver*> StreamingLevelObservers;
 
 	FGameSaveData GameSaveData;
 	FString SaveDirectoryName;

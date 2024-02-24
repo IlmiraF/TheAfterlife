@@ -98,7 +98,6 @@ public:
 
 	FName LevelName;
 	FLevelSaveData PersistentLevel;
-	TArray<FLevelSaveData> StreamingLevels;
 	FObjectSaveData GameInstance;
 	FTransform StartTransform;
 };
