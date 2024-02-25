@@ -11,12 +11,14 @@
 #include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "../BaseCharacter.h"
 
-
 void ABasePlayerController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
 	CachedBaseCharacter = Cast<ABaseCharacter>(InPawn);
-	CreateAndInitializeWidgets();
+	if (CachedBaseCharacter.IsValid() && IsLocalController())
+	{
+		CreateAndInitializeWidgets();
+	}
 }
 
 void ABasePlayerController::SetupInputComponent()
@@ -42,6 +44,8 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("QuickSaveGame", EInputEvent::IE_Pressed, this, &ABasePlayerController::QuickSaveGame);
 	InputComponent->BindAction("QuickLoadGame", EInputEvent::IE_Pressed, this, &ABasePlayerController::QuickLoadGame);
 
+	//FInputActionBinding& ToggleMenuBinding = InputComponent->BindAction("ToggleMainMenu", EInputEvent::IE_Pressed, this, &ABasePlayerController::ToggleMainMenu);
+	//ToggleMenuBinding.bExecuteWhenPaused = true;
 
 	InputComponent->BindAction("Punch", EInputEvent::IE_Pressed, this, &ABasePlayerController::HandsMeleeAttack);
 	InputComponent->BindAction("Kick", EInputEvent::IE_Pressed, this, &ABasePlayerController::LegsMeleeAttack);
@@ -268,9 +272,14 @@ void ABasePlayerController::ThrowBomb()
 
 void ABasePlayerController::CreateAndInitializeWidgets()
 {
+	/*if (!IsValid(MainMenuWidget))
+	{
+		MainMenuWidget = CreateWidget<UUserWidget>(GetWorld(), MainMenuWidgetClass);
+	}*/
+
 	if (!IsValid(PlayerHUDWidget))
 	{
-		PlayerHUDWidget = CreateWidget<UPlayerHUDWidget>(GetWorld(), PlayerHudWidgetClass);
+		PlayerHUDWidget = CreateWidget<UPlayerHUDWidget>(GetWorld(), PlayerHUDWidgetClass);
 		if (IsValid(PlayerHUDWidget))
 		{
 			PlayerHUDWidget->AddToViewport();
@@ -288,4 +297,32 @@ void ABasePlayerController::CreateAndInitializeWidgets()
 		}
 
 	}
+
+	SetInputMode(FInputModeGameOnly{});
+	bShowMouseCursor = false;
+}
+
+void ABasePlayerController::ToggleMainMenu()
+{
+	/*if (!IsValid(MainMenuWidget) || !IsValid(PlayerHUDWidget))
+	{
+		return;
+	}
+
+	if (MainMenuWidget->IsVisible())
+	{
+		MainMenuWidget->RemoveFromParent();
+		PlayerHUDWidget->AddToViewport();
+		SetInputMode(FInputModeGameOnly{});
+		SetPause(false);
+		bShowMouseCursor = false;
+	}
+	else
+	{
+		MainMenuWidget->AddToViewport();
+		PlayerHUDWidget->RemoveFromParent();
+		SetInputMode(FInputModeGameAndUI{});
+		SetPause(true);
+		bShowMouseCursor = true;
+	}*/
 }

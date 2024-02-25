@@ -23,7 +23,7 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
-	TSubclassOf<class UPlayerHUDWidget> PlayerHudWidgetClass;
+	TSubclassOf<class UPlayerHUDWidget> PlayerHUDWidgetClass;
 
 protected:
 
@@ -77,4 +77,6 @@ private:
 	class UPlayerHUDWidget* PlayerHUDWidget = nullptr;
 
 	bool bIgnoreCameraPitch = false;
+
+	void ToggleMainMenu();
 };
