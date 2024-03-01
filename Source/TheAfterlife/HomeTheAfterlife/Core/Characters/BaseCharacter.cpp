@@ -411,12 +411,7 @@ bool ABaseCharacter::CanMantle() const
 
 void ABaseCharacter::OnDeath()
 {
-	GetCharacterMovement()->DisableMovement();
-	float Duration = PlayAnimMontage(OnDeathAnimMontage);
-	if (Duration == 0.0f)
-	{
-		EnableRagdoll();
-	}
+	
 }
 
 void ABaseCharacter::OnStartAimingIternal()

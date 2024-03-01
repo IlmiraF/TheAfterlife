@@ -9,7 +9,6 @@
 #include "AIController.h"
 #include "../../../TheAfterlifeTypes.h"
 #include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h"
-#include "UObject/ScriptInterface.h"
 #include "BaseCharacter.generated.h"
 
 
@@ -61,16 +60,13 @@ struct FMantlingSettings
 class UBaseCharacterMovementComponent;
 class UCharacterAttributeComponent;
 class AInteractiveActor;
+class UMeleeCombatComponent;
 class UCharacterEquipmentComponent;
 class UMotionWarpingComponent;
-class IInteractable;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
-DECLARE_DELEGATE_TwoParams(FOnInteractableObjectFound, bool, FName)
-DECLARE_DELEGATE(FOnFallingDelegate)
-DECLARE_DELEGATE_TwoParams(FOnTutorialColliderOverlapped, FString, bool);
 
 UCLASS()
 class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface, public ISaveSubsystemInterface
@@ -84,11 +80,9 @@ public:
 
 	virtual void PossessedBy(AController* NewController) override;
 
-	virtual void Tick(float DeltaTime) override;
-
-	UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
-	UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
-	UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
+	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
+	FORCEINLINE UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
+	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
 
 	virtual void MoveForward(float value) {};
 	virtual void MoveRight(float value) {};
@@ -166,14 +160,6 @@ public:
 
 	virtual FGenericTeamId GetGenericTeamId() const override;
 
-	void Interact();
-
-	FOnInteractableObjectFound OnInteractableObjectFound;
-
-	FOnFallingDelegate OnFalling;
-
-	FOnTutorialColliderOverlapped OnTutorialColliderOverlapped;
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -182,7 +168,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Movement")
 	class ULedgeDetectorComponent* LedgeDetectorComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Jumping")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Movement|Jumping")
 	int32 JumpCount = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
@@ -234,21 +220,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Team")
 	ETeams Team = ETeams::ENEMY;
 
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
-	float LineOfSightDistance = 500.0f;
-
-	void TraceLineOfSight();
-
-	UPROPERTY()
-	TScriptInterface<IInteractable> LineOfSightObject;
+	void EnableRagdoll();
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
 
 	TInteractiveActorsArray AvailableInteractiveActors;
 
-	void EnableRagdoll();
 	FVector CurrentFallApex;
 
 	UAudioComponent* PunchAudioComponent;

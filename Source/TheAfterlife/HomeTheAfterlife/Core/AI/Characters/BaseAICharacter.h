@@ -18,6 +18,8 @@ public:
 
 	UBehaviorTree* GetBehaviorTree() const;
 
+	virtual void OnDeath() override;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

@@ -33,6 +33,8 @@ public:
 	virtual void OnBeamMoveForward(float value) override;
 	virtual void OnBeamMoveRight(float value) override;
 
+	virtual void OnDeath() override;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Camera")

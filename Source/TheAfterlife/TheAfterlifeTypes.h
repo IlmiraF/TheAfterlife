@@ -11,6 +11,7 @@
 
 const FName CollisionProfilePawn = FName("Pawn");
 const FName CollisionProfileRagdoll = FName("Ragdoll");
+const FName CollisionProfileNoCollision = FName("NoCollision");
 const FName CollisionProfilePawnInteractionVolume = FName("PawnInteractionVolume");
 const FName SocketCharacterWeapon = FName("CharacterWeaponSocket");
 const FName MeleeCollisionProfileEnabled = FName(TEXT("Weapon"));

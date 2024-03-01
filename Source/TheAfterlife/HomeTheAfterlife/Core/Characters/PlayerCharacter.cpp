@@ -131,6 +131,20 @@ void APlayerCharacter::OnBeamMoveRight(float value)
 	}
 }
 
+void APlayerCharacter::OnDeath()
+{	
+	Super::OnDeath();
+
+	GetCharacterMovement()->DisableMovement();
+	float Duration = PlayAnimMontage(OnDeathAnimMontage);
+	if (Duration == 0.0f)
+	{
+		EnableRagdoll();
+		GetMesh()->Stop();
+	}
+
+}
+
 void APlayerCharacter::OnStartAimingIternal()
 {
 	Super::OnStartAimingIternal();
