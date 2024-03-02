@@ -42,12 +42,12 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 
 	LeftMeleeHitRegistrator->SetupAttachment(GetRootComponent());
 	LeftMeleeHitRegistrator->SetHiddenInGame(false);
-	LeftMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
+	LeftMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
 	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
 
 	RightMeleeHitRegistrator->SetupAttachment(GetRootComponent());
 	RightMeleeHitRegistrator->SetHiddenInGame(false);
-	RightMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
+	RightMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
 	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
 
 	PunchAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PunchAudioComponent"));
@@ -416,19 +416,19 @@ void ABaseCharacter::EnableRagdoll()
 
 void ABaseCharacter::MeleeAttackStart()
 {
-	LeftMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
+	LeftMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfileEnabled);
 	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(true);
 
-	RightMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Enabled);
+	RightMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfileEnabled);
 	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(true);
 }
 
 void ABaseCharacter::MeleeAttackFinish()
 {
-	LeftMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
+	LeftMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
 	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
 
-	RightMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfile.Disabled);
+	RightMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
 	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
 }
 

@@ -1,15 +1,19 @@
 #pragma once
 
-#define ECC_Climbing ECC_GameTraceChannel1
-#define ECC_InteractionVolume ECC_GameTraceChannel2
-#define ECC_Bullet ECC_GameTraceChannel3
-#define ECC_Melee ECC_GameTraceChannel4
-#define ECC_Parkour ECC_GameTraceChannel7
+#define ECC_InteractionVolume ECC_GameTraceChannel1
+#define ECC_Weapon ECC_GameTraceChannel2
+#define ECC_Enemy ECC_GameTraceChannel3
+#define ECC_Parkour ECC_GameTraceChannel4
+#define ECC_Climbing ECC_GameTraceChannel5
+#define ECC_Bullet ECC_GameTraceChannel6
+#define ECC_Melee ECC_GameTraceChannel7
 
 const FName CollisionProfilePawn = FName("Pawn");
 const FName CollisionProfileRagdoll = FName("Ragdoll");
 const FName CollisionProfilePawnInteractionVolume = FName("PawnInteractionVolume");
 const FName SocketCharacterWeapon = FName("CharacterWeaponSocket");
+const FName MeleeCollisionProfileEnabled = FName(TEXT("Weapon"));
+const FName NoCollisionProfile = FName(TEXT("NoCollision"));
 
 const FName DebugCategoryCharacterAttributes = FName("CharacterAttributes");
 

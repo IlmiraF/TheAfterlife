@@ -100,4 +100,6 @@ public:
 	FLevelSaveData PersistentLevel;
 	FObjectSaveData GameInstance;
 	FTransform StartTransform;
+
+	bool bIsSerialized;
 };

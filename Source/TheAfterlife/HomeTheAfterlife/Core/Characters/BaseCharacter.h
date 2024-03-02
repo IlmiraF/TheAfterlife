@@ -28,24 +28,6 @@ struct FPlayerAttackMontage : public FTableRowBase
 };
 
 USTRUCT(BlueprintType)
-struct FMeleeCollisionProfile
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName Enabled;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName Disabled;
-
-	FMeleeCollisionProfile()
-	{
-		Enabled = FName(TEXT("Weapon"));
-		Disabled = FName(TEXT("NoCollision"));
-	}
-};
-
-USTRUCT(BlueprintType)
 struct FMantlingSettings
 {
 	GENERATED_BODY()
@@ -78,7 +60,6 @@ struct FMantlingSettings
 class UBaseCharacterMovementComponent;
 class UCharacterAttributeComponent;
 class AInteractiveActor;
-class UMeleeCombatComponent;
 class UCharacterEquipmentComponent;
 class UMotionWarpingComponent;
 
@@ -98,9 +79,9 @@ public:
 
 	virtual void PossessedBy(AController* NewController) override;
 
-	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
-	FORCEINLINE UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
-	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
+	UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
+	UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
+	UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
 
 	virtual void MoveForward(float value) {};
 	virtual void MoveRight(float value) {};
@@ -257,8 +238,6 @@ private:
 	FPlayerAttackMontage* AttackMontage;
 
 	bool IsAnimationBlended;
-
-	FMeleeCollisionProfile MeleeCollisionProfile;
 
 	void PlayAudio(UAudioComponent* AudioComponent);
 
