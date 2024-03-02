@@ -27,6 +27,12 @@ void UCharacterAttributeComponent::OnLevelDeserialized_Implementation()
 	OnHealthChanged();
 }
 
+void UCharacterAttributeComponent::AddHealth(float HealthToAdd)
+{
+	Health = FMath::Clamp(Health + HealthToAdd, 0.0f, MaxHealth);
+	OnHealthChanged();
+}
+
 void UCharacterAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();

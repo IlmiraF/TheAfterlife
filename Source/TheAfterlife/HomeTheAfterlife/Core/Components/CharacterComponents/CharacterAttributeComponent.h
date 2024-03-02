@@ -26,6 +26,8 @@ public:
 
 	virtual void OnLevelDeserialized_Implementation() override;
 
+	void AddHealth(float HealthToAdd);
+
 protected:
 
 	virtual void BeginPlay() override;
