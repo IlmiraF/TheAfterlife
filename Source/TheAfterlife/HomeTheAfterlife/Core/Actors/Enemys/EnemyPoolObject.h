@@ -28,7 +28,7 @@ public:
 	float DistanceBetweenCols = 100;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn")
-	TArray<TSubclassOf<ABaseAICharacter>> EnemysArray;
+	TArray<TSubclassOf<ABaseAICharacter>> InitEnemysArray;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "SpawnPoint", meta = (MakeEditWidget))
 	FVector InitSpawnPoint;
@@ -40,6 +40,8 @@ protected:
 private:
 
 	void InitSpawnEnemys();
+
+	TArray<ABaseAICharacter*> EnemysArray;
 
 	int32 CurrentCols;
 	int32 CurrentRows;
