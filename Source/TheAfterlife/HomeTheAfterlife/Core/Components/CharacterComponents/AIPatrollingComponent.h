@@ -22,7 +22,7 @@ public:
 
 protected:
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Path")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path")
 	APatrollingPath* PatrollingPath;
 
 private:

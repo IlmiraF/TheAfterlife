@@ -10,7 +10,7 @@ ABaseAICharacter::ABaseAICharacter(const FObjectInitializer& ObjectInitializer) 
 }
 
 UAIPatrollingComponent* ABaseAICharacter::GetPatrollingComponent() const
-{
+{	
 	return AIPatrollingComponent;
 }
 

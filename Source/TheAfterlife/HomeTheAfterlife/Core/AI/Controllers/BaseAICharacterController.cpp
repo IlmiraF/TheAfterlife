@@ -23,6 +23,26 @@ void ABaseAICharacterController::SetPawn(APawn* InPawn)
 	}
 }
 
+void ABaseAICharacterController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	UAIPatrollingComponent* PatrollingComponent = CachedAICharacter->GetPatrollingComponent();
+	
+	if (PatrollingComponent->CanPatrol())
+	{
+		FVector ClosestWayPoint = PatrollingComponent->SelectClosestWayPoint();
+	
+		if (IsValid(Blackboard))
+		{
+			Blackboard->SetValueAsVector(BB_NextLocation, ClosestWayPoint);
+			Blackboard->SetValueAsObject(BB_CurrentTarget, nullptr);
+		}
+	
+		bIsPatrolling = true;
+	}
+}
+
 void ABaseAICharacterController::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
 	Super::ActorsPerceptionUpdated(UpdatedActors);
@@ -50,21 +70,6 @@ void ABaseAICharacterController::OnMoveCompleted(FAIRequestID RequestID, const F
 void ABaseAICharacterController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	UAIPatrollingComponent* PatrollingComponent = CachedAICharacter->GetPatrollingComponent();
-
-	if (PatrollingComponent->CanPatrol())
-	{
-		FVector ClosestWayPoint = PatrollingComponent->SelectClosestWayPoint();
-
-		if (IsValid(Blackboard))
-		{
-			Blackboard->SetValueAsVector(BB_NextLocation, ClosestWayPoint);
-			Blackboard->SetValueAsObject(BB_CurrentTarget, nullptr);
-		}
-
-		bIsPatrolling = true;
-	}
 }
 
 void ABaseAICharacterController::TryMoveToNextTarget()
