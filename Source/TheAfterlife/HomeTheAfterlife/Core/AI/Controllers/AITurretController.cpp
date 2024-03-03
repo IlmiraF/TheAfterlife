@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "AITurretController.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AIPerceptionComponent.h"
-#include "AITurretController.h"
-#include "TheAfterlife/HomeTheAfterlife/Core/AI/Characters/Turret.h"
+#include "../Characters/Turret.h"
 
 AAITurretController::AAITurretController()
 {

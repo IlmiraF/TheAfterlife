@@ -2,11 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "TheAfterlife\HomeTheAfterlife\Core\AI\Characters\Turret.h"
 #include "AITurretController.generated.h"
 
-
-
+class ATurret;
 UCLASS()
 class THEAFTERLIFE_API AAITurretController : public AAIController
 {
