@@ -31,6 +31,10 @@ public:
 
 	float GetBalancePercent() const;
 
+	float GetHealthPercent() const;
+
+	float GetBalancePercent() const;
+
 protected:
 
 	virtual void BeginPlay() override;
