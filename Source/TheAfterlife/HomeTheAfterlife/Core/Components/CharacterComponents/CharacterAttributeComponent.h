@@ -27,12 +27,6 @@ public:
 
 	void AddHealth(float HealthToAdd);
 
-	float GetHealthPercent() const;
-
-	float GetBalancePercent() const;
-
-	float GetHealthPercent() const;
-
 	float GetBalancePercent() const;
 
 protected:
