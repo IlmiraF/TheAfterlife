@@ -1,7 +1,9 @@
+
 #include "PlayerHUDWidget.h"
 #include "../../Characters/BaseCharacter.h"
 #include "../../Components/CharacterComponents/CharacterAttributeComponent.h"
-#include "../../../Core/UI/Widget/AmmoWidget.h"
+#include "AmmoWidget.h"
+#include "HintsWidget.h"
 #include "Blueprint/WidgetTree.h"
 
 UAmmoWidget* UPlayerHUDWidget::GetWidgetAmmo()
@@ -12,6 +14,11 @@ UAmmoWidget* UPlayerHUDWidget::GetWidgetAmmo()
 void UPlayerHUDWidget::SetBombAmmo(int32 Ammo)
 {	
 	AmmoUI = Ammo;
+}
+
+UHintsWidget* UPlayerHUDWidget::GetHintsWidget()
+{
+	return WidgetTree->FindWidget<UHintsWidget>(HintsWidgetName);
 }
 
 int UPlayerHUDWidget::GetBombAmmo() const
@@ -33,6 +40,42 @@ float UPlayerHUDWidget::GetHealthPercent() const
 	}
 
 	return Result;
+}
+
+float UPlayerHUDWidget::GetLeftBalancePercent() const
+{
+    float Result = 1.0f;
+    APawn* Pawn = GetOwningPlayerPawn();
+    ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(Pawn);
+    if (IsValid(BaseCharacter))
+    {
+        const UCharacterAttributeComponent* CharacterAttribute = BaseCharacter->GetCharacterAttributeComponent();
+        Result = CharacterAttribute->GetBalancePercent();
+
+        if (Result > 0.0f)
+        {
+            Result = 0.0f;
+        }
+    }
+    return FMath::Abs(Result / 45.0f);
+}
+
+float UPlayerHUDWidget::GetRightBalancePercent() const
+{
+    float Result = 1.0f;
+    APawn* Pawn = GetOwningPlayerPawn();
+    ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(Pawn);
+    if (IsValid(BaseCharacter))
+    {
+        const UCharacterAttributeComponent* CharacterAttribute = BaseCharacter->GetCharacterAttributeComponent();
+        Result = CharacterAttribute->GetBalancePercent();
+
+        if (Result < 0.0f)
+        {
+            Result = 0.0f;
+        }
+    }
+    return (Result / 45.0f);
 }
 
 

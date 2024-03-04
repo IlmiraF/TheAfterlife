@@ -182,26 +182,26 @@ void ABasePlayerController::CreateAndInitializeWidgets()
 
 	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
 	{
-		//UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
-		//if (IsValid(HintsWidget))
-		//{
-		//	HintsWidget->UpdateVisible(false);
-		//}
+		UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
+		if (IsValid(HintsWidget))
+		{
+			HintsWidget->UpdateVisible(false);
+		}
 	}
 
 	SetInputMode(FInputModeGameOnly{});
 	bShowMouseCursor = false;
 }
 
-//void ABasePlayerController::UpdateHintsWidget(FString TutorialText, bool Visibility)
-//{	
-//	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
-//	{	
-//		UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
-//		if (IsValid(HintsWidget))
-//		{	
-//			HintsWidget->UpdateHint(TutorialText);
-//			HintsWidget->UpdateVisible(Visibility);
-//		}
-//	}
-//}
+void ABasePlayerController::UpdateHintsWidget(FString TutorialText, bool Visibility)
+{	
+	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
+	{	
+		UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
+		if (IsValid(HintsWidget))
+		{	
+			HintsWidget->UpdateHint(TutorialText);
+			HintsWidget->UpdateVisible(Visibility);
+		}
+	}
+}

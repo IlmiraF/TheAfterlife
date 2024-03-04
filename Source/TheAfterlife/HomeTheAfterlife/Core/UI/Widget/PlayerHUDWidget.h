@@ -6,7 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHUDWidget.generated.h"
 
-
+class UAmmoWidget;
+class UHintsWidget;
 UCLASS()
 class THEAFTERLIFE_API UPlayerHUDWidget : public UUserWidget
 {
@@ -14,10 +15,12 @@ class THEAFTERLIFE_API UPlayerHUDWidget : public UUserWidget
 
 public :
 
-	class UAmmoWidget* GetWidgetAmmo();
+	UAmmoWidget* GetWidgetAmmo();
 
 	UFUNCTION()
 	void SetBombAmmo(int32 Ammo);
+
+	UHintsWidget* GetHintsWidget();
 
 protected:
 
@@ -27,8 +30,17 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	int GetBombAmmo() const;
 
+	UFUNCTION(BlueprintCallable)
+	float GetLeftBalancePercent() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetRightBalancePercent() const;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
 	FName AmmoWidgetName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
+	FName HintsWidgetName;
 
 private: 
 

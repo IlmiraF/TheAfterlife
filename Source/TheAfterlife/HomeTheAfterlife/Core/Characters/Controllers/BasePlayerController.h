@@ -21,9 +21,7 @@ public:
 
 	virtual void SetPawn(APawn* InPawn) override;
 
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
-	TSubclassOf<class UPlayerHUDWidget> PlayerHUDWidgetClass;
+	void UpdateHintsWidget(FString TutorialText, bool Visibility);
 
 protected:
 
@@ -69,6 +67,9 @@ protected:
 	void ThrowBomb();
 
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
+	TSubclassOf<class UPlayerHUDWidget> PlayerHUDWidgetClass;
 
 private:
 
