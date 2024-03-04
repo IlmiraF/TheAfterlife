@@ -33,9 +33,13 @@ public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "SpawnPoint", meta = (MakeEditWidget))
 	FVector InitSpawnPoint;
 
+
 protected:
 
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void SwitchPosition(int32 Index);
 
 private:
 

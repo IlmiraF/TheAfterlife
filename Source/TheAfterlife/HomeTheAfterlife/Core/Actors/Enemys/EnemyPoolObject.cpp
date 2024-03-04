@@ -27,6 +27,8 @@ void AEnemyPoolObject::InitSpawnEnemys()
 		FVector SpawnPoint = SpawnTransform.TransformPosition(InitSpawnPoint + FVector(DistanceBetweenRows * CurrentRows*-1, DistanceBetweenCols * CurrentCols, 0));
 
 		ABaseAICharacter* Enemy = GetWorld()->SpawnActor<ABaseAICharacter>(InitEnemysArray[i], SpawnPoint, FRotator::ZeroRotator);
+		Enemy->SetIndex(i);
+		Enemy->OnCharacterDeath.AddUFunction(this, FName("SwitchPosition"));
 		EnemysArray.Add(Enemy);
 
 		CurrentCols++;
@@ -45,12 +47,36 @@ void AEnemyPoolObject::InitSpawnEnemys()
 		UBrainComponent* Brain = AICharacterController->GetBrainComponent();
 		Brain->StopLogic("Disable");
 	}
+}
 
-	//for (int32 i = Cols; i < InitEnemysArray.Num(); i++)
-	//{
-	//	ABaseAICharacterController* AICharacterController = EnemysArray[i]->GetController<ABaseAICharacterController>();
-	//
-	//	UBrainComponent* Brain = AICharacterController->GetBrainComponent();
-	//	Brain->RestartLogic();
-	//}
+void AEnemyPoolObject::SwitchPosition(int32 Index)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Character Death Index: %d"), Index));
+
+	ABaseAICharacter* DeathEnemy = EnemysArray[Index];
+
+	for (int32 i = Cols+Index; i < EnemysArray.Num(); i+=Cols)
+	{	
+		ABaseAICharacter* Enemy = EnemysArray[i]; 
+		Enemy->SetIndex(i-Cols);
+		EnemysArray[i - Cols] = Enemy;
+
+		if (i == Cols + Index)
+		{
+			ABaseAICharacterController* AICharacterController = Enemy->GetController<ABaseAICharacterController>();
+
+			UBrainComponent* Brain = AICharacterController->GetBrainComponent();
+			Brain->RestartLogic();
+		}
+	}
+
+	int32 LastIndex = EnemysArray.Num() - Cols + Index;
+															 // переприсваем второй ряд на первый, и когда умирает второй ряд, мы обращаемся по индексам второго ряда а там уже пусто, надо сдвигать всех на индексы ряда
+	DeathEnemy->SetIndex(LastIndex);
+	EnemysArray[LastIndex]= DeathEnemy;
+	
+	ABaseAICharacterController* AICharacterController = DeathEnemy->GetController<ABaseAICharacterController>();
+
+	UBrainComponent* Brain = AICharacterController->GetBrainComponent();
+	Brain->StopLogic("Disable");
 }
