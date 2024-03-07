@@ -12,41 +12,31 @@ UCLASS()
 class THEAFTERLIFE_API AEnemyPoolObject : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 
 	AEnemyPoolObject();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
+	TArray<TSubclassOf<ABaseAICharacter>> EnemysType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn")
-	int32 Cols = 3;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
+	int32 AmmountEnemy;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn")
-	float DistanceBetweenRows = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn Position")
+	float Radius = 1000.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn")
-	float DistanceBetweenCols = 100;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn")
-	TArray<TSubclassOf<ABaseAICharacter>> InitEnemysArray;
-
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "SpawnPoint", meta = (MakeEditWidget))
-	FVector InitSpawnPoint;
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn Position")
+	float MinimumDistanceToPlayer = 300.0f;
 
 protected:
 
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void SwitchPosition(int32 Index);
+	void SpawnNewEnemy();
 
 private:
 
 	void InitSpawnEnemys();
-
-	TArray<ABaseAICharacter*> EnemysArray;
-
-	int32 CurrentCols;
-	int32 CurrentRows;
 };

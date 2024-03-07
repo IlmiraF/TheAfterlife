@@ -16,67 +16,50 @@ void AEnemyPoolObject::BeginPlay()
 	InitSpawnEnemys();
 }
 
+
 void AEnemyPoolObject::InitSpawnEnemys()
-{
-	for (int32 i = 0; i < InitEnemysArray.Num(); i++)
+{	
+	for (int32 i = 0; i < AmmountEnemy; i++)
 	{	
-		FActorSpawnParameters SpawnParams;
-
-
-		FTransform SpawnTransform = this->GetActorTransform();
-		FVector SpawnPoint = SpawnTransform.TransformPosition(InitSpawnPoint + FVector(DistanceBetweenRows * CurrentRows*-1, DistanceBetweenCols * CurrentCols, 0));
-
-		ABaseAICharacter* Enemy = GetWorld()->SpawnActor<ABaseAICharacter>(InitEnemysArray[i], SpawnPoint, FRotator::ZeroRotator);
-		Enemy->SetIndex(i);
-		Enemy->OnCharacterDeath.AddUFunction(this, FName("SwitchPosition"));
-		EnemysArray.Add(Enemy);
-
-		CurrentCols++;
-
-		if (CurrentCols == Cols)
-		{
-			CurrentCols = 0;
-			CurrentRows++;
-		}
-	}
-
-	for (int32 i = Cols; i < InitEnemysArray.Num(); i++)
-	{
-		ABaseAICharacterController* AICharacterController = EnemysArray[i]->GetController<ABaseAICharacterController>();
-		
-		UBrainComponent* Brain = AICharacterController->GetBrainComponent();
-		Brain->StopLogic("Disable");
+        SpawnNewEnemy();
 	}
 }
 
-void AEnemyPoolObject::SwitchPosition(int32 Index)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Character Death Index: %d"), Index));
+void AEnemyPoolObject::SpawnNewEnemy()
+{   
+    FVector SpawnLocation = this->GetActorLocation();
+	FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 
-	ABaseAICharacter* DeathEnemy = EnemysArray[Index];
+    float RandomAngle;
 
-	for (int32 i = Cols+Index; i < EnemysArray.Num(); i+=Cols)
-	{	
-		ABaseAICharacter* Enemy = EnemysArray[i]; 
-		Enemy->SetIndex(i-Cols);
-		EnemysArray[i - Cols] = Enemy;
+    bool bIsTooCloseToPlayer = true;
+    bool bIsInsideCircle = true;
 
-		if (i == Cols + Index)
-		{
-			ABaseAICharacterController* AICharacterController = Enemy->GetController<ABaseAICharacterController>();
+    while (bIsTooCloseToPlayer || bIsInsideCircle)
+    {
+        RandomAngle = FMath::RandRange(0.0f, 2.0f * PI);
 
-			UBrainComponent* Brain = AICharacterController->GetBrainComponent();
-			Brain->RestartLogic();
-		}
-	}
+        SpawnLocation.X = SpawnLocation.X + Radius * FMath::Cos(RandomAngle);
+        SpawnLocation.Y = SpawnLocation.Y + Radius * FMath::Sin(RandomAngle);
+        SpawnLocation.Z = SpawnLocation.Z;
 
-	int32 LastIndex = EnemysArray.Num() - Cols + Index;
-															 // переприсваем второй ряд на первый, и когда умирает второй ряд, мы обращаемся по индексам второго ряда а там уже пусто, надо сдвигать всех на индексы ряда
-	DeathEnemy->SetIndex(LastIndex);
-	EnemysArray[LastIndex]= DeathEnemy;
-	
-	ABaseAICharacterController* AICharacterController = DeathEnemy->GetController<ABaseAICharacterController>();
+        if (FVector::Distance(SpawnLocation, PlayerLocation) >= MinimumDistanceToPlayer)
+        {
+            bIsTooCloseToPlayer = false;
+        }
 
-	UBrainComponent* Brain = AICharacterController->GetBrainComponent();
-	Brain->StopLogic("Disable");
+        if (FVector::DistSquared(SpawnLocation, PlayerLocation) >= Radius * Radius)
+        {
+            bIsInsideCircle = false;
+        }
+    }
+
+	int RandomEnemyTypeIndex = FMath::RandRange(0, 1);
+
+    FActorSpawnParameters SpawnParams;
+    ABaseAICharacter* Enemy = GetWorld()->SpawnActor<ABaseAICharacter>(EnemysType[RandomEnemyTypeIndex], SpawnLocation, FRotator::ZeroRotator);
+    Enemy->SetActorRotation((PlayerLocation - SpawnLocation).Rotation());
+
+    //Enemy->OnCharacterDeath.AddUFunction(this, FName("SpawnNewEnemy"));
 }
+
