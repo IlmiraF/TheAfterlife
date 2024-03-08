@@ -7,6 +7,8 @@
 #include "../BaseCharacter.h"
 #include "../../UI/Widget/PlayerHUDWidget.h"
 #include "../../UI/Widget/HintsWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "../../Subsystems/SaveSubsystem/SaveSubsystem.h"
 
 void ABasePlayerController::SetPawn(APawn* InPawn)
 {
@@ -38,6 +40,26 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePlayerController::Jump);
 	InputComponent->BindAction("Mantle", EInputEvent::IE_Pressed, this, &ABasePlayerController::Mantle);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ABasePlayerController::ChangeCrouchState);
+	InputComponent->BindAction("QuickSaveGame", EInputEvent::IE_Pressed, this, &ABasePlayerController::QuickSaveGame);
+	InputComponent->BindAction("QuickLoadGame", EInputEvent::IE_Pressed, this, &ABasePlayerController::QuickLoadGame);
+
+	InputComponent->BindAction("Punch", EInputEvent::IE_Pressed, this, &ABasePlayerController::HandsMeleeAttack);
+	InputComponent->BindAction("Kick", EInputEvent::IE_Pressed, this, &ABasePlayerController::LegsMeleeAttack);
+	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ABasePlayerController::Fire);
+	InputComponent->BindAction("Aim", EInputEvent::IE_Pressed, this, &ABasePlayerController::StartAiming);
+	InputComponent->BindAction("Aim", EInputEvent::IE_Released, this, &ABasePlayerController::StopAiming);
+	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::NextItem);
+	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::PreviousItem);
+	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
+}
+
+void ABasePlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if (CachedBaseCharacter->IsFalling())
+	{
+		QuickLoadGame();
+	}
 }
 
 void ABasePlayerController::MoveForward(float value)
@@ -165,6 +187,90 @@ void ABasePlayerController::OnBeamMoveRight(float value)
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->OnBeamMoveRight(value);
+	}
+}
+
+void ABasePlayerController::QuickSaveGame()
+{
+	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
+	SaveSubsystem->SaveGame();
+}
+
+void ABasePlayerController::QuickLoadGame()
+{
+	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
+	SaveSubsystem->LoadLastGame();
+}
+
+void ABasePlayerController::NextItem()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->NextItem();
+	}
+}
+
+void ABasePlayerController::PreviousItem()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->PreviousItem();
+	}
+}
+
+void ABasePlayerController::Fire()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->Fire();
+	}
+}
+
+void ABasePlayerController::StartAiming()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->StartAiming();
+	}
+}
+
+void ABasePlayerController::StopAiming()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->StopAiming();
+	}
+}
+
+void ABasePlayerController::EquipPrimaryItem()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->EquipPrimaryItem();
+	}
+}
+
+void ABasePlayerController::HandsMeleeAttack()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->HandsMeleeAttack();
+	}
+}
+
+void ABasePlayerController::LegsMeleeAttack()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->LegsMeleeAttack();
+	}
+}
+
+void ABasePlayerController::ThrowBomb()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->ThrowBomb();
 	}
 }
 

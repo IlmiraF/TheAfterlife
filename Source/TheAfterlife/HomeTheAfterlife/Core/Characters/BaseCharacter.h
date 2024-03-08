@@ -159,6 +159,8 @@ public:
 
 	virtual FGenericTeamId GetGenericTeamId() const override;
 
+	bool IsFalling() const;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -224,6 +226,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Team")
 	ETeams Team = ETeams::ENEMY;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement")
+	float MinFallingDistance = -100.0f;
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;

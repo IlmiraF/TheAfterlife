@@ -27,6 +27,8 @@ protected:
 
 	virtual void SetupInputComponent() override;
 
+	virtual void Tick(float DeltaTime) override;
+
 	void MoveForward(float value);
 	void MoveRight(float value);
 	void Turn(float value);
@@ -79,5 +81,5 @@ private:
 
 	bool bIgnoreCameraPitch = false;
 
-	void ToggleMainMenu();
+	//void ToggleMainMenu();
 };

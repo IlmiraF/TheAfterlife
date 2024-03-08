@@ -403,6 +403,11 @@ void ABaseCharacter::EquipPrimaryItem()
 	CharacterEquipmentComponent->EquipItemInSlot(EEquipmentSlots::PRIMARY_ITEM_SLOT);
 }
 
+bool ABaseCharacter::IsFalling() const
+{
+	return GetActorLocation().Z <= MinFallingDistance;
+}
+
 const FMantlingSettings& ABaseCharacter::GetMantlingSettings(float LedgeHeight) const
 {
 	return LedgeHeight > LowMantleMaxHeight ? HighMantleSettings : LowMantleSettings;
