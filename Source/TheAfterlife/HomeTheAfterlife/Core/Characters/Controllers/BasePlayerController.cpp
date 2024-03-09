@@ -7,6 +7,8 @@
 #include "../BaseCharacter.h"
 #include "../../UI/Widget/PlayerHUDWidget.h"
 #include "../../UI/Widget/HintsWidget.h"
+#include "../../UI/Widget/AmmoWidget.h"
+#include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "../../Subsystems/SaveSubsystem/SaveSubsystem.h"
 
@@ -292,6 +294,13 @@ void ABasePlayerController::CreateAndInitializeWidgets()
 		if (IsValid(HintsWidget))
 		{
 			HintsWidget->UpdateVisible(false);
+		}
+
+		UAmmoWidget* AmmoWidget = PlayerHUDWidget->GetWidgetAmmo();
+		if (IsValid(AmmoWidget))
+		{
+			UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent_Mutable();
+			CharacterEquipment->OnCurrentWeaponAmmoChangedEvent.AddUFunction(AmmoWidget, FName("UpdateAmmoCount"));
 		}
 	}
 

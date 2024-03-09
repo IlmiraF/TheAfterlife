@@ -3,6 +3,9 @@
 
 #include "MainMenuWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Blueprint/WidgetTree.h"
+#include "SettingsWidget.h"
 
 void UMainMenuWidget::StartGame()
 {
@@ -10,7 +13,14 @@ void UMainMenuWidget::StartGame()
 }
 
 void UMainMenuWidget::GetSettings()
-{}
+{
+	this->RemoveFromParent();
+	USettingsWidget* SettingsWidget = CreateWidget<USettingsWidget>(GetWorld(), SettingsWidgetClass);
+	SettingsWidget->AddToViewport();
+}
 
 void UMainMenuWidget::ExitGame()
-{}
+{
+	TEnumAsByte<EQuitPreference::Type> QuitPreference = EQuitPreference::Quit; 
+	UKismetSystemLibrary::QuitGame(GetWorld(), UGameplayStatics::GetPlayerController(GetWorld(), 0), QuitPreference, true);
+}

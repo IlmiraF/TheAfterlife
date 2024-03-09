@@ -30,6 +30,8 @@ public:
 	void SerializeLevel(const ULevel* Level, const ULevelStreaming* StreamingLevel = nullptr);
 	void DeserializeLevel(ULevel* Level, const ULevelStreaming* StreamingLevel = nullptr);
 
+	int32 GetNumOfSaves() const;
+
 private:
 	void SerializeGame();
 	void DeserializeGame();

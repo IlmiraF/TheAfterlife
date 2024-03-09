@@ -4,33 +4,29 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "MainMenuWidget.generated.h"
+#include "SettingsWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THEAFTERLIFE_API UMainMenuWidget : public UUserWidget
+class THEAFTERLIFE_API USettingsWidget : public UUserWidget
 {
 	GENERATED_BODY()
-
+	
 public:
 
 	UFUNCTION(BlueprintCallable)
-	void StartGame();
+	void BackToMenu();
 
 	UFUNCTION(BlueprintCallable)
-	void GetSettings();
-
-	UFUNCTION(BlueprintCallable)
-	void ExitGame();
-	
+	void SavesMenu();
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly)
-	FName LevelName;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
+	TSubclassOf<class UMainMenuWidget> MainMenuWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
-	TSubclassOf<class USettingsWidget> SettingsWidgetClass;
+	TSubclassOf<class USavesWidget> SavesWidgetClass;
 };

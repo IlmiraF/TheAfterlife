@@ -230,6 +230,11 @@ void USaveSubsystem::DeserializeLevel(ULevel* Level, const ULevelStreaming* Stre
 	}
 }
 
+int32 USaveSubsystem::GetNumOfSaves() const
+{
+	return SaveIds.Num();
+}
+
 void USaveSubsystem::NotifyActorsAndComponents(AActor* Actor)
 {
 	ISaveSubsystemInterface::Execute_OnLevelDeserialized(Actor);
