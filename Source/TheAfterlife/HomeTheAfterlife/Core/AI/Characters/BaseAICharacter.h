@@ -5,7 +5,7 @@
 #include "..\..\Components\CharacterComponents/AIPatrollingComponent.h"
 #include "BaseAICharacter.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnCharacterDeath, int32);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCharacterDeath, ABaseAICharacter*);
 
 UCLASS()
 class THEAFTERLIFE_API ABaseAICharacter : public ABaseCharacter
@@ -34,7 +34,5 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 	UBehaviorTree* BehaviorTree;
 
-private:
 
-	int32 CharacterIndex;
 };

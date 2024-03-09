@@ -19,10 +19,6 @@ UBehaviorTree* ABaseAICharacter::GetBehaviorTree() const
 	return BehaviorTree;
 }
 
-void ABaseAICharacter::SetIndex(int32 Index)
-{
-	CharacterIndex = Index;
-}
 
 void ABaseAICharacter::OnDeath()
 {
@@ -34,9 +30,6 @@ void ABaseAICharacter::OnDeath()
 	
 	if (OnCharacterDeath.IsBound())
 	{
-		OnCharacterDeath.Broadcast(CharacterIndex);
+		OnCharacterDeath.Broadcast(this);
 	}
-
-	CharacterIndex = -1;
-
 }

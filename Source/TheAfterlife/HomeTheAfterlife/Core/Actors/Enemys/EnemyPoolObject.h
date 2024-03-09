@@ -36,7 +36,14 @@ protected:
 	UFUNCTION()
 	void SpawnNewEnemy();
 
+	void ReturnEnemy(ABaseAICharacter* Enemy);
+
 private:
 
 	void InitSpawnEnemys();
+
+	FVector CalculatingSpawnPoint();
+
+	TQueue<ABaseAICharacter*> FreeEnemys;
+
 };

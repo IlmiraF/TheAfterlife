@@ -1,5 +1,6 @@
 #include "BrainComponent.h"
 #include "EnemyPoolObject.h"
+#include "NavigationSystem.h"
 #include "TheAfterlife/HomeTheAfterlife/Core/AI/Controllers/BaseAICharacterController.h"
 
 
@@ -8,14 +9,12 @@ AEnemyPoolObject::AEnemyPoolObject()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-
 void AEnemyPoolObject::BeginPlay()
 {
 	Super::BeginPlay();
 	
 	InitSpawnEnemys();
 }
-
 
 void AEnemyPoolObject::InitSpawnEnemys()
 {	
@@ -25,41 +24,65 @@ void AEnemyPoolObject::InitSpawnEnemys()
 	}
 }
 
-void AEnemyPoolObject::SpawnNewEnemy()
-{   
+FVector AEnemyPoolObject::CalculatingSpawnPoint()
+{
     FVector SpawnLocation = this->GetActorLocation();
-	FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+    FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 
-    float RandomAngle;
-
-    bool bIsTooCloseToPlayer = true;
-    bool bIsInsideCircle = true;
-
-    while (bIsTooCloseToPlayer || bIsInsideCircle)
+    UNavigationSystemV1* NavSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+    if (NavSystem)
     {
-        RandomAngle = FMath::RandRange(0.0f, 2.0f * PI);
-
-        SpawnLocation.X = SpawnLocation.X + Radius * FMath::Cos(RandomAngle);
-        SpawnLocation.Y = SpawnLocation.Y + Radius * FMath::Sin(RandomAngle);
-        SpawnLocation.Z = SpawnLocation.Z;
-
-        if (FVector::Distance(SpawnLocation, PlayerLocation) >= MinimumDistanceToPlayer)
+        FNavLocation NavLocation;
+        if (NavSystem->GetRandomPointInNavigableRadius(SpawnLocation, Radius, NavLocation))
         {
-            bIsTooCloseToPlayer = false;
-        }
-
-        if (FVector::DistSquared(SpawnLocation, PlayerLocation) >= Radius * Radius)
-        {
-            bIsInsideCircle = false;
+            SpawnLocation = NavLocation.Location;
         }
     }
 
-	int RandomEnemyTypeIndex = FMath::RandRange(0, 1);
-
-    FActorSpawnParameters SpawnParams;
-    ABaseAICharacter* Enemy = GetWorld()->SpawnActor<ABaseAICharacter>(EnemysType[RandomEnemyTypeIndex], SpawnLocation, FRotator::ZeroRotator);
-    Enemy->SetActorRotation((PlayerLocation - SpawnLocation).Rotation());
-
-    //Enemy->OnCharacterDeath.AddUFunction(this, FName("SpawnNewEnemy"));
+    return SpawnLocation;
 }
 
+void AEnemyPoolObject::SpawnNewEnemy()
+{   
+	FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	FVector SpawnLocation = CalculatingSpawnPoint();
+
+	ABaseAICharacter* NewEnemy = nullptr;
+
+	if (!FreeEnemys.IsEmpty())
+	{
+		FreeEnemys.Dequeue(NewEnemy);
+	}
+	else
+	{
+		int32 RandomIndex = FMath::RandRange(0, EnemysType.Num() - 1);
+		NewEnemy = GetWorld()->SpawnActor<ABaseAICharacter>(EnemysType[RandomIndex]);
+		//NewEnemy->OnCharacterDeath.AddUFunction(this, FName("ReturnEnemy"));
+	}
+
+	if (NewEnemy)
+	{
+		NewEnemy->SetActorHiddenInGame(false);
+		NewEnemy->SetActorEnableCollision(true);
+		NewEnemy->SetActorTickEnabled(true);
+		NewEnemy->SetActorLocation(SpawnLocation);
+		NewEnemy->SetActorRotation((PlayerLocation - SpawnLocation).Rotation());
+		//NewEnemy->Revival();
+
+		//NewEnemy->SetEnemyPool(this);
+	}
+}
+
+void AEnemyPoolObject::ReturnEnemy(ABaseAICharacter* Enemy)
+{
+    if (Enemy)
+    {
+        //Enemy->SetActorHiddenInGame(true);
+        //Enemy->SetActorEnableCollision(false);
+        //Enemy->SetActorTickEnabled(false);
+        FreeEnemys.Enqueue(Enemy);
+		SpawnNewEnemy();
+    }
+}
+
+// Enemy->OnCharacterDeath.AddUFunction(this, FName("AddEnemy"));
