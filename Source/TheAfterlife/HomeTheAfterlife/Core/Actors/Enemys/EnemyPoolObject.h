@@ -47,4 +47,6 @@ private:
 
 	TQueue<ABaseAICharacter*> FreeEnemys;
 
+	FDelegateHandle OnCharacterDeathHandle;
+
 };

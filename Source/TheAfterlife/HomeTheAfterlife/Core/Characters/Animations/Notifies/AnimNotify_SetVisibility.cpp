@@ -6,10 +6,10 @@
 
 void UAnimNotify_SetVisibility::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
-	MeshComp->SetVisibility(false);
+	//MeshComp->SetVisibility(false);
 	AActor* Actor = MeshComp->GetOwner();
-	Actor->SetActorEnableCollision(false);
-	Actor->SetActorTickEnabled(false);
+	//Actor->SetActorEnableCollision(false);
+	//Actor->SetActorTickEnabled(false);
 	ABaseAICharacter* AICharacter = Cast<ABaseAICharacter>(Actor);
 
 	AICharacter->DisableCharacter();

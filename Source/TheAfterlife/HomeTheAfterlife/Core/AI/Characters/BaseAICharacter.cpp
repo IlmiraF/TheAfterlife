@@ -3,6 +3,7 @@
 #include "..\..\Components\CharacterComponents\CharacterAttributeComponent.h"
 #include "..\..\Components\MovementComponents\BaseCharacterMovementComponent.h"
 #include "BaseAICharacter.h"
+#include "Components/CapsuleComponent.h"
 
 
 ABaseAICharacter::ABaseAICharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -36,19 +37,33 @@ void ABaseAICharacter::DisableCharacter()
 	{
 		OnCharacterDeath.Broadcast(this);
 	}
+	else
+	{	
+		USkeletalMeshComponent* MeshComp = GetMesh();
+		MeshComp->SetVisibility(false);
+		MeshComp->SetCollisionProfileName(CollisionProfileRagdoll);
+		MeshComp->SetSimulatePhysics(true);
+		SetActorEnableCollision(false);
+		SetActorTickEnabled(false);
+	}
+
+	//GetMesh()->SetVisibility(false);
+	//SetActorEnableCollision(false);
+	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//SetActorTickEnabled(false);
+	//SetActorHiddenInGame(true);
 
 }
 
 void ABaseAICharacter::Revival()
 {
 	CharacterAttributesComponent->RestoreHealth();
+	//SetActorHiddenInGame(false);
 
-	USkeletalMeshComponent* MeshComp = this->GetMesh();
-	MeshComp->SetVisibility(true);
-	MeshComp->SetSimulatePhysics(false);
-	this->SetActorEnableCollision(true);
-	this->SetActorTickEnabled(true);
-	
+	GetCharacterMovement()->SetMovementMode(MOVE_NavWalking);
+	//GetMesh()->SetVisibility(true);
+	//SetActorEnableCollision(true);
+	//SetActorTickEnabled(true);
 
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("GOVNO"));
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }

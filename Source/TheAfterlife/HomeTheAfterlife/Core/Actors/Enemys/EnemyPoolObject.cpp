@@ -1,6 +1,6 @@
 #include "BrainComponent.h"
 #include "EnemyPoolObject.h"
-#include "TheAfterlife/HomeTheAfterlife/Core/AI/Controllers/BaseAICharacterController.h"
+#include "../../AI/Controllers/BaseAICharacterController.h"
 
 
 AEnemyPoolObject::AEnemyPoolObject()
@@ -80,17 +80,17 @@ void AEnemyPoolObject::SpawnNewEnemy()
 		NewEnemy->SetActorRotation((PlayerLocation - SpawnLocation).Rotation());
 		NewEnemy->Revival();
 
-		NewEnemy->OnCharacterDeath.AddUFunction(this, FName("ReturnEnemy"));
+		OnCharacterDeathHandle = NewEnemy->OnCharacterDeath.AddUFunction(this, FName("ReturnEnemy"));
 	}
 }
 
 void AEnemyPoolObject::ReturnEnemy(ABaseAICharacter* Enemy)
 {
     if (Enemy)
-    {
+    {	
+		Enemy->OnCharacterDeath.Remove(OnCharacterDeathHandle);
         FreeEnemys.Enqueue(Enemy);
 		SpawnNewEnemy();
-
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("XYI"));
+		
     }
 }
