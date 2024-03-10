@@ -21,6 +21,9 @@ public:
 	void LoadLastGame();
 
 	UFUNCTION(BlueprintCallable, Category = "Save Subsystem")
+	void LoadGameByIndex(int32 NumOfSave);
+
+	UFUNCTION(BlueprintCallable, Category = "Save Subsystem")
 	void LoadGame(int32 SaveId);
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;

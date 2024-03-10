@@ -9,16 +9,17 @@
 void USavesWidget::LoadSave(int32 NumOfSave)
 {
 	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
-	SaveSubsystem->LoadLastGame();
+	SaveSubsystem->LoadGameByIndex(NumOfSave);
 }
 
-FText USavesWidget::SetText() const
+FText USavesWidget::SetText(int32 NumOfSave)
 {
-	if (CheckExist())
+	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
+	if (SaveSubsystem->GetNumOfSaves() < NumOfSave)
 	{
-		return FText::FromString(TEXT("Save"));
+		return FText::FromString(TEXT("Empty"));
 	}
-	return FText::FromString(TEXT("Empty"));
+	return FText::FromString(TEXT("Save"));
 }
 
 void USavesWidget::BackToMenu()
@@ -26,14 +27,4 @@ void USavesWidget::BackToMenu()
 	this->RemoveFromParent();
 	UMainMenuWidget* MainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), MainMenuWidgetClass);
 	MainMenuWidget->AddToViewport();
-}
-
-bool USavesWidget::CheckExist() const
-{
-	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
-	if (SaveSubsystem->GetNumOfSaves() >= 1)
-	{
-		return true;
-	}
-	return false;
 }

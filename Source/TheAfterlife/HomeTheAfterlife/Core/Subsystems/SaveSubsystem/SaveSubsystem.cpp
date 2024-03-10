@@ -37,6 +37,19 @@ void USaveSubsystem::LoadLastGame()
 	LoadGame(SaveIds[SaveIds.Num() - 1]);
 }
 
+void USaveSubsystem::LoadGameByIndex(int32 NumOfSave)
+{
+	UE_LOG(LogSaveSubsystem, Display, TEXT("USaveSubsystem::LoadLastGame(): %s"), *GetNameSafe(this));
+
+	if (SaveIds.Num() < NumOfSave)
+	{
+		UE_LOG(LogSaveSubsystem, Display, TEXT("USaveSubsystem::LoadLastGame(): %s Failed! No saves."), *GetNameSafe(this));
+		return;
+	}
+
+	LoadGame(SaveIds[SaveIds.Num() - NumOfSave]);
+}
+
 void USaveSubsystem::LoadGame(int32 SaveId)
 {
 	UE_LOG(LogSaveSubsystem, Display, TEXT("USaveSubsystem::LoadGame()"));

@@ -22,15 +22,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void BackToMenu();
 
-protected:
+	UFUNCTION(BlueprintCallable)
+	FText SetText(int32 NumOfSave);
 
-	UFUNCTION(BlueprintPure)
-	FText SetText() const;
+protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
 	TSubclassOf<class UMainMenuWidget> MainMenuWidgetClass;
-
-private:
-
-	bool CheckExist() const;
 };

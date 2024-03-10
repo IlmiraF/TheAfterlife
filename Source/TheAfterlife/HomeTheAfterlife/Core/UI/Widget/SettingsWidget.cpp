@@ -11,10 +11,3 @@ void USettingsWidget::BackToMenu()
 	UMainMenuWidget* MainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), MainMenuWidgetClass);
 	MainMenuWidget->AddToViewport();
 }
-
-void USettingsWidget::SavesMenu()
-{
-	this->RemoveFromParent();
-	USavesWidget* SavesWidget = CreateWidget<USavesWidget>(GetWorld(), SavesWidgetClass);
-	SavesWidget->AddToViewport();
-}

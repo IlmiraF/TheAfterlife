@@ -6,10 +6,18 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Blueprint/WidgetTree.h"
 #include "SettingsWidget.h"
+#include "SavesWidget.h"
 
 void UMainMenuWidget::StartGame()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), LevelName);
+}
+
+void UMainMenuWidget::LoadSaveGame()
+{
+	this->RemoveFromParent();
+	USavesWidget* SavesWidget = CreateWidget<USavesWidget>(GetWorld(), SavesWidgetClass);
+	SavesWidget->AddToViewport();
 }
 
 void UMainMenuWidget::GetSettings()

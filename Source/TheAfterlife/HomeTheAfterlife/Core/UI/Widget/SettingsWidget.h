@@ -19,14 +19,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void BackToMenu();
 
-	UFUNCTION(BlueprintCallable)
-	void SavesMenu();
-
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
 	TSubclassOf<class UMainMenuWidget> MainMenuWidgetClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
-	TSubclassOf<class USavesWidget> SavesWidgetClass;
 };

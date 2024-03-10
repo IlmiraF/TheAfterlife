@@ -20,6 +20,9 @@ public:
 	void StartGame();
 
 	UFUNCTION(BlueprintCallable)
+	void LoadSaveGame();
+
+	UFUNCTION(BlueprintCallable)
 	void GetSettings();
 
 	UFUNCTION(BlueprintCallable)
@@ -33,4 +36,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
 	TSubclassOf<class USettingsWidget> SettingsWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
+	TSubclassOf<class USavesWidget> SavesWidgetClass;
 };
