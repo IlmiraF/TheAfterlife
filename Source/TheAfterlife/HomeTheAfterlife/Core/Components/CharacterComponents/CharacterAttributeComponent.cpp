@@ -14,12 +14,17 @@ UCharacterAttributeComponent::UCharacterAttributeComponent()
 
 float UCharacterAttributeComponent::GetHealthPercent() const
 {
-	return Health / MaxHealth;
+	return (Health * MaxHealth) / 10000.0f;
 }
 
 float UCharacterAttributeComponent::GetBalancePercent() const
 {
 	return CachedBaseCharacterOwner->GetBaseCharacterMovementComponent()->GetOnBeamDirection();
+}
+
+void UCharacterAttributeComponent::StealHealth(float HealthStealingRatio)
+{
+	MaxHealth = MaxHealth * HealthStealingRatio;
 }
 
 void UCharacterAttributeComponent::OnLevelDeserialized_Implementation()

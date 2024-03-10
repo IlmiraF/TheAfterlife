@@ -29,11 +29,13 @@ public:
 
 	float GetBalancePercent() const;
 
+	void StealHealth(float HealthStealingRatio);
+
 protected:
 
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health", meta = (UIMin = 0.0f))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health", meta = (UIMin = 0.0f), SaveGame)
 	float MaxHealth = 100.0f;
 
 private:

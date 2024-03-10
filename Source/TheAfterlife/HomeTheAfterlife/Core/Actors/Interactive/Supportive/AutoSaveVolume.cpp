@@ -3,6 +3,7 @@
 
 #include "AutoSaveVolume.h"
 #include "../../../Characters/BaseCharacter.h"
+#include "../../../Components/CharacterComponents/CharacterAttributeComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -44,6 +45,15 @@ void AAutoSaveVolume::OnInteractionVolumeOverlapBegin(UPrimitiveComponent* Overl
 
 	USaveSubsystem* SaveSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveSubsystem>();
 	SaveSubsystem->SaveGame();
+
+	if (bIsStealingHealth)
+	{
+		ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OtherActor);
+		if (IsValid(BaseCharacter))
+		{
+			BaseCharacter->GetCharacterAttributeComponent()->StealHealth(HealthStealingRatio);
+		}
+	}
 }
 
 bool AAutoSaveVolume::IsOverlappingCharacterCapsule(AActor* OtherActor, UPrimitiveComponent* OtherComp)
