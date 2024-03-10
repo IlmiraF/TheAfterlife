@@ -36,6 +36,7 @@ protected:
 	UFUNCTION()
 	void SpawnNewEnemy();
 
+	UFUNCTION()
 	void ReturnEnemy(ABaseAICharacter* Enemy);
 
 private:

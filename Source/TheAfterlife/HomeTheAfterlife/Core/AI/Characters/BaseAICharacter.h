@@ -20,11 +20,13 @@ public:
 
 	UBehaviorTree* GetBehaviorTree() const;
 
-	void SetIndex(int32 Index);
-
 	virtual void OnDeath() override;
 
 	FOnCharacterDeath OnCharacterDeath;
+
+	void DisableCharacter();
+
+	void Revival();
 
 protected:
 
