@@ -6,31 +6,31 @@ ASpikeTrap::ASpikeTrap()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	TrapMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TrapMesh"));
-	TrapMesh->SetupAttachment(RootComponent);
+	//TrapMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TrapMesh"));
+	//TrapMesh->SetupAttachment(RootComponent);
 
-	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
+	UBoxComponent* BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
 
-	BoxCollider->SetBoxExtent(FVector(300.0f, 300.0f, 300.0f));
+	BoxCollider->SetBoxExtent(FVector(50.0f, 50.0f, 50.0f));
 	BoxCollider->SetupAttachment(RootComponent);
 
 	BoxCollider->SetCollisionProfileName(CollisionProfilePawnInteractionVolume);
 	BoxCollider->SetGenerateOverlapEvents(true);
+
+	BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &ASpikeTrap::OnOverlapBegin);
+	BoxCollider->OnComponentEndOverlap.AddDynamic(this, &ASpikeTrap::OnOverlapEnd);
 }
 
 void ASpikeTrap::SetCanAttack(bool CanAttack)
 {
-	bCanAttack = CanAttack;
+	//bCanAttack = CanAttack;
 }
 
 void ASpikeTrap::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &ASpikeTrap::OnOverlapBegin);
-	BoxCollider->OnComponentEndOverlap.AddDynamic(this, &ASpikeTrap::OnOverlapEnd);
-
-	GetWorldTimerManager().SetTimer(ReloadTimerHandle, this, &ASpikeTrap::StartAttackAnimation, AnimationInterval, true);
+	//GetWorldTimerManager().SetTimer(ReloadTimerHandle, this, &ASpikeTrap::StartAttackAnimation, AnimationInterval, true);
 }
 
 void ASpikeTrap::Tick(float DeltaTime)
@@ -42,17 +42,17 @@ void ASpikeTrap::Tick(float DeltaTime)
 
 void ASpikeTrap::StartAttackAnimation()
 {	
-	AnimInstance = TrapMesh->GetAnimInstance();
+	//AnimInstance = TrapMesh->GetAnimInstance();
 
-	TrapMesh->PlayAnimation(AnimMontage, false);
+	//TrapMesh->PlayAnimation(AnimMontage, false);
 }
 
 void ASpikeTrap::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OtherActor);
-	CachedCharacter = BaseCharacter;
+	//ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OtherActor);
+	//CachedCharacter = BaseCharacter;
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("XYI"));
-	//CachedCharacter = Cast<ABaseCharacter>(OtherActor);
+	CachedCharacter = Cast<ABaseCharacter>(OtherActor);
 }
 
 void ASpikeTrap::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -66,15 +66,15 @@ void ASpikeTrap::TryAttack()
 	{
 		return;
 	}
-
+	
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Goida"));
+	//
+	//if (!bCanAttack)
+	//{
+	//	return;
+	//}
 
-	if (!bCanAttack)
-	{
-		return;
-	}
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Goida"));
 
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Goida"));
-
-	CachedCharacter->TakeDamage(Damage, FDamageEvent(), nullptr, GetOwner());
+	//CachedCharacter->TakeDamage(Damage, FDamageEvent(), nullptr, GetOwner());
 }
