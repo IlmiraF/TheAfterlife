@@ -6,8 +6,6 @@ ASpikeTrap::ASpikeTrap()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	//TrapMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TrapMesh"));
-	//TrapMesh->SetupAttachment(RootComponent);
 
 	UBoxComponent* BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
 
@@ -19,18 +17,22 @@ ASpikeTrap::ASpikeTrap()
 
 	BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &ASpikeTrap::OnOverlapBegin);
 	BoxCollider->OnComponentEndOverlap.AddDynamic(this, &ASpikeTrap::OnOverlapEnd);
+
+
+	TrapMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TrapMesh"));
+	TrapMesh->SetupAttachment(BoxCollider);
 }
 
 void ASpikeTrap::SetCanAttack(bool CanAttack)
 {
-	//bCanAttack = CanAttack;
+	bCanAttack = CanAttack;
 }
 
 void ASpikeTrap::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//GetWorldTimerManager().SetTimer(ReloadTimerHandle, this, &ASpikeTrap::StartAttackAnimation, AnimationInterval, true);
+	GetWorldTimerManager().SetTimer(ReloadTimerHandle, this, &ASpikeTrap::StartAttackAnimation, AnimationInterval, true);
 }
 
 void ASpikeTrap::Tick(float DeltaTime)
@@ -42,16 +44,13 @@ void ASpikeTrap::Tick(float DeltaTime)
 
 void ASpikeTrap::StartAttackAnimation()
 {	
-	//AnimInstance = TrapMesh->GetAnimInstance();
+	AnimInstance = TrapMesh->GetAnimInstance();
 
-	//TrapMesh->PlayAnimation(AnimMontage, false);
+	TrapMesh->PlayAnimation(AnimMontage, false);
 }
 
 void ASpikeTrap::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OtherActor);
-	//CachedCharacter = BaseCharacter;
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("XYI"));
 	CachedCharacter = Cast<ABaseCharacter>(OtherActor);
 }
 
@@ -67,14 +66,12 @@ void ASpikeTrap::TryAttack()
 		return;
 	}
 	
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Goida"));
-	//
-	//if (!bCanAttack)
-	//{
-	//	return;
-	//}
+	if (!bCanAttack)
+	{
+		return;
+	}
 
-	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Goida"));
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Goida"));
 
 	//CachedCharacter->TakeDamage(Damage, FDamageEvent(), nullptr, GetOwner());
 }
