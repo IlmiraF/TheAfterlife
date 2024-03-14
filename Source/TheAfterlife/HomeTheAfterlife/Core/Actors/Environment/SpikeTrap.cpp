@@ -1,7 +1,7 @@
 #include "Components/BoxComponent.h"
 #include "Engine/DamageEvents.h"
 #include "SpikeTrap.h"
-#include <Kismet/GameplayStatics.h>
+#include "Kismet/GameplayStatics.h"
 
 ASpikeTrap::ASpikeTrap()
 {
