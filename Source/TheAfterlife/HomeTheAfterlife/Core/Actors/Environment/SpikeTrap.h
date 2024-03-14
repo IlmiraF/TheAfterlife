@@ -51,7 +51,7 @@ private:
 
 	void StartAttackAnimation();
 
-	ABaseCharacter* CachedCharacter;
+	AActor* CachedActor;
 
 	void TryAttack();
 

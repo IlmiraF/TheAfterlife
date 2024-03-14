@@ -1,6 +1,7 @@
 #include "Components/BoxComponent.h"
 #include "Engine/DamageEvents.h"
 #include "SpikeTrap.h"
+#include <Kismet/GameplayStatics.h>
 
 ASpikeTrap::ASpikeTrap()
 {
@@ -51,17 +52,17 @@ void ASpikeTrap::StartAttackAnimation()
 
 void ASpikeTrap::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	CachedCharacter = Cast<ABaseCharacter>(OtherActor);
+	CachedActor = OtherActor;
 }
 
 void ASpikeTrap::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	CachedCharacter = nullptr;
+	CachedActor = nullptr;
 }
 
 void ASpikeTrap::TryAttack()
 {	
-	if (!IsValid(CachedCharacter))
+	if (!IsValid(CachedActor))
 	{
 		return;
 	}
@@ -71,7 +72,5 @@ void ASpikeTrap::TryAttack()
 		return;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Goida"));
-
-	//CachedCharacter->TakeDamage(Damage, FDamageEvent(), nullptr, GetOwner());
+	CachedActor->TakeDamage(Damage, FDamageEvent(), nullptr, this);
 }
