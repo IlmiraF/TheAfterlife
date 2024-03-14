@@ -16,14 +16,14 @@ public:
 	// Sets default values for this actor's properties
 	ASpikeTrap();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class USkeletalMeshComponent* TrapMesh;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	//class USkeletalMeshComponent* TrapMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations")
-	UAnimMontage* AnimMontage;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations")
+	//UAnimMontage* AnimMontage;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations")
-	float AnimationInterval = 5.0f;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations")
+	//float AnimationInterval = 5.0f;
 
 	void SetCanAttack(bool CanAttack);
 
@@ -33,10 +33,10 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attack")
-	float Damage = 5.0f;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attack")
+	//float Damage = 5.0f;
 
-	bool bCanAttack;
+	//bool bCanAttack;
 
 protected:
 
@@ -44,14 +44,14 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collider")
-	class UBoxComponent* BoxCollider;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collider")
+	//class UBoxComponent* BoxCollider;
 
 private:
 
-	FTimerHandle ReloadTimerHandle;
+	//FTimerHandle ReloadTimerHandle;
 
-	UAnimInstance* AnimInstance;
+	//UAnimInstance* AnimInstance;
 
 	void StartAttackAnimation();
 
