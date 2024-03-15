@@ -28,20 +28,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* TramMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
-	UCurveFloat* MovementCurve;
-
-	UFUNCTION()
-	void ProcessMovementTimeline(float Value);
-
-	UFUNCTION()
-	void OnEndMovementTimeline();
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+	float Speed = 300.0f;
 
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 protected:
 	
@@ -49,5 +40,8 @@ protected:
 
 private:	
 
-	FTimeline MovementTimeline;
+	bool bIsMoving = false;
+	float DistanceAlongSpline;
+
+	void Move(float DeltaTime);
 };
