@@ -26,12 +26,6 @@ void ATram::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 	bIsMoving = true;
 }
 
-void ATram::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
 void ATram::Move(float DeltaTime)
 {
 	if (!bIsMoving)
