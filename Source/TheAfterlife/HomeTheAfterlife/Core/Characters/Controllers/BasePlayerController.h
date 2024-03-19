@@ -21,9 +21,15 @@ public:
 
 	virtual void SetPawn(APawn* InPawn) override;
 
+	void UpdateHintsWidget(FString TutorialText, bool Visibility);
+
+	void ChangeAbilityMove(bool CanMove);
+
 protected:
 
 	virtual void SetupInputComponent() override;
+
+	virtual void Tick(float DeltaTime) override;
 
 	void MoveForward(float value);
 	void MoveRight(float value);
@@ -69,19 +75,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
 	TSubclassOf<class UPlayerHUDWidget> PlayerHUDWidgetClass;
 
-	void Interact();
-
 private:
 
 	void CreateAndInitializeWidgets();
-
-	void OnInteractableObjectFound(bool bIsVisible, FName KeyName);
 
 	class UPlayerHUDWidget* PlayerHUDWidget = nullptr;
 
 	bool bIgnoreCameraPitch = false;
 
-	void UpdateHintsWidget(FString TutorialText, bool Visibility);
+	bool bCanMove = true;
 
 	//void ToggleMainMenu();
 };
