@@ -65,15 +65,25 @@ void ABasePlayerController::Tick(float DeltaTime)
 }
 
 void ABasePlayerController::MoveForward(float value)
-{
-	if (CachedBaseCharacter.IsValid())
+{	
+	if (bCanMove == false)
 	{
+		return;
+	}
+
+	if (CachedBaseCharacter.IsValid())
+	{	
 		CachedBaseCharacter->MoveForward(value);
 	}
 }
 
 void ABasePlayerController::MoveRight(float value)
-{
+{	
+	if (bCanMove == false)
+	{
+		return;
+	}
+
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->MoveRight(value);
@@ -319,4 +329,9 @@ void ABasePlayerController::UpdateHintsWidget(FString TutorialText, bool Visibil
 			HintsWidget->UpdateVisible(Visibility);
 		}
 	}
+}
+
+void ABasePlayerController::ChangeAbilityMove(bool CanMove)
+{
+	bCanMove = CanMove;
 }

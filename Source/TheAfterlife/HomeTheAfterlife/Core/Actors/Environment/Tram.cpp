@@ -1,6 +1,10 @@
 
 #include "../../../../TheAfterlifeTypes.h"
 #include "Tram.h"
+#include "../../Characters/BaseCharacter.h"
+#include "../../Components/MovementComponents/BaseCharacterMovementComponent.h"
+#include "../../Characters/PlayerCharacter.h"
+#include "../../Characters/Controllers/BasePlayerController.h"
 
 ATram::ATram()
 {
@@ -9,21 +13,49 @@ ATram::ATram()
 	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
 	SplineComponent->SetupAttachment(GetRootComponent());
 
-	TriggerComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerComponent"));
-	TriggerComponent->SetupAttachment(SplineComponent);
-
-	TriggerComponent->SetCollisionProfileName(CollisionProfilePawnInteractionVolume);
-	TriggerComponent->SetGenerateOverlapEvents(true);
-
 	TramMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TramMesh"));
 	TramMesh->SetupAttachment(SplineComponent);
 
-	TriggerComponent->OnComponentBeginOverlap.AddDynamic(this, &ATram::OnOverlapBegin);
+	MovementToPlatrofmTriggerComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("MovementToPlatrofmTriggerComponent"));
+	MovementToPlatrofmTriggerComponent->SetupAttachment(SplineComponent);
+
+	MovementToPlatrofmTriggerComponent->SetCollisionProfileName(CollisionProfilePawnInteractionVolume);
+	MovementToPlatrofmTriggerComponent->SetGenerateOverlapEvents(true);
+
+	MovementFromPlatfromTriggerComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("MovementFromPlatfromTriggerComponent"));
+	MovementFromPlatfromTriggerComponent->SetupAttachment(TramMesh);
+
+	MovementFromPlatfromTriggerComponent->SetCollisionProfileName(CollisionProfilePawnInteractionVolume);
+	MovementFromPlatfromTriggerComponent->SetGenerateOverlapEvents(true);
+
+	MovementToPlatrofmTriggerComponent->OnComponentBeginOverlap.AddDynamic(this, &ATram::TriggerToPlatfromOnOverlapBegin);
+	MovementFromPlatfromTriggerComponent->OnComponentBeginOverlap.AddDynamic(this, &ATram::TriggerFromlatfromOnOverlapBegin);
 }
 
-void ATram::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ATram::TriggerToPlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	bIsMoving = true;
+
+	float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(StopWorldLocation);
+	StopDistance = SplineComponent->GetDistanceAlongSplineAtSplineInputKey(InputKey);
+}
+
+void ATram::TriggerFromlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	bIsMoving = true;
+
+	StopDistance = INFINITY;
+
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+	if (IsValid(PlayerCharacter))
+	{
+		ABasePlayerController* PlayerController = Cast<ABasePlayerController>(PlayerCharacter->GetController());
+
+		if (IsValid(PlayerController))
+		{
+			PlayerController->ChangeAbilityMove(false);
+		}
+	}
 }
 
 void ATram::Move(float DeltaTime)
@@ -31,6 +63,11 @@ void ATram::Move(float DeltaTime)
 	if (!bIsMoving)
 	{
 		return;
+	}
+
+	if (DistanceAlongSpline >= StopDistance)
+	{
+		bIsMoving = false;
 	}
 
 	DistanceAlongSpline += Speed * DeltaTime;

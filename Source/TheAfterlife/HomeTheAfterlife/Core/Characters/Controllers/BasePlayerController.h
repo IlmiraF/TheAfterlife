@@ -23,6 +23,8 @@ public:
 
 	void UpdateHintsWidget(FString TutorialText, bool Visibility);
 
+	void ChangeAbilityMove(bool CanMove);
+
 protected:
 
 	virtual void SetupInputComponent() override;
@@ -80,6 +82,8 @@ private:
 	class UPlayerHUDWidget* PlayerHUDWidget = nullptr;
 
 	bool bIgnoreCameraPitch = false;
+
+	bool bCanMove = true;
 
 	//void ToggleMainMenu();
 };

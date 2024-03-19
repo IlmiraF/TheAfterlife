@@ -23,7 +23,13 @@ public:
 	USplineComponent* SplineComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
-	UBoxComponent* TriggerComponent;
+	UBoxComponent* MovementToPlatrofmTriggerComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
+	UBoxComponent* MovementFromPlatfromTriggerComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spline")
+	FVector StopWorldLocation;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* TramMesh;
@@ -32,7 +38,10 @@ public:
 	float Speed = 300.0f;
 
 	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void TriggerToPlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void TriggerFromlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:	
 
@@ -40,4 +49,6 @@ private:
 	float DistanceAlongSpline;
 
 	void Move(float DeltaTime);
+
+	float StopDistance;
 };
