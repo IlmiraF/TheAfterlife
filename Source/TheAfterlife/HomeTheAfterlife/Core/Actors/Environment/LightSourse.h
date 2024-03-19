@@ -22,7 +22,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UPointLightComponent* PointLight;
 
-	float TargetIntensity = 2000.0f;
+	float TargetIntensity = 3000.0f;
 
 protected:
 

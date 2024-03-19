@@ -13,6 +13,7 @@ ADoor::ADoor()
 
 	TriggerComponent->OnComponentBeginOverlap.AddDynamic(this, &ADoor::OnOverlapBegin);
 
+
 	LeftDoor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftDoor"));
 	LeftDoor->SetupAttachment(GetRootComponent());
 
@@ -24,6 +25,7 @@ void ADoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 {
 	bStartOpen = true;
 }
+
 
 void ADoor::Tick(float DeltaTime)
 {
