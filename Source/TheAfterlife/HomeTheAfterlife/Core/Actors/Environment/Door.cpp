@@ -1,4 +1,5 @@
 #include "../../../../TheAfterlifeTypes.h"
+#include "Components/BoxComponent.h"
 #include "Door.h"
 
 ADoor::ADoor()
@@ -7,10 +8,10 @@ ADoor::ADoor()
 
 	TriggerComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerComponent"));
 	TriggerComponent->SetupAttachment(GetRootComponent());
-
+	
 	TriggerComponent->SetCollisionProfileName(CollisionProfilePawnInteractionVolume);
 	TriggerComponent->SetGenerateOverlapEvents(true);
-
+	
 	TriggerComponent->OnComponentBeginOverlap.AddDynamic(this, &ADoor::OnOverlapBegin);
 
 
