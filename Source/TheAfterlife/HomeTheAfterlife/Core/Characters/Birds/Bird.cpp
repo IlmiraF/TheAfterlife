@@ -10,6 +10,9 @@ ABird::ABird()
 
 	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
 	SplineComponent->SetupAttachment(GetRootComponent());
+
+	BirdMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
+	BirdMesh->SetupAttachment(GetRootComponent());
 }
 
 void ABird::BeginPlay()
@@ -23,12 +26,12 @@ void ABird::InitializeSpline()
 {
 	for (const FVector& Point : RouteArray)
 	{
-		SplineComponent->AddSplinePoint(Point, ESplineCoordinateSpace::World, true);
+		//SplineComponent->AddSplinePoint(Point, ESplineCoordinateSpace::World, true);
 		float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(Point);
 		StopDistances.Add(SplineComponent->GetDistanceAlongSplineAtSplineInputKey(InputKey));
 	}
 
-	SplineComponent->SetClosedLoop(false);
+	//SplineComponent->SetClosedLoop(false);
 }
 
 
@@ -53,34 +56,27 @@ void ABird::Fly(float DeltaTime)
 	{
 		return;
 	}
-
-	float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(GetActorLocation());
-	float CurrentDistance = SplineComponent->GetDistanceAlongSplineAtSplineInputKey(InputKey);
-
-	if (CurrentDistance >= StopDistances[CurrentIndex])
+	
+	if (DistanceAlongSpline >= StopDistances[CurrentIndex])
 	{
 		return;
 	}
 
-	const FVector Direction = SplineComponent->GetDirectionAtSplineInputKey(InputKey, ESplineCoordinateSpace::World);
-	FRotator Rotation = Direction.Rotation();
-	FQuat RotationQuat = Rotation.Quaternion();
+	DistanceAlongSpline += Speed * DeltaTime;
 
-	FVector CurrentLocation = GetActorLocation();
-	CurrentLocation += Direction * Speed * DeltaTime;
+	FVector CurrentSplineLocation = SplineComponent->GetLocationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World);
+	FRotator CurrentSplineRotation = SplineComponent->GetRotationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World);
+	CurrentSplineRotation = CurrentSplineRotation - FRotator(0.f, 90.0f, 0.f);
 
-	float SinusoidOffset = GetSinusoidOffset(DeltaTime, SinusoidHeight, SinusoidFrequency);
-	CurrentLocation.Z += SinusoidOffset;
-
-	SetActorLocationAndRotation(CurrentLocation, RotationQuat);
+	BirdMesh->SetWorldLocationAndRotation(CurrentSplineLocation, CurrentSplineRotation);
 
 }
 
 float ABird::GetSinusoidOffset(float DeltaTime, float Height, float Frequency)
 {
-	CurrentIndex += DeltaTime;
+	CurrentTime += DeltaTime;
 
-	float Angle = CurrentIndex * Frequency * 2 * PI;
+	float Angle = CurrentTime * Frequency * 2 * PI;
 
 	float Offset = Height * FMath::Sin(Angle);
 

@@ -27,13 +27,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
 	USplineComponent* SplineComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	class USkeletalMeshComponent* BirdMesh;
+
 private:
 
 	UPROPERTY(EditAnywhere)
 	TArray<FVector> RouteArray;
 
-	UPROPERTY(EditDefaultsOnly)
-	float Speed = 30.0f;
+	UPROPERTY(EditAnywhere)
+	float Speed = 100.0f;
 
 	UPROPERTY(EditDefaultsOnly)
 	float SinusoidHeight = 3.0f;
@@ -51,6 +54,8 @@ private:
 	float GetSinusoidOffset(float DeltaTime, float Height, float Frequency);
 
 	float CurrentIndex;
+
+	float CurrentTime;
 
 	float DistanceAlongSpline;
 
