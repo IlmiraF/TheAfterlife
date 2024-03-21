@@ -7,47 +7,62 @@
 ABird::ABird()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
+	SplineComponent->SetupAttachment(GetRootComponent());
 }
 
 void ABird::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InitializeSpline();
 }
+
+void ABird::InitializeSpline()
+{
+	for (const FVector& Point : RouteArray)
+	{
+		SplineComponent->AddSplinePoint(Point, ESplineCoordinateSpace::World, true);
+		float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(Point);
+		StopDistances.Add(SplineComponent->GetDistanceAlongSplineAtSplineInputKey(InputKey));
+	}
+
+	SplineComponent->SetClosedLoop(false);
+}
+
 
 void ABird::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	Fly(DeltaTime);
-
-}
-
-void ABird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
 void ABird::SetNewPoint(int32 Index)
 {
-	if (Index > CurrnetIndex)
+	if (Index > CurrentIndex)
 	{
-		CurrnetIndex = Index;
+		CurrentIndex = Index;
 	}
 }
 
 void ABird::Fly(float DeltaTime)
 {
-	FVector StartLocation = GetActorLocation();
-	FVector EndLocation = RouteArray[CurrnetIndex];
-
-	float Distance = FVector::Distance(StartLocation, EndLocation);
-
-	if (Distance < DeltaPosition)
+	if (!SplineComponent || !RouteArray.IsValidIndex(CurrentIndex))
 	{
 		return;
 	}
 
-	FVector Direction = (EndLocation - StartLocation).GetSafeNormal();
+	float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(GetActorLocation());
+	float CurrentDistance = SplineComponent->GetDistanceAlongSplineAtSplineInputKey(InputKey);
+
+	if (CurrentDistance >= StopDistances[CurrentIndex])
+	{
+		return;
+	}
+
+	const FVector Direction = SplineComponent->GetDirectionAtSplineInputKey(InputKey, ESplineCoordinateSpace::World);
 	FRotator Rotation = Direction.Rotation();
 	FQuat RotationQuat = Rotation.Quaternion();
 
@@ -57,14 +72,15 @@ void ABird::Fly(float DeltaTime)
 	float SinusoidOffset = GetSinusoidOffset(DeltaTime, SinusoidHeight, SinusoidFrequency);
 	CurrentLocation.Z += SinusoidOffset;
 
-	SetActorLocationAndRotation(CurrentLocation, RotationQuat, false, 0, ETeleportType::None);
+	SetActorLocationAndRotation(CurrentLocation, RotationQuat);
+
 }
 
 float ABird::GetSinusoidOffset(float DeltaTime, float Height, float Frequency)
 {
-	CurrentTime += DeltaTime;
+	CurrentIndex += DeltaTime;
 
-	float Angle = CurrentTime * Frequency * 2 * PI;
+	float Angle = CurrentIndex * Frequency * 2 * PI;
 
 	float Offset = Height * FMath::Sin(Angle);
 

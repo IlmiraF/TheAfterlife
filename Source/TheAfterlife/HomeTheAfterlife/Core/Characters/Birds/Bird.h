@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Components/SplineComponent.h"
 #include "Bird.generated.h"
 
 UCLASS()
@@ -14,15 +15,17 @@ class THEAFTERLIFE_API ABird : public APawn
 public:
 	ABird();
 
-protected:
-	virtual void BeginPlay() override;
-
-public:
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	void SetNewPoint(int32 Index);
+
+protected:
+
+	virtual void BeginPlay() override;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
+	USplineComponent* SplineComponent;
 
 private:
 
@@ -47,5 +50,18 @@ private:
 
 	float GetSinusoidOffset(float DeltaTime, float Height, float Frequency);
 
-	float CurrentTime;
+	float CurrentIndex;
+
+	float DistanceAlongSpline;
+
+	float StopDistance;
+
+	float SplineLength;
+
+	float DistanceToTarget;
+
+	TArray<float> StopDistances;
+
+	void InitializeSpline();
+
 };
