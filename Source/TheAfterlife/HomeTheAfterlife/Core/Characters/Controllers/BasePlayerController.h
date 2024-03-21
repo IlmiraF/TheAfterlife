@@ -23,9 +23,13 @@ public:
 
 	void UpdateHintsWidget(FString TutorialText, bool Visibility);
 
+	void ChangeAbilityMove(bool CanMove);
+
 protected:
 
 	virtual void SetupInputComponent() override;
+
+	virtual void Tick(float DeltaTime) override;
 
 	void MoveForward(float value);
 	void MoveRight(float value);
@@ -48,6 +52,24 @@ protected:
 	void OnBeamMoveForward(float value);
 	void OnBeamMoveRight(float value);
 
+	void QuickSaveGame();
+	void QuickLoadGame();
+
+	void NextItem();
+	void PreviousItem();
+
+	void Fire();
+
+	void StartAiming();
+	void StopAiming();
+
+	void EquipPrimaryItem();
+
+	void HandsMeleeAttack();
+	void LegsMeleeAttack();
+
+	void ThrowBomb();
+
 	TSoftObjectPtr<ABaseCharacter> CachedBaseCharacter;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
@@ -57,5 +79,11 @@ private:
 
 	void CreateAndInitializeWidgets();
 
-	UPlayerHUDWidget* PlayerHUDWidget = nullptr;
+	class UPlayerHUDWidget* PlayerHUDWidget = nullptr;
+
+	bool bIgnoreCameraPitch = false;
+
+	bool bCanMove = true;
+
+	//void ToggleMainMenu();
 };

@@ -5,6 +5,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
+#include "../Actors/Equipment/Weapons/RangeWeaponItem.h"
+#include "../Components/CharacterComponents/CharacterEquipmentComponent.h"
 
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -23,11 +25,13 @@ APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 
 	GetCharacterMovement()->bOrientRotationToMovement = 1;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
+
+	Team = ETeams::PLAYER;
 }
 
 void APlayerCharacter::MoveForward(float value)
 {
-	if ((GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling()) && !FMath::IsNearlyZero(value, 1e-6f))
+	if ((GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling()) && !FMath::IsNearlyZero(value, 1e-6f) && bCanMove)
 	{
 		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
 		FVector ForwardVector = YawRotator.RotateVector(FVector::ForwardVector);
@@ -37,7 +41,7 @@ void APlayerCharacter::MoveForward(float value)
 
 void APlayerCharacter::MoveRight(float value)
 {
-	if ((GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling()) && !FMath::IsNearlyZero(value, 1e-6f))
+	if ((GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling()) && !FMath::IsNearlyZero(value, 1e-6f) && bCanMove)
 	{
 		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
 		FVector RightVector = YawRotator.RotateVector(FVector::RightVector);
@@ -123,6 +127,44 @@ void APlayerCharacter::OnBeamMoveRight(float value)
 	if (GetBaseCharacterMovementComponent()->IsOnBeam() && !FMath::IsNearlyZero(value, 1e-6f))
 	{
 		GetBaseCharacterMovementComponent()->SetBalancingDirection(value);
+	}
+}
+
+void APlayerCharacter::OnStartAimingIternal()
+{
+	Super::OnStartAimingIternal();
+
+	APlayerController* PlayerController = GetController<APlayerController>();
+
+	if (!IsValid(PlayerController))
+	{
+		return;
+	}
+
+	APlayerCameraManager* CameraManager = PlayerController->PlayerCameraManager;
+
+	if (IsValid(CameraManager))
+	{
+		ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentRangeWeapon();
+		CameraManager->SetFOV(CurrentRangeWeapon->GetAimFOV());
+	}
+}
+
+void APlayerCharacter::OnStopAimingIternal()
+{	
+	Super::OnStopAimingIternal();
+
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (!IsValid(PlayerController))
+	{
+		return;
+	}
+
+	APlayerCameraManager* CameraManager = PlayerController->PlayerCameraManager;
+	if (IsValid(CameraManager))
+	{
+		ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentRangeWeapon();
+		CameraManager->UnlockFOV();
 	}
 }
 

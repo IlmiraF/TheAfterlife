@@ -6,12 +6,12 @@
 #include "Curves/CurveVector.h"
 #include "../../Actors/Interactive/Environment/Ladder.h"
 #include "../../Actors/ParkourLedge.h"
-#include "Components/CapsuleComponent.h"
-#include "../../../../TheAfterlifeTypes.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "../../Utils/TheAfterlife_TraceUtils.h"
 #include "MotionWarpingComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Components/CapsuleComponent.h"
+#include "../../../../TheAfterlifeTypes.h"
 
 float UBaseCharacterMovementComponent::GetMaxSpeed() const
 {
@@ -31,6 +31,10 @@ float UBaseCharacterMovementComponent::GetMaxSpeed() const
 	if (IsOnBeam())
 	{
 		Result = OnBeamMaxSpeed;
+	}
+	if (GetBaseCharacterOwner()->IsAiming())
+	{
+		Result = GetBaseCharacterOwner()->GetAimingMovementSpeed();
 	}
     return Result;
 }
@@ -148,6 +152,7 @@ void UBaseCharacterMovementComponent::PhysicsRotation(float DeltaTime)
 		FRotator DeltaRot = GetDeltaRotation(DeltaTime);
 		DeltaRot.DiagnosticCheckNaN(TEXT("UGCBaseCharacterMovementComponent::PhysicsRotation(): GetDeltaRotation"));
 
+		// Accumulate a desired new rotation.
 		const float AngleTolerance = 1e-3f;
 
 		if (!CurrentRotation.Equals(ForceTargetRotation, AngleTolerance))
@@ -173,7 +178,7 @@ void UBaseCharacterMovementComponent::PhysicsRotation(float DeltaTime)
 
 			// Set the new rotation.
 			DesiredRotation.DiagnosticCheckNaN(TEXT("CharacterMovementComponent::PhysicsRotation(): DesiredRotation"));
-			MoveUpdatedComponent(FVector::ZeroVector, DesiredRotation, false);
+			MoveUpdatedComponent(FVector::ZeroVector, DesiredRotation, /*bSweep*/ false);
 		}
 		else
 		{
@@ -311,7 +316,6 @@ void UBaseCharacterMovementComponent::SetBalancingDirection(float Direction)
 	StartBalancingDirection = Direction;
 }
 
-
 void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
@@ -369,33 +373,33 @@ void UBaseCharacterMovementComponent::PhysCustom(float DeltaTime, int32 Iteratio
 {
 	switch (CustomMovementMode)
 	{
-		case (uint8)ECustomMovementMode::CMOVE_Mantling:
-		{
-			PhysMantling(DeltaTime, Iterations);
-			break;
-		}
-		case (uint8)ECustomMovementMode::CMOVE_Ladder:
-		{
-			PhysLadder(DeltaTime, Iterations);
-			break;
-		}
-		case (uint8)ECustomMovementMode::CMOVE_WallRun:
-		{
-			PhysWallRun(DeltaTime, Iterations);
-			break;
-		}
-		case (uint8)ECustomMovementMode::CMOVE_Parkour:
-		{
-			PhysClimb(DeltaTime, Iterations);
-			break;
-		}
-		case (uint8)ECustomMovementMode::CMOVE_OnBeam:
-		{
-			PhysBeam(DeltaTime, Iterations);
-			break;
-		}
-		default:
-			break;
+	case (uint8)ECustomMovementMode::CMOVE_Mantling:
+	{
+		PhysMantling(DeltaTime, Iterations);
+		break;
+	}
+	case (uint8)ECustomMovementMode::CMOVE_Ladder:
+	{
+		PhysLadder(DeltaTime, Iterations);
+		break;
+	}
+	case (uint8)ECustomMovementMode::CMOVE_WallRun:
+	{
+		PhysWallRun(DeltaTime, Iterations);
+		break;
+	}
+	case (uint8)ECustomMovementMode::CMOVE_Parkour:
+	{
+		PhysClimb(DeltaTime, Iterations);
+		break;
+	}
+	case (uint8)ECustomMovementMode::CMOVE_OnBeam:
+	{
+		PhysBeam(DeltaTime, Iterations);
+		break;
+	}
+	default:
+		break;
 	}
 
 	Super::PhysCustom(DeltaTime, Iterations);
@@ -858,7 +862,7 @@ void UBaseCharacterMovementComponent::SnapMovementToClimbableSurfaces(float Delt
 
 	const FVector ProjectedCharacterToSurface =
 		(CurrentClimbableSurfaceLocation - ComponentLocation).ProjectOnTo(ComponentForward);
-	
+
 	const FVector SnapVector = -CurrentClimbableSurfaceNormal * ProjectedCharacterToSurface.Length();
 
 	UpdatedComponent->MoveComponent(SnapVector * DeltaTime * 100.0f, UpdatedComponent->GetComponentQuat(), true);
@@ -877,8 +881,6 @@ FQuat UBaseCharacterMovementComponent::GetClimbRotation(float DeltaTime)
 
 	return FMath::QInterpTo(CurrentQuat, TargetQuat, DeltaTime, 5.f);
 }
-
-
 
 void UBaseCharacterMovementComponent::HandleHopRight()
 {

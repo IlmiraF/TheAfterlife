@@ -2,12 +2,14 @@
 
 #include "Components/ActorComponent.h"
 #include "CoreMinimal.h"
+#include "../../Subsystems/SaveSubsystem/SaveSubsystemInterface.h"
 #include "CharacterAttributeComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnDeathEventSignature)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class THEAFTERLIFE_API UCharacterAttributeComponent : public UActorComponent
+class THEAFTERLIFE_API UCharacterAttributeComponent : public UActorComponent, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
@@ -15,23 +17,33 @@ public:
 	UCharacterAttributeComponent();
 
 	FOnDeathEventSignature OnDeathEvent;
+	FOnHealthChanged OnHealthChangedEvent;
 
-	bool IsAlive() { return Health > 0.0f; };
+	bool IsAlive() { return Health > 0.0f; }
 
 	float GetHealthPercent() const;
 
+	virtual void OnLevelDeserialized_Implementation() override;
+
+	void AddHealth(float HealthToAdd);
+
 	float GetBalancePercent() const;
+
+	void StealHealth(float HealthStealingRatio);
 
 protected:
 
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health", meta = (UIMin = 0.0f))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health", meta = (UIMin = 0.0f), SaveGame)
 	float MaxHealth = 100.0f;
 
 private:
 
+	UPROPERTY(SaveGame)
 	float Health = 0.0f;
+
+	void OnHealthChanged();
 
 	UFUNCTION()
 	void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);

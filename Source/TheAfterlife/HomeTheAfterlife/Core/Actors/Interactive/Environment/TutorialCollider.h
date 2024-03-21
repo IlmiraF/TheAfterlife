@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "TutorialCollider.generated.h"
 
+class ABird;
 UCLASS()
 class THEAFTERLIFE_API ATutorialCollider : public AActor
 {
@@ -33,5 +34,5 @@ public:
 
 private:
 
-	class ABird* Bird;
+	ABird* Bird;
 };
