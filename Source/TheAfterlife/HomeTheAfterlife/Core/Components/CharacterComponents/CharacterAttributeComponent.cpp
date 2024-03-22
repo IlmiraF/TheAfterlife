@@ -14,7 +14,7 @@ UCharacterAttributeComponent::UCharacterAttributeComponent()
 
 float UCharacterAttributeComponent::GetHealthPercent() const
 {
-	return (Health * MaxHealth) / 10000.0f;
+	return (Health / 100.0f);
 }
 
 float UCharacterAttributeComponent::GetBalancePercent() const
@@ -25,6 +25,7 @@ float UCharacterAttributeComponent::GetBalancePercent() const
 void UCharacterAttributeComponent::StealHealth(float HealthStealingRatio)
 {
 	MaxHealth = MaxHealth * HealthStealingRatio;
+	Health = FMath::Clamp(Health * HealthStealingRatio, 0.0f, MaxHealth);
 }
 
 void UCharacterAttributeComponent::OnLevelDeserialized_Implementation()

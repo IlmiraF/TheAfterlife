@@ -27,8 +27,8 @@ protected:
 	UPROPERTY(EditInstanceOnly)
 	bool bIsStealingHealth = false;
 
-	UPROPERTY(EditInstanceOnly)
-	float HealthStealingRatio = 0.8f;
+	UPROPERTY(EditInstanceOnly, meta=(UIMin = 0.0f, UIMax = 1.0f))
+	float HealthStealingRatio = 0.25f;
 
 	UFUNCTION()
 	virtual void OnInteractionVolumeOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
