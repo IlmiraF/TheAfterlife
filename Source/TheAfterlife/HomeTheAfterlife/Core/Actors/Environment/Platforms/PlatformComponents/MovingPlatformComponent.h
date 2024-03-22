@@ -3,34 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlatformBase.h"
+#include "Components/ActorComponent.h"
 #include "Components/TimelineComponent.h"
-#include "MovingPlatform.generated.h"
+#include "MovingPlatformComponent.generated.h"
 
-
-UENUM(BlueprintType)
-enum class EPlatformBehavior : uint8
-{
-	ForwardBackward = 0,
-	LeftRight
-};
-
-/**
- *
- */
 class UStaticMeshComponent;
-UCLASS()
-class THEAFTERLIFE_API AMovingPlatform : public APlatformBase
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class THEAFTERLIFE_API UMovingPlatformComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:
-	virtual void Tick(float DeltaTime) override;
+public:	
+
+	UMovingPlatformComponent();
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
 	void MovePlatform();
 
 protected:
+
+	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Platform movement")
 	UCurveFloat* MovementCurve;
@@ -44,14 +38,15 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Platform movement", meta = (MakeEditWidget))
 	float ReturnTime = 0.0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Platform movement")
-	EPlatformBehavior PlatformBehavior;
+	UFUNCTION()
+	void OnPlatformTriggerActivated(bool bIsActivated);
 
-	virtual void BeginPlay() override;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Platform movement")
+	class APlatformTrigger* PlatformTrigger;
 
-	virtual void OnPlatformTriggerActivated(bool bIsActivated) override;
+private:	
 
-private:
+	TWeakObjectPtr<class APlatformBase> CachedPlatformBase;
 
 	UFUNCTION()
 	void TickPlatformTimeline(float Value);
@@ -70,4 +65,5 @@ private:
 	bool bIsForwardBackward = false;
 
 	bool bIsFirstTime = true;
+		
 };

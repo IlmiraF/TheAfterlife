@@ -21,11 +21,6 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnTriggerActivated OnTriggerActivated;
 
-	//void SetIsActivated(bool bIsActivated_In);
-
-	//UFUNCTION(NetMulticast, Unreliable)
-	//	void Multicast_SetIsActivated(bool bIsActivated_In);
-
 protected:
 	virtual void BeginPlay() override;
 

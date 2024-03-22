@@ -2,9 +2,9 @@
 
 
 #include "PlatformTrigger.h"
-#include "../../../../TheAfterlifeTypes.h"
+#include "../../../../../TheAfterlifeTypes.h"
 #include "Components/BoxComponent.h"
-#include "../../Characters/BaseCharacter.h"
+#include "../../../Characters/BaseCharacter.h"
 
 APlatformTrigger::APlatformTrigger()
 {
