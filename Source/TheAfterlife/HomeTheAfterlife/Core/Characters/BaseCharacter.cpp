@@ -22,6 +22,7 @@
 #include "../Actors/Equipment/Weapons/RangeWeaponItem.h"
 #include "../Actors/Equipment/Throwables/ThrowableItem.h"
 #include "AIController.h"
+#include "../Actors/Interactive/Interactive.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -69,6 +70,12 @@ void ABaseCharacter::PossessedBy(AController* NewController)
 		FGenericTeamId TeamId((uint8)Team);
 		AIController->SetGenericTeamId(TeamId);
 	}
+}
+
+void ABaseCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	TraceLineOfSight();
 }
 
 void ABaseCharacter::Jump()
@@ -406,6 +413,43 @@ void ABaseCharacter::EquipPrimaryItem()
 bool ABaseCharacter::IsFalling() const
 {
 	return GetActorLocation().Z <= MinFallingDistance;
+}
+
+void ABaseCharacter::Interact()
+{
+	if (LineOfSightObject.GetInterface())
+	{
+		LineOfSightObject->Interact(this);
+	}
+}
+
+void ABaseCharacter::TraceLineOfSight()
+{
+	if (!IsPlayerControlled())
+	{
+		return;
+	}
+
+	FVector ViewLocation;
+	FRotator ViewRotation;
+
+	APlayerController* PlayerController = GetController<APlayerController>();
+	PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
+
+	FVector ViewDirection = ViewRotation.Vector();
+	FVector	TraceEnd = ViewLocation + ViewDirection * LineOfSightDistance;
+
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_PickableItem);
+	if (LineOfSightObject.GetObject() != HitResult.GetActor())
+	{
+		LineOfSightObject = HitResult.GetActor();
+
+		if (LineOfSightObject.GetInterface())
+		{
+			OnInteractableObjectFound.ExecuteIfBound();
+		}
+	}
 }
 
 const FMantlingSettings& ABaseCharacter::GetMantlingSettings(float LedgeHeight) const

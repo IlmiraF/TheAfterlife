@@ -19,6 +19,7 @@ void ABasePlayerController::SetPawn(APawn* InPawn)
 	if (CachedBaseCharacter.IsValid())
 	{
 		CreateAndInitializeWidgets();
+		CachedBaseCharacter->OnInteractableObjectFound.BindUObject(this, &ABasePlayerController::OnInteractableObjectFound);
 	}
 }
 
@@ -53,6 +54,7 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::NextItem);
 	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::PreviousItem);
 	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
+	InputComponent->BindAction("Interact", EInputEvent::IE_Pressed, this, &ABasePlayerController::Interact);
 }
 
 void ABasePlayerController::Tick(float DeltaTime)
@@ -276,6 +278,14 @@ void ABasePlayerController::ThrowBomb()
 	}
 }
 
+void ABasePlayerController::Interact()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->Interact();
+	}
+}
+
 void ABasePlayerController::CreateAndInitializeWidgets()
 {
 	if (!IsValid(PlayerHUDWidget))
@@ -306,6 +316,16 @@ void ABasePlayerController::CreateAndInitializeWidgets()
 
 	SetInputMode(FInputModeGameOnly{});
 	bShowMouseCursor = false;
+}
+
+void ABasePlayerController::OnInteractableObjectFound()
+{
+	if (!IsValid(PlayerHUDWidget))
+	{
+		return;
+	}
+
+	//PlayerHUDWidget show hint
 }
 
 void ABasePlayerController::UpdateHintsWidget(FString TutorialText, bool Visibility)

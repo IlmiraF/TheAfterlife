@@ -73,9 +73,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
 	TSubclassOf<class UPlayerHUDWidget> PlayerHUDWidgetClass;
 
+	void Interact();
+
 private:
 
 	void CreateAndInitializeWidgets();
+
+	void OnInteractableObjectFound();
 
 	class UPlayerHUDWidget* PlayerHUDWidget = nullptr;
 

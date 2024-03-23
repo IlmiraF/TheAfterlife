@@ -7,6 +7,7 @@
 #define ECC_Climbing ECC_GameTraceChannel5
 #define ECC_Bullet ECC_GameTraceChannel6
 #define ECC_Melee ECC_GameTraceChannel7
+#define ECC_PickableItem ECC_GameTraceChannel8
 
 const FName CollisionProfilePawn = FName("Pawn");
 const FName CollisionProfileRagdoll = FName("Ragdoll");
@@ -14,6 +15,7 @@ const FName CollisionProfilePawnInteractionVolume = FName("PawnInteractionVolume
 const FName SocketCharacterWeapon = FName("CharacterWeaponSocket");
 const FName MeleeCollisionProfileEnabled = FName(TEXT("Weapon"));
 const FName NoCollisionProfile = FName(TEXT("NoCollision"));
+const FName PickableItemProfile = FName(TEXT("PickableItem"));
 
 const FName DebugCategoryCharacterAttributes = FName("CharacterAttributes");
 

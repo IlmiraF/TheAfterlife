@@ -9,6 +9,7 @@
 #include "AIController.h"
 #include "../../../TheAfterlifeTypes.h"
 #include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h"
+#include "UObject/ScriptInterface.h"
 #include "BaseCharacter.generated.h"
 
 
@@ -62,10 +63,12 @@ class UCharacterAttributeComponent;
 class AInteractiveActor;
 class UCharacterEquipmentComponent;
 class UMotionWarpingComponent;
+class IInteractable;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
+DECLARE_DELEGATE(FOnInteractableObjectFound)
 
 UCLASS()
 class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface, public ISaveSubsystemInterface
@@ -78,6 +81,8 @@ public:
 	virtual void OnLevelDeserialized_Implementation() override;
 
 	virtual void PossessedBy(AController* NewController) override;
+
+	virtual void Tick(float DeltaTime) override;
 
 	UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
 	UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
@@ -161,6 +166,10 @@ public:
 
 	bool IsFalling() const;
 
+	void Interact();
+
+	FOnInteractableObjectFound OnInteractableObjectFound;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -229,6 +238,15 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement")
 	float MinFallingDistance = -100.0f;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
+	float LineOfSightDistance = 500.0f;
+
+	void TraceLineOfSight();
+
+	UPROPERTY()
+	TScriptInterface<IInteractable> LineOfSightObject;
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
