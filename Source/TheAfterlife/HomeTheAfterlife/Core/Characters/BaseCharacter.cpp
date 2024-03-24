@@ -50,13 +50,13 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	RightMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
 	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
 
-	PunchAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PunchAudioComponent"));
-	PunchAudioComponent->SetupAttachment(GetRootComponent());
+	CharacterAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	CharacterAudioComponent->SetupAttachment(GetRootComponent());
 }
 
-void ABaseCharacter::OnLevelDeserialized_Implementation()
-{
-}
+//void ABaseCharacter::OnLevelDeserialized_Implementation()
+//{
+//}
 
 void ABaseCharacter::PossessedBy(AController* NewController)
 {
@@ -372,7 +372,6 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	CharacterAttributesComponent->OnDeathEvent.AddUObject(this, &ABaseCharacter::OnDeath);
-	PunchAudioComponent->SetSound(PunchSoundBase);
 }
 
 bool ABaseCharacter::CanMantle() const
@@ -406,6 +405,12 @@ void ABaseCharacter::EquipPrimaryItem()
 bool ABaseCharacter::IsFalling() const
 {
 	return GetActorLocation().Z <= MinFallingDistance;
+}
+
+void ABaseCharacter::SetAudio(USoundBase* Sound)
+{
+	CharacterAudioComponent->SetSound(Sound);
+	PlaySound(CharacterAudioComponent);
 }
 
 const FMantlingSettings& ABaseCharacter::GetMantlingSettings(float LedgeHeight) const
@@ -449,7 +454,7 @@ void ABaseCharacter::HandsMeleeAttack()
 
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::HANDS);
 
-		PlayAudio(PunchAudioComponent);
+		PlaySound(CharacterAudioComponent);
 	}
 }
 
@@ -465,7 +470,7 @@ void ABaseCharacter::LegsMeleeAttack()
 
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::LEGS);
 
-		PlayAudio(PunchAudioComponent);
+		PlaySound(CharacterAudioComponent);
 	}
 }
 
@@ -484,7 +489,7 @@ void ABaseCharacter::ThrowBomb()
 	}
 }
 
-void ABaseCharacter::PlayAudio(UAudioComponent* AudioComponent)
+void ABaseCharacter::PlaySound(UAudioComponent* AudioComponent)
 {
 	if (AudioComponent && !AudioComponent->IsPlaying())
 	{

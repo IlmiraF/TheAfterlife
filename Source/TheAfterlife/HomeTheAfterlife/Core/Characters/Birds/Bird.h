@@ -47,23 +47,11 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	float DeltaPosition = 10.0f;
 
-	int32 CurrnetIndex = 0;
+	int32 CurrentIndex = 0;
 
 	void Fly(float DeltaTime);
 
-	float GetSinusoidOffset(float DeltaTime, float Height, float Frequency);
-
-	float CurrentIndex;
-
-	float CurrentTime;
-
 	float DistanceAlongSpline;
-
-	float StopDistance;
-
-	float SplineLength;
-
-	float DistanceToTarget;
 
 	TArray<float> StopDistances;
 

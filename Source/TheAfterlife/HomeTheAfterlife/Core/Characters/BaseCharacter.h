@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,9 +6,8 @@
 #include "Engine/DataTable.h"
 #include "AIController.h"
 #include "../../../TheAfterlifeTypes.h"
-#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h"
+//#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h""
 #include "BaseCharacter.generated.h"
-
 
 USTRUCT(BlueprintType)
 struct FPlayerAttackMontage : public FTableRowBase
@@ -68,14 +65,14 @@ typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
 
 UCLASS()
-class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface, public ISaveSubsystemInterface
+class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface//, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 
-	virtual void OnLevelDeserialized_Implementation() override;
+	//virtual void OnLevelDeserialized_Implementation() override;
 
 	virtual void PossessedBy(AController* NewController) override;
 
@@ -161,6 +158,8 @@ public:
 
 	bool IsFalling() const;
 
+	void SetAudio(USoundBase* Sound);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -214,7 +213,7 @@ protected:
 	class UMeleeHitRegistrator* RightMeleeHitRegistrator;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Audio")
-	class USoundBase* PunchSoundBase;
+	class USoundBase* SoundBase;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
 	class UDataTable* PlayerAttackDataTable;
@@ -238,13 +237,13 @@ private:
 	void EnableRagdoll();
 	FVector CurrentFallApex;
 
-	UAudioComponent* PunchAudioComponent;
+	UAudioComponent* CharacterAudioComponent;
 
 	FPlayerAttackMontage* AttackMontage;
 
 	bool IsAnimationBlended;
 
-	void PlayAudio(UAudioComponent* AudioComponent);
+	void PlaySound(UAudioComponent* AudioComponent);
 
 	bool bIsAiming;
 	float CurrentAimingMovementSpeed;

@@ -26,12 +26,9 @@ void ABird::InitializeSpline()
 {
 	for (const FVector& Point : RouteArray)
 	{
-		//SplineComponent->AddSplinePoint(Point, ESplineCoordinateSpace::World, true);
 		float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(Point);
 		StopDistances.Add(SplineComponent->GetDistanceAlongSplineAtSplineInputKey(InputKey));
 	}
-
-	//SplineComponent->SetClosedLoop(false);
 }
 
 
@@ -70,15 +67,4 @@ void ABird::Fly(float DeltaTime)
 
 	BirdMesh->SetWorldLocationAndRotation(CurrentSplineLocation, CurrentSplineRotation);
 
-}
-
-float ABird::GetSinusoidOffset(float DeltaTime, float Height, float Frequency)
-{
-	CurrentTime += DeltaTime;
-
-	float Angle = CurrentTime * Frequency * 2 * PI;
-
-	float Offset = Height * FMath::Sin(Angle);
-
-	return Offset;
 }

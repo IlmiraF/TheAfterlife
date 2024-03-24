@@ -48,13 +48,8 @@ void ATram::TriggerFromlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp
 
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
 	if (IsValid(PlayerCharacter))
-	{
-		ABasePlayerController* PlayerController = Cast<ABasePlayerController>(PlayerCharacter->GetController());
-
-		if (IsValid(PlayerController))
-		{
-			PlayerController->ChangeAbilityMove(false);
-		}
+	{	
+		PlayerCharacter->SetCanMove(false);
 	}
 }
 
