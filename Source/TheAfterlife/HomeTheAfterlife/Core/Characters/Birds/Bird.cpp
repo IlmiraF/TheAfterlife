@@ -2,6 +2,7 @@
 
 
 #include "Bird.h"
+#include "Components/AudioComponent.h"
 #include "AIController.h"
 
 ABird::ABird()
@@ -13,6 +14,9 @@ ABird::ABird()
 
 	BirdMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
 	BirdMesh->SetupAttachment(GetRootComponent());
+
+	BirdAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	BirdAudioComponent->SetupAttachment(BirdMesh);
 }
 
 void ABird::BeginPlay()
@@ -44,6 +48,15 @@ void ABird::SetNewPoint(int32 Index)
 	if (Index > CurrentIndex)
 	{
 		CurrentIndex = Index;
+	}
+}
+
+void ABird::Speak(USoundBase* SoundBase)
+{
+	BirdAudioComponent->SetSound(SoundBase);
+	if (BirdAudioComponent && !BirdAudioComponent->IsPlaying())
+	{
+		BirdAudioComponent->Play(0.f);
 	}
 }
 

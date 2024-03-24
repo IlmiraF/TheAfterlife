@@ -73,12 +73,3 @@ enum  class ETeams: uint8
 	NPC,
 	ENEMY
 };
-
-UENUM(BlueprintType)
-enum class ESpeakers : uint8
-{
-	NONE,
-	PLAYER,
-	BIRD,
-	CONDUCTOR
-};

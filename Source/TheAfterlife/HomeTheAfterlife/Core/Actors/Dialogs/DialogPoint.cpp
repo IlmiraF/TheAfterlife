@@ -1,5 +1,4 @@
 #include "DialogPoint.h"
-#include "../../../../TheAfterlifeTypes.h"
 #include "../../Actors/Interfaces/ISpeak.h"
 #include "../../Characters/BaseCharacter.h"
 
@@ -18,26 +17,24 @@ ADialogPoint::ADialogPoint()
 
 void ADialogPoint::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//AActor* CurrentSpeaker = SpeechArray[0].CurrentSpeaker;
-	//
-	//CachedBaseCharacter = Cast<ABaseCharacter>(OtherActor);
-	//
-	//if (IsValid(CachedBaseCharacter) && SpeechArray.Num() > 0)
-	//{
-	//	CachedBaseCharacter->SetCanMove(bCanMovePlayer);
-	//	StartSpeech(CurrentSpeechIndex);
-	//}
-
-	if (OtherActor->Implements<USpeak>())
+	CachedPlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+	
+	if (IsValid(CachedPlayerCharacter) && SpeechArray.Num() > 0)
 	{
-		ISpeak* Speaker = Cast<ISpeak>(OtherActor);
-
-		if (Speaker)
-		{
-			Speaker->Speak(SpeechArray[0].SoundBase);
-		}
-		
+		CachedPlayerCharacter->SetCanMove(bCanMovePlayer);
+		StartSpeech(CurrentSpeechIndex);
 	}
+
+	//if (OtherActor->Implements<USpeak>())
+	//{
+	//	ISpeak* Speaker = Cast<ISpeak>(OtherActor);
+	//
+	//	if (Speaker)
+	//	{
+	//		Speaker->Speak(SpeechArray[0].SoundBase);
+	//	}
+	//	
+	//}
 }
 
 void ADialogPoint::StartSpeech(int32 SpeechIndex)
@@ -45,13 +42,27 @@ void ADialogPoint::StartSpeech(int32 SpeechIndex)
 	if (SpeechArray.IsValidIndex(SpeechIndex))
 	{
 		FSpeechSettings& Speech = SpeechArray[SpeechIndex];
-		//AActor* Speaker = Speech.CurrentSpeaker ? Speech.CurrentSpeaker : Cast<AActor>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
-		//if (Speaker && Speech.SoundBase)
-		//{
-		//	Speaker->PlaySound(Speech.SoundBase);
-		//	GetWorld()->GetTimerManager().SetTimer(SpeechTimerHandle, this, &ADialogPoint::NextSpeech, Speech.SoundBase->Duration, false);
-		//}
+		AActor* Speaker;
+		if (Speech.CurrentSpeakerNotPlayer == nullptr)
+		{
+			Speaker = CachedPlayerCharacter;
+		}
+		else
+		{
+			Speaker = Speech.CurrentSpeakerNotPlayer;
+		}
+
+		if (Speaker->Implements<USpeak>())
+		{
+			ISpeak* Speak = Cast<ISpeak>(Speaker);
+		
+			if (Speak)
+			{
+				Speak->Speak(SpeechArray[SpeechIndex].SoundBase);
+				GetWorld()->GetTimerManager().SetTimer(SpeechTimerHandle, this, &ADialogPoint::NextSpeech, Speech.SoundBase->Duration, false);
+			}
+		}
 	}
 }
 
@@ -65,10 +76,9 @@ void ADialogPoint::NextSpeech()
 	}
 	else
 	{
-		ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
-		if (BaseCharacter && !bCanMovePlayer)
+		if (IsValid(CachedPlayerCharacter))
 		{
-			BaseCharacter->SetCanMove(true);
+			CachedPlayerCharacter->SetCanMove(true);
 		}
 	}
 }

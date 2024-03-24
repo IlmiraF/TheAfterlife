@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Components/SplineComponent.h"
+#include "..\..\Actors\Interfaces\ISpeak.h"
 #include "Bird.generated.h"
 
 UCLASS()
-class THEAFTERLIFE_API ABird : public APawn
+class THEAFTERLIFE_API ABird : public APawn, public ISpeak
 {
 	GENERATED_BODY()
 
@@ -18,6 +19,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetNewPoint(int32 Index);
+
+	virtual void Speak(USoundBase* SoundBase) override;
 
 protected:
 
@@ -31,6 +34,9 @@ protected:
 	class USkeletalMeshComponent* BirdMesh;
 
 private:
+
+
+	UAudioComponent* BirdAudioComponent;
 
 	UPROPERTY(EditAnywhere)
 	TArray<FVector> RouteArray;
