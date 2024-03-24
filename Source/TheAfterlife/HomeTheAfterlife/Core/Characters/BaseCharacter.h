@@ -69,6 +69,7 @@ typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
 DECLARE_DELEGATE(FOnInteractableObjectFound)
+DECLARE_DELEGATE(FOnFallingDelegate)
 
 UCLASS()
 class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface, public ISaveSubsystemInterface
@@ -164,11 +165,11 @@ public:
 
 	virtual FGenericTeamId GetGenericTeamId() const override;
 
-	bool IsFalling() const;
-
 	void Interact();
 
 	FOnInteractableObjectFound OnInteractableObjectFound;
+
+	FOnFallingDelegate OnFalling;
 
 protected:
 	virtual void BeginPlay() override;
@@ -235,9 +236,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Team")
 	ETeams Team = ETeams::ENEMY;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement")
-	float MinFallingDistance = -100.0f;
 
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")

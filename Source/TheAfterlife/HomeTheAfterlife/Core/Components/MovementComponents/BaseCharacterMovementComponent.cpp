@@ -337,6 +337,16 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 		StopMovementImmediately();
 	}
 
+	if (PreviousMovementMode == MOVE_Falling)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(FallingTimer);
+	}
+
+	if (MovementMode == MOVE_Falling)
+	{
+		GetWorld()->GetTimerManager().SetTimer(FallingTimer, this, &UBaseCharacterMovementComponent::BackToLastSave, MaxFallingTime);
+	}
+
 	if (MovementMode == MOVE_Custom)
 	{
 		switch (CustomMovementMode)
@@ -1042,4 +1052,9 @@ void UBaseCharacterMovementComponent::SetMotionWarpTarget(const FName& InWarpTar
 	GetBaseCharacterOwner()->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocation(
 		InWarpTargetName,
 		InTargetPosition);
+}
+
+void UBaseCharacterMovementComponent::BackToLastSave()
+{
+	GetBaseCharacterOwner()->OnFalling.ExecuteIfBound();
 }

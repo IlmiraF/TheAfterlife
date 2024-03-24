@@ -180,6 +180,9 @@ protected:
 	UPROPERTY(Category = "Character Movement: On Beam", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
 	float OnBeamMaxSpeed = 100.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Movement: Falling")
+	float MaxFallingTime = 5.0f;
+
 private:
 	FMantlingMovementParameters CurrentMantlingParameters;
 
@@ -231,4 +234,7 @@ private:
 
 	float StartBalancingDirection;
 	float OnBeamDirection = 0.0f;
+
+	FTimerHandle FallingTimer;
+	void BackToLastSave();
 };

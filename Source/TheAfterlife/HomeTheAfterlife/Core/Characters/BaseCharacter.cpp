@@ -410,11 +410,6 @@ void ABaseCharacter::EquipPrimaryItem()
 	CharacterEquipmentComponent->EquipItemInSlot(EEquipmentSlots::PRIMARY_ITEM_SLOT);
 }
 
-bool ABaseCharacter::IsFalling() const
-{
-	return GetActorLocation().Z <= MinFallingDistance;
-}
-
 void ABaseCharacter::Interact()
 {
 	if (LineOfSightObject.GetInterface())

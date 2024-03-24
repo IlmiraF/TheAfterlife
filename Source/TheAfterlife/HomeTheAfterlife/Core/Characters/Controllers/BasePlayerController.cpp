@@ -20,6 +20,7 @@ void ABasePlayerController::SetPawn(APawn* InPawn)
 	{
 		CreateAndInitializeWidgets();
 		CachedBaseCharacter->OnInteractableObjectFound.BindUObject(this, &ABasePlayerController::OnInteractableObjectFound);
+		CachedBaseCharacter->OnFalling.BindUObject(this, &ABasePlayerController::QuickLoadGame);
 	}
 }
 
@@ -55,15 +56,6 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::PreviousItem);
 	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ABasePlayerController::EquipPrimaryItem);
 	InputComponent->BindAction("Interact", EInputEvent::IE_Pressed, this, &ABasePlayerController::Interact);
-}
-
-void ABasePlayerController::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	if (CachedBaseCharacter->IsFalling())
-	{
-		QuickLoadGame();
-	}
 }
 
 void ABasePlayerController::MoveForward(float value)
