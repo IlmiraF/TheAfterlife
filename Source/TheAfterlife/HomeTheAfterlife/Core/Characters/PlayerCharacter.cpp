@@ -130,6 +130,11 @@ void APlayerCharacter::OnBeamMoveRight(float value)
 	}
 }
 
+void APlayerCharacter::Speak(USoundBase* SoundBase)
+{
+	PlaySound(SoundBase);
+}
+
 void APlayerCharacter::OnStartAimingIternal()
 {
 	Super::OnStartAimingIternal();

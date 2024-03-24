@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
+#include "..\..\Core\Actors\Interfaces\ISpeak.h"
 #include "PlayerCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THEAFTERLIFE_API APlayerCharacter : public ABaseCharacter
+class THEAFTERLIFE_API APlayerCharacter : public ABaseCharacter, public ISpeak
 {
 	GENERATED_BODY()
 
@@ -32,6 +33,8 @@ public:
 
 	virtual void OnBeamMoveForward(float value) override;
 	virtual void OnBeamMoveRight(float value) override;
+
+	virtual void Speak(USoundBase* SoundBase) override;
 
 protected:
 

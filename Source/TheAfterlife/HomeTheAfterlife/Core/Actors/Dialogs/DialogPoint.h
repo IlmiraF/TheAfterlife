@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "../../../../TheAfterlifeTypes.h"
 #include "DialogPoint.generated.h"
 
 
@@ -17,7 +18,7 @@ struct FSpeechSettings
 	class USoundBase* SoundBase;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class AActor* CurrentSpeaker;
+	ESpeakers CurrentSpeaker;
 };
 
 UCLASS()
@@ -39,4 +40,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bCanMovePlayer;
+
+private:
+
+	FTimerHandle SpeechTimerHandle;
+
+	int32 CurrentSpeechIndex;
+
+	void StartSpeech(int32 SpeechIndex);
+
+	void NextSpeech();
+
+	//ABaseCharacter* CachedBaseCharacter;
 };

@@ -158,8 +158,6 @@ public:
 
 	bool IsFalling() const;
 
-	void SetAudio(USoundBase* Sound);
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -212,9 +210,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
 	class UMeleeHitRegistrator* RightMeleeHitRegistrator;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Audio")
-	class USoundBase* SoundBase;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
 	class UDataTable* PlayerAttackDataTable;
 
@@ -228,6 +223,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement")
 	float MinFallingDistance = -100.0f;
+
+	void PlaySound(USoundBase* SoundBase);
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
@@ -243,8 +240,7 @@ private:
 
 	bool IsAnimationBlended;
 
-	void PlaySound(UAudioComponent* AudioComponent);
-
 	bool bIsAiming;
+
 	float CurrentAimingMovementSpeed;
 };

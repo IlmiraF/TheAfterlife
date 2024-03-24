@@ -407,12 +407,6 @@ bool ABaseCharacter::IsFalling() const
 	return GetActorLocation().Z <= MinFallingDistance;
 }
 
-void ABaseCharacter::SetAudio(USoundBase* Sound)
-{
-	CharacterAudioComponent->SetSound(Sound);
-	PlaySound(CharacterAudioComponent);
-}
-
 const FMantlingSettings& ABaseCharacter::GetMantlingSettings(float LedgeHeight) const
 {
 	return LedgeHeight > LowMantleMaxHeight ? HighMantleSettings : LowMantleSettings;
@@ -453,8 +447,6 @@ void ABaseCharacter::HandsMeleeAttack()
 		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "hand_right_collision");
 
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::HANDS);
-
-		PlaySound(CharacterAudioComponent);
 	}
 }
 
@@ -469,8 +461,6 @@ void ABaseCharacter::LegsMeleeAttack()
 		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "foot_right_collision");
 
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::LEGS);
-
-		PlaySound(CharacterAudioComponent);
 	}
 }
 
@@ -489,11 +479,12 @@ void ABaseCharacter::ThrowBomb()
 	}
 }
 
-void ABaseCharacter::PlaySound(UAudioComponent* AudioComponent)
-{
-	if (AudioComponent && !AudioComponent->IsPlaying())
+void ABaseCharacter::PlaySound(USoundBase* SoundBase)
+{	
+	CharacterAudioComponent->SetSound(SoundBase);
+	if (CharacterAudioComponent && !CharacterAudioComponent->IsPlaying())
 	{
-		AudioComponent->Play(0.f);
+		CharacterAudioComponent->Play(0.f);
 	}
 }
 
