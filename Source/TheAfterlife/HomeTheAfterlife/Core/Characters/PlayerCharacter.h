@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
+#include "..\..\Core\Actors\Interfaces\ISpeak.h"
 #include "PlayerCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THEAFTERLIFE_API APlayerCharacter : public ABaseCharacter
+class THEAFTERLIFE_API APlayerCharacter : public ABaseCharacter, public ISpeak
 {
 	GENERATED_BODY()
 
@@ -33,7 +34,7 @@ public:
 	virtual void OnBeamMoveForward(float value) override;
 	virtual void OnBeamMoveRight(float value) override;
 
-	virtual void OnDeath() override;
+	virtual void Speak(USoundBase* SoundBase) override;
 
 protected:
 
@@ -43,14 +44,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Camera")
 	class USpringArmComponent* SpringArmComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Jumping")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Jump")
 	class UAnimMontage* DoubleJumpMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Jumping")
-	float XYJumpForce = 200.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Jumping")
-	float ZJumpForce = 500.0f;
 
 	virtual void OnStartAimingIternal() override;
 	virtual void OnStopAimingIternal() override;

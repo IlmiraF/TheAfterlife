@@ -68,9 +68,8 @@ void APlayerCharacter::Jump()
 		if (JumpCount == 2)
 		{
 			PlayAnimMontage(DoubleJumpMontage);
-			FVector PlayerForwardVector = GetActorForwardVector();
-			FVector JumpVector = FVector(PlayerForwardVector.X * XYJumpForce, PlayerForwardVector.Y * XYJumpForce, ZJumpForce);
-			LaunchCharacter(JumpVector, true, true);
+			FVector JumpForce = GetVelocity();
+			LaunchCharacter(JumpForce, false, true);
 			JumpCount++;
 		}
 	}
@@ -86,6 +85,7 @@ void APlayerCharacter::ClimbMoveForward(float value)
 {
 	if (GetBaseCharacterMovementComponent()->IsClimbing() && !FMath::IsNearlyZero(value, 1e-6f))
 	{
+		//FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
 		FVector ForwardVector = FVector::CrossProduct(
 			-GetBaseCharacterMovementComponent()->GetClimbableSurfaceNormal(),
 			GetActorRightVector());
@@ -116,10 +116,9 @@ void APlayerCharacter::OnBeamMoveForward(float value)
 {
 	if (GetBaseCharacterMovementComponent()->IsOnBeam() && !FMath::IsNearlyZero(value, 1e-6f))
 	{
-		if (GetBaseCharacterMovementComponent()->GetWalkableDirection() != FVector::ZeroVector)
-		{
-			AddMovementInput(GetBaseCharacterMovementComponent()->GetWalkableDirection(), value);
-		}
+		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
+		FVector ForwardVector = YawRotator.RotateVector(FVector::ForwardVector);
+		AddMovementInput(ForwardVector, value);
 	}
 }
 
@@ -131,18 +130,9 @@ void APlayerCharacter::OnBeamMoveRight(float value)
 	}
 }
 
-void APlayerCharacter::OnDeath()
-{	
-	Super::OnDeath();
-
-	GetCharacterMovement()->DisableMovement();
-	float Duration = PlayAnimMontage(OnDeathAnimMontage);
-	if (Duration == 0.0f)
-	{
-		EnableRagdoll();
-		GetMesh()->Stop();
-	}
-
+void APlayerCharacter::Speak(USoundBase* SoundBase)
+{
+	PlaySound(SoundBase);
 }
 
 void APlayerCharacter::OnStartAimingIternal()
