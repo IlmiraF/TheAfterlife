@@ -41,8 +41,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Camera")
 	class USpringArmComponent* SpringArmComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Jump")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Jumping")
 	class UAnimMontage* DoubleJumpMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Jumping")
+	float XYJumpForce = 200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Jumping")
+	float ZJumpForce = 500.0f;
 
 	virtual void OnStartAimingIternal() override;
 	virtual void OnStopAimingIternal() override;

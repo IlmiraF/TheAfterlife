@@ -68,8 +68,9 @@ void APlayerCharacter::Jump()
 		if (JumpCount == 2)
 		{
 			PlayAnimMontage(DoubleJumpMontage);
-			FVector JumpForce = GetVelocity();
-			LaunchCharacter(JumpForce, false, true);
+			FVector PlayerForwardVector = GetActorForwardVector();
+			FVector JumpVector = FVector(PlayerForwardVector.X * XYJumpForce, PlayerForwardVector.Y * XYJumpForce, ZJumpForce);
+			LaunchCharacter(JumpVector, true, true);
 			JumpCount++;
 		}
 	}

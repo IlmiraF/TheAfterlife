@@ -178,7 +178,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Movement")
 	class ULedgeDetectorComponent* LedgeDetectorComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Movement|Jumping")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Jumping")
 	int32 JumpCount = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Components")
