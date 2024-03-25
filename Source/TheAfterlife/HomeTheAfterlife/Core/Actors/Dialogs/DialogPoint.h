@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "../../Characters/PlayerCharacter.h"
+#include "../../Characters/Controllers/BasePlayerController.h"
 #include "DialogPoint.generated.h"
 
 
@@ -20,6 +21,9 @@ struct FSpeechSettings
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	AActor* CurrentSpeakerNotPlayer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString SpeechText;
 };
 
 UCLASS()
@@ -53,4 +57,8 @@ private:
 	void NextSpeech();
 
 	APlayerCharacter* CachedPlayerCharacter;
+
+	ABasePlayerController* CachedPlayerController;
+
+	bool bItSounded = false;;
 };

@@ -342,3 +342,16 @@ void ABasePlayerController::UpdateHintsWidget(FString TutorialText, bool Visibil
 		}
 	}
 }
+
+void ABasePlayerController::UpdateDialogueWidget(FString SpeachText, bool Visibility)
+{
+	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
+	{
+		UDialogueWidget* DialogueWidget = PlayerHUDWidget->GetDialogueWidget();
+		if (IsValid(DialogueWidget))
+		{
+			DialogueWidget->UpdateDialogue(SpeachText);
+			DialogueWidget->UpdateVisible(Visibility);
+		}
+	}
+}
