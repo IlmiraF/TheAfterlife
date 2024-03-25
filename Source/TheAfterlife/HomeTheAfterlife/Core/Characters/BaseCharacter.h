@@ -234,6 +234,7 @@ private:
 	void EnableRagdoll();
 	FVector CurrentFallApex;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UAudioComponent* CharacterAudioComponent;
 
 	FPlayerAttackMontage* AttackMontage;

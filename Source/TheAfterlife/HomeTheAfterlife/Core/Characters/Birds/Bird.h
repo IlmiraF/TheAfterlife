@@ -35,6 +35,7 @@ protected:
 
 private:
 
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UAudioComponent* BirdAudioComponent;
 
 	UPROPERTY(EditAnywhere)
@@ -42,15 +43,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float Speed = 100.0f;
-
-	UPROPERTY(EditDefaultsOnly)
-	float SinusoidHeight = 3.0f;
-
-	UPROPERTY(EditDefaultsOnly)
-	float SinusoidFrequency = 1.0f;
-
-	UPROPERTY(EditDefaultsOnly)
-	float DeltaPosition = 10.0f;
 
 	int32 CurrentIndex = 0;
 
