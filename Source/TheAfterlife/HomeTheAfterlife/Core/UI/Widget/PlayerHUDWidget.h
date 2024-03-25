@@ -8,6 +8,7 @@
 
 class UAmmoWidget;
 class UHintsWidget;
+class UHighlightInteractable;
 UCLASS()
 class THEAFTERLIFE_API UPlayerHUDWidget : public UUserWidget
 {
@@ -21,6 +22,8 @@ public :
 	void SetBombAmmo(int32 Ammo);
 
 	UHintsWidget* GetHintsWidget();
+
+	void SetHighlightInteractableVisibility(bool bIsVisible, FName KeyName);
 
 protected:
 
@@ -41,6 +44,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
 	FName HintsWidgetName;
+
+	UPROPERTY(meta = (BindWidget))
+	UHighlightInteractable* InteractableKey;
 
 private: 
 

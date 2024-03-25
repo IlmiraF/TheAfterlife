@@ -5,6 +5,7 @@
 #include "AmmoWidget.h"
 #include "HintsWidget.h"
 #include "Blueprint/WidgetTree.h"
+#include "HighlightInteractable.h"
 
 UAmmoWidget* UPlayerHUDWidget::GetWidgetAmmo()
 {	
@@ -19,6 +20,24 @@ void UPlayerHUDWidget::SetBombAmmo(int32 Ammo)
 UHintsWidget* UPlayerHUDWidget::GetHintsWidget()
 {
 	return WidgetTree->FindWidget<UHintsWidget>(HintsWidgetName);
+}
+
+void UPlayerHUDWidget::SetHighlightInteractableVisibility(bool bIsVisible, FName KeyName)
+{
+    if (!IsValid(InteractableKey))
+    {
+        return;
+    }
+
+    if (bIsVisible)
+    {
+        InteractableKey->SetVisibility(ESlateVisibility::Visible);
+        InteractableKey->SetActionText(KeyName);
+    }
+    else
+    {
+        InteractableKey->SetVisibility(ESlateVisibility::Hidden);
+    }
 }
 
 int UPlayerHUDWidget::GetBombAmmo() const

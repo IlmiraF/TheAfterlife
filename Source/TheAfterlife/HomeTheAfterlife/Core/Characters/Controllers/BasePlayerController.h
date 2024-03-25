@@ -77,7 +77,7 @@ private:
 
 	void CreateAndInitializeWidgets();
 
-	void OnInteractableObjectFound();
+	void OnInteractableObjectFound(bool bIsVisible, FName KeyName);
 
 	class UPlayerHUDWidget* PlayerHUDWidget = nullptr;
 

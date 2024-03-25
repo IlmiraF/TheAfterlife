@@ -68,7 +68,7 @@ class IInteractable;
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
-DECLARE_DELEGATE(FOnInteractableObjectFound)
+DECLARE_DELEGATE_TwoParams(FOnInteractableObjectFound, bool, FName)
 DECLARE_DELEGATE(FOnFallingDelegate)
 
 UCLASS()

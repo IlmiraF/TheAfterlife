@@ -310,14 +310,14 @@ void ABasePlayerController::CreateAndInitializeWidgets()
 	bShowMouseCursor = false;
 }
 
-void ABasePlayerController::OnInteractableObjectFound()
+void ABasePlayerController::OnInteractableObjectFound(bool bIsVisible, FName KeyName)
 {
 	if (!IsValid(PlayerHUDWidget))
 	{
 		return;
 	}
 
-	//PlayerHUDWidget show hint
+	PlayerHUDWidget->SetHighlightInteractableVisibility(bIsVisible, KeyName);
 }
 
 void ABasePlayerController::UpdateHintsWidget(FString TutorialText, bool Visibility)

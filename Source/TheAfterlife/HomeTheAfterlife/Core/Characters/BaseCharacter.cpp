@@ -442,7 +442,11 @@ void ABaseCharacter::TraceLineOfSight()
 
 		if (LineOfSightObject.GetInterface())
 		{
-			OnInteractableObjectFound.ExecuteIfBound();
+			OnInteractableObjectFound.ExecuteIfBound(true, "Interact");
+		}
+		else
+		{
+			OnInteractableObjectFound.ExecuteIfBound(false, NAME_None);
 		}
 	}
 }
