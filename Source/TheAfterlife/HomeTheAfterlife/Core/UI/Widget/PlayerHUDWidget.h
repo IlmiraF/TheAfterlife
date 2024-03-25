@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "..\..\UI\Widget\DialogueWidget.h"
 #include "PlayerHUDWidget.generated.h"
 
 class UAmmoWidget;
@@ -21,6 +22,8 @@ public :
 	void SetBombAmmo(int32 Ammo);
 
 	UHintsWidget* GetHintsWidget();
+
+	UDialogueWidget* GetDialogueWidget();
 
 protected:
 
@@ -41,6 +44,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
 	FName HintsWidgetName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
+	FName DialogueWidgetName;
 
 private: 
 

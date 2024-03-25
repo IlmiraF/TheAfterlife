@@ -35,7 +35,6 @@ protected:
 
 private:
 
-
 	UAudioComponent* BirdAudioComponent;
 
 	UPROPERTY(EditAnywhere)

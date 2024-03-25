@@ -21,11 +21,15 @@ UHintsWidget* UPlayerHUDWidget::GetHintsWidget()
 	return WidgetTree->FindWidget<UHintsWidget>(HintsWidgetName);
 }
 
+UDialogueWidget* UPlayerHUDWidget::GetDialogueWidget()
+{
+    return WidgetTree->FindWidget<UDialogueWidget>(DialogueWidgetName);
+}
+
 int UPlayerHUDWidget::GetBombAmmo() const
 {	
 	return AmmoUI;
 }
-
 
 float UPlayerHUDWidget::GetHealthPercent() const
 {	
@@ -77,6 +81,3 @@ float UPlayerHUDWidget::GetRightBalancePercent() const
     }
     return (Result / 45.0f);
 }
-
-
-

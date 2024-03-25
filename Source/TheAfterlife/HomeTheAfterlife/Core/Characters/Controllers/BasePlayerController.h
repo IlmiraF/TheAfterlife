@@ -23,6 +23,8 @@ public:
 
 	void UpdateHintsWidget(FString TutorialText, bool Visibility);
 
+	void UpdateDialogueWidget(FString SpeachText, bool Visibility);
+
 protected:
 
 	virtual void SetupInputComponent() override;
