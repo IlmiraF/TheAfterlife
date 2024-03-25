@@ -5,7 +5,9 @@
 #include "Components/SplineComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/TimelineComponent.h"
+#include "../../Characters/Conductor/Conductor.h"
 #include "Tram.generated.h"
+
 
 
 UCLASS()
@@ -42,6 +44,9 @@ public:
 
 	UFUNCTION()
 	void TriggerFromlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Conductor")
+	AConductor* Conductor;
 
 private:	
 

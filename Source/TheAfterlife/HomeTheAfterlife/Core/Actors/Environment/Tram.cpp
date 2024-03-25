@@ -30,10 +30,14 @@ ATram::ATram()
 
 	MovementToPlatrofmTriggerComponent->OnComponentBeginOverlap.AddDynamic(this, &ATram::TriggerToPlatfromOnOverlapBegin);
 	MovementFromPlatfromTriggerComponent->OnComponentBeginOverlap.AddDynamic(this, &ATram::TriggerFromlatfromOnOverlapBegin);
+
+	
 }
 
 void ATram::TriggerToPlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
+{	
+	Conductor->AttachToActor(this, FAttachmentTransformRules::SnapToTargetIncludingScale);
+
 	bIsMoving = true;
 
 	float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(StopWorldLocation);
@@ -63,6 +67,8 @@ void ATram::Move(float DeltaTime)
 	if (DistanceAlongSpline >= StopDistance)
 	{
 		bIsMoving = false;
+
+		Conductor->StartSpeaking();
 	}
 
 	DistanceAlongSpline += Speed * DeltaTime;
