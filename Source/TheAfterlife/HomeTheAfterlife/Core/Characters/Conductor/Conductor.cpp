@@ -23,6 +23,11 @@ void AConductor::StartSpeaking()
 	GetWorld()->GetTimerManager().SetTimer(SpeechTimerHandle, this, &AConductor::Speak, WaitingTimeBetweenGreetingAndDiscontent, false);
 }
 
+void AConductor::StopSpeaking()
+{
+	ConductorAudioComponent->Stop();
+	CurrentSpeechIndex = 999;
+}
 
 void AConductor::Speak()
 {	
