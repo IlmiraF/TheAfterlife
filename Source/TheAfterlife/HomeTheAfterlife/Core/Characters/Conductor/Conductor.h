@@ -4,8 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "..\..\Actors\Interfaces\ISpeak.h"
+#include "../../Actors/Interfaces/ISpeak.h"
 #include "Conductor.generated.h"
+
 
 UCLASS()
 class THEAFTERLIFE_API AConductor : public APawn
@@ -16,6 +17,8 @@ public:
 	AConductor();
 
 	void StartSpeaking();
+
+	void StopSpeaking();
 
 private:
 

@@ -36,12 +36,17 @@ ATram::ATram()
 
 void ATram::TriggerToPlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {	
-	Conductor->AttachToComponent(TramMesh, FAttachmentTransformRules::KeepWorldTransform);
+	if (!bOnTramStarted)
+	{
+		Conductor->AttachToComponent(TramMesh, FAttachmentTransformRules::KeepWorldTransform);
 
-	bIsMoving = true;
+		bIsMoving = true;
 
-	float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(StopWorldLocation);
-	StopDistance = SplineComponent->GetDistanceAlongSplineAtSplineInputKey(InputKey);
+		float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(StopWorldLocation);
+		StopDistance = SplineComponent->GetDistanceAlongSplineAtSplineInputKey(InputKey);
+	}
+
+	bOnTramStarted = true;
 }
 
 void ATram::TriggerFromlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -55,6 +60,8 @@ void ATram::TriggerFromlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp
 	{	
 		PlayerCharacter->SetCanMove(false);
 	}
+
+	Conductor->StopSpeaking();
 }
 
 void ATram::Move(float DeltaTime)
@@ -64,7 +71,7 @@ void ATram::Move(float DeltaTime)
 		return;
 	}
 
-	if (DistanceAlongSpline >= StopDistance)
+	if (DistanceAlongSpline > StopDistance)
 	{
 		bIsMoving = false;
 

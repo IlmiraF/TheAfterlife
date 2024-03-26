@@ -9,7 +9,6 @@
 #include "Tram.generated.h"
 
 
-
 UCLASS()
 class THEAFTERLIFE_API ATram : public AActor
 {
@@ -56,4 +55,6 @@ private:
 	void Move(float DeltaTime);
 
 	float StopDistance;
+
+	bool bOnTramStarted = false;
 };
