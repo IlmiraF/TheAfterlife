@@ -4,6 +4,7 @@
 #include "UObject/WeakObjectPtrTemplates.h"
 #include "Components/CapsuleComponent.h"
 #include "../../Characters/BaseCharacter.h"
+#include "Components/AudioComponent.h"
 #include "../../Components/MovementComponents/BaseCharacterMovementComponent.h"
 
 
@@ -26,6 +27,7 @@ void UCharacterAttributeComponent::StealHealth(float HealthStealingRatio)
 {
 	MaxHealth = MaxHealth * HealthStealingRatio;
 	Health = FMath::Clamp(Health * HealthStealingRatio, 0.0f, MaxHealth);
+	OnHealthStealing();
 }
 
 void UCharacterAttributeComponent::OnLevelDeserialized_Implementation()
@@ -66,6 +68,19 @@ void UCharacterAttributeComponent::OnHealthChanged()
 		{
 			OnDeathEvent.Broadcast();
 		}
+	}
+}
+
+void UCharacterAttributeComponent::OnHealthStealing()
+{
+	if (OnHealthStealingEvent.IsBound())
+	{
+		OnHealthStealingEvent.Broadcast();
+	}
+
+	if (HealthStealingAudio)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HealthStealingAudio, GetOwner()->GetActorLocation());
 	}
 }
 

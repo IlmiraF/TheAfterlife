@@ -9,6 +9,7 @@
 class UAmmoWidget;
 class UHintsWidget;
 class UHighlightInteractable;
+class UHealthStealingWidget;
 UCLASS()
 class THEAFTERLIFE_API UPlayerHUDWidget : public UUserWidget
 {
@@ -24,6 +25,8 @@ public :
 	UHintsWidget* GetHintsWidget();
 
 	void SetHighlightInteractableVisibility(bool bIsVisible, FName KeyName);
+
+	UHealthStealingWidget* GetHealthStealingWidget();
 
 protected:
 
@@ -44,6 +47,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
 	FName HintsWidgetName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
+	FName HealthStealingWidgetName;
 
 	UPROPERTY(meta = (BindWidget))
 	UHighlightInteractable* InteractableKey;

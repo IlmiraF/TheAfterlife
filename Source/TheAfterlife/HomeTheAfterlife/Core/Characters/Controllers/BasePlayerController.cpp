@@ -8,7 +8,9 @@
 #include "../../UI/Widget/PlayerHUDWidget.h"
 #include "../../UI/Widget/HintsWidget.h"
 #include "../../UI/Widget/AmmoWidget.h"
+#include "../../UI/Widget/HealthStealingWidget.h"
 #include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
+#include "../../Components/CharacterComponents/CharacterAttributeComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "../../Subsystems/SaveSubsystem/SaveSubsystem.h"
 
@@ -292,6 +294,13 @@ void ABasePlayerController::CreateAndInitializeWidgets()
 
 	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
 	{
+		UHealthStealingWidget* HealthStealingWidget = PlayerHUDWidget->GetHealthStealingWidget();
+		if (IsValid(HealthStealingWidget))
+		{
+			UCharacterAttributeComponent* CharacterAttribute = CachedBaseCharacter->GetCharacterAttributeComponent();
+			CharacterAttribute->OnHealthStealingEvent.AddUFunction(HealthStealingWidget, FName("HealthStealingEffect"));
+		}
+
 		UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
 		if (IsValid(HintsWidget))
 		{

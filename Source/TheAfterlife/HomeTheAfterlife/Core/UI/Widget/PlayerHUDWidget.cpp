@@ -6,6 +6,7 @@
 #include "HintsWidget.h"
 #include "Blueprint/WidgetTree.h"
 #include "HighlightInteractable.h"
+#include "HealthStealingWidget.h"
 
 UAmmoWidget* UPlayerHUDWidget::GetWidgetAmmo()
 {	
@@ -38,6 +39,11 @@ void UPlayerHUDWidget::SetHighlightInteractableVisibility(bool bIsVisible, FName
     {
         InteractableKey->SetVisibility(ESlateVisibility::Hidden);
     }
+}
+
+UHealthStealingWidget* UPlayerHUDWidget::GetHealthStealingWidget()
+{
+    return WidgetTree->FindWidget<UHealthStealingWidget>(HealthStealingWidgetName);
 }
 
 int UPlayerHUDWidget::GetBombAmmo() const
