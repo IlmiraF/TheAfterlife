@@ -257,29 +257,6 @@ void UBaseCharacterMovementComponent::RequestHopping()
 			HandleHopLeft();
 		}
 	}
-
-	/*if (DotResultForward >= 0.9f)
-	{
-		if (DotResultRight >= 0.9f)
-		{
-			HandleHopRightUp();
-		}
-		else if (DotResultRight <= -0.9f)
-		{
-			HandleHopLeftUp();
-		}
-	}
-	else if (DotResultForward <= -0.9f)
-	{
-		if (DotResultRight >= 0.9f)
-		{
-			HandleHopRightDown();
-		}
-		else if (DotResultRight <= -0.9f)
-		{
-			HandleHopLeftDown();
-		}
-	}*/
 }
 
 bool UBaseCharacterMovementComponent::IsOnBeam() const
@@ -290,15 +267,12 @@ bool UBaseCharacterMovementComponent::IsOnBeam() const
 void UBaseCharacterMovementComponent::StartWalkingOnBeam()
 {
 	SetMovementMode(MOVE_Custom, (uint8)ECustomMovementMode::CMOVE_OnBeam);
-	StartBalancingDirection = UKismetMathLibrary::RandomBool() ? 1.0f : -1.0f;
-	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("StartBeam"));
+	BalancingDirection = UKismetMathLibrary::RandomBool() ? 1.0f : -1.0f;
 }
 
 void UBaseCharacterMovementComponent::StopWalkingOnBeam()
 {
-	OnBeamDirection = 0.0f;
 	SetMovementMode(MOVE_Walking);
-	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("StopBeam"));
 }
 
 float UBaseCharacterMovementComponent::GetOnBeamDirection() const
@@ -306,14 +280,9 @@ float UBaseCharacterMovementComponent::GetOnBeamDirection() const
 	return OnBeamDirection;
 }
 
-void UBaseCharacterMovementComponent::SetOnBeamDirection(float Direction)
-{
-	OnBeamDirection = Direction;
-}
-
 void UBaseCharacterMovementComponent::SetBalancingDirection(float Direction)
 {
-	StartBalancingDirection = Direction;
+	BalancingDirection = Direction;
 }
 
 void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
@@ -335,6 +304,12 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 		UpdatedComponent->SetRelativeRotation(CleanStandRotation);
 
 		StopMovementImmediately();
+	}
+
+	if (PreviousMovementMode == MOVE_Custom && PreviousCustomMode == (uint8)ECustomMovementMode::CMOVE_OnBeam)
+	{
+		bOrientRotationToMovement = true;
+		OnBeamDirection = 0.0f;
 	}
 
 	if (PreviousMovementMode == MOVE_Falling)
@@ -370,7 +345,7 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 		}
 		case (uint8)ECustomMovementMode::CMOVE_OnBeam:
 		{
-			//bOrientRotationToMovement = false;
+			bOrientRotationToMovement = false;
 			break;
 		}
 		default:
@@ -614,19 +589,15 @@ void UBaseCharacterMovementComponent::PhysClimb(float DeltaTime, int32 Iteration
 
 void UBaseCharacterMovementComponent::PhysBeam(float DeltaTime, int32 Iterations)
 {
-	CalcVelocity(DeltaTime, 1.0f, false, ClimbingOnLadderBrakingDecelaration);
+	CalcVelocity(DeltaTime, 1.0f, false, BrakingDecelerationWalking);
 	FVector Delta = Velocity * DeltaTime;
 
-	OnBeamDirection += DeltaTime * 10.0f * StartBalancingDirection;
+	OnBeamDirection += DeltaTime * 10.0f * BalancingDirection;
 
-	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, FString::Printf(TEXT("%f"), OnBeamDirection));
-
-	if (FMath::Abs(OnBeamDirection) >= 45.0f)
+	if (FMath::Abs(OnBeamDirection) >= MaxBalancingValue)
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, FString::Printf(TEXT("%f"), OnBeamDirection));
-		//StopWalkingOnBeam();
 		FVector Start = UpdatedComponent->GetComponentLocation();
-		FVector FallDirection = Start - StartBalancingDirection * UpdatedComponent->GetRightVector() * 100.0f;
+		FVector FallDirection = Start + BalancingDirection * UpdatedComponent->GetRightVector() * 100.0f;
 		GetOwner()->SetActorLocation(FallDirection);
 		SetMovementMode(MOVE_Falling);
 	}
@@ -675,13 +646,13 @@ void UBaseCharacterMovementComponent::OnClimbMontageEnded(UAnimMontage* Montage,
 		bIsHopping = false;
 	}
 
-	if (Montage == HopUpMontage)
+	/*if (Montage == HopUpMontage)
 	{
 		if (CheckHasReachedLedge())
 		{
 			GetBaseCharacterOwner()->Mantle(true);
 		}
-	}
+	}*/
 }
 
 FHitResult UBaseCharacterMovementComponent::GetClimbableSurfaces()
@@ -692,7 +663,6 @@ FHitResult UBaseCharacterMovementComponent::GetClimbableSurfaces()
 	FHitResult HitRes;
 	FCollisionShape CollisionShape = FCollisionShape::MakeSphere(ClimbCapsuleTraceRadius);
 	GetWorld()->SweepSingleByObjectType(HitRes, Start, End, FQuat::Identity, ECC_Parkour, CollisionShape);
-	//DrawDebugSphere(GetWorld(), HitRes.ImpactPoint, ClimbCapsuleTraceRadius, 16, FColor::Purple, false, 2.0f);
 	ClimbableSurfacesTracedResults = HitRes;
 	return ClimbableSurfacesTracedResults;
 }
@@ -1002,7 +972,6 @@ bool UBaseCharacterMovementComponent::CheckCanHopLeft(FVector& OutHopLeftTargetP
 	const FVector End = Start + UpdatedComponent->GetForwardVector() * 30.0f;
 	FCollisionShape CollisionShape = FCollisionShape::MakeSphere(ClimbCapsuleTraceRadius);
 	GetWorld()->SweepSingleByObjectType(HopHit, Start, End, FQuat::Identity, ECC_Parkour, CollisionShape);
-	//DrawDebugSphere(GetWorld(), HopHit.ImpactPoint, ClimbCapsuleTraceRadius, 16, FColor::Cyan, false, 2.0f);
 
 	if (HopHit.bBlockingHit)
 	{

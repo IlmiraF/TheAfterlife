@@ -82,7 +82,6 @@ public:
 	void StartWalkingOnBeam();
 	void StopWalkingOnBeam();
 	float GetOnBeamDirection() const;
-	void SetOnBeamDirection(float Direction);
 	void SetBalancingDirection(float Direction);
 	
 protected:
@@ -183,6 +182,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Movement: Falling")
 	float MaxFallingTime = 5.0f;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Movement: Balancing")
+	float MaxBalancingValue = 45.0f;
+
 private:
 	FMantlingMovementParameters CurrentMantlingParameters;
 
@@ -232,7 +235,7 @@ private:
 
 	//Beam
 
-	float StartBalancingDirection;
+	float BalancingDirection;
 	float OnBeamDirection = 0.0f;
 
 	FTimerHandle FallingTimer;
