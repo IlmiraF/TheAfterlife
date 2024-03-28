@@ -23,6 +23,7 @@ void ABasePlayerController::SetPawn(APawn* InPawn)
 		CreateAndInitializeWidgets();
 		CachedBaseCharacter->OnInteractableObjectFound.BindUObject(this, &ABasePlayerController::OnInteractableObjectFound);
 		CachedBaseCharacter->OnFalling.BindUObject(this, &ABasePlayerController::QuickLoadGame);
+		CachedBaseCharacter->OnTutorialColliderOverlapped.BindUObject(this, &ABasePlayerController::UpdateHintsWidget);
 	}
 }
 

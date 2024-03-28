@@ -2,11 +2,8 @@
 
 
 #include "TutorialCollider.h"
-#include "../../../Characters/Birds/Bird.h"
-#include "../../../Characters/PlayerCharacter.h"
-#include "../../../Characters/Controllers/BasePlayerController.h"
-#include "EngineUtils.h"
-#include "../../../UI/Widget/HintsWidget.h"
+#include "Components/BoxComponent.h"
+#include "../../../Characters/BaseCharacter.h"
 
 // Sets default values
 ATutorialCollider::ATutorialCollider()
@@ -26,18 +23,12 @@ void ATutorialCollider::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 		return;
 	}
 
-	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+	ABaseCharacter* PlayerCharacter = Cast<ABaseCharacter>(OtherActor);
 
-	if (!IsValid(PlayerCharacter))
+	if (IsValid(PlayerCharacter))
 	{
-		return;
-	}
-
-	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(PlayerCharacter->GetController());
-
-	if (IsValid(BasePlayerController))
-	{
-		BasePlayerController->UpdateHintsWidget(TutorialText, true);
+		OnReachedTarget();
+		PlayerCharacter->OnTutorialColliderOverlapped.ExecuteIfBound(TutorialText, true);
 	}
 }
 
@@ -48,28 +39,18 @@ void ATutorialCollider::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 		return;
 	}
 
-	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+	ABaseCharacter* PlayerCharacter = Cast<ABaseCharacter>(OtherActor);
 
-	if (!IsValid(PlayerCharacter))
+	if (IsValid(PlayerCharacter))
 	{
-		return;
+		PlayerCharacter->OnTutorialColliderOverlapped.ExecuteIfBound("", false);
 	}
+}
 
-	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(PlayerCharacter->GetController());
-
-	if (IsValid(BasePlayerController))
+void ATutorialCollider::OnReachedTarget()
+{
+	if (OnReachedTargetEvent.IsBound())
 	{
-		BasePlayerController->UpdateHintsWidget(TutorialText, false);
-	}
-
-	for (TActorIterator<ABird> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-	{
-		Bird = *ActorItr;
-		break;
-	}
-
-	if (IsValid(Bird))
-	{
-		Bird->SetNewPoint(ColliderIndex + 1);
+		OnReachedTargetEvent.Broadcast();
 	}
 }

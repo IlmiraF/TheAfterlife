@@ -21,8 +21,6 @@ public:
 
 	virtual void SetPawn(APawn* InPawn) override;
 
-	void UpdateHintsWidget(FString TutorialText, bool Visibility);
-
 protected:
 
 	virtual void SetupInputComponent() override;
@@ -82,6 +80,8 @@ private:
 	class UPlayerHUDWidget* PlayerHUDWidget = nullptr;
 
 	bool bIgnoreCameraPitch = false;
+
+	void UpdateHintsWidget(FString TutorialText, bool Visibility);
 
 	//void ToggleMainMenu();
 };

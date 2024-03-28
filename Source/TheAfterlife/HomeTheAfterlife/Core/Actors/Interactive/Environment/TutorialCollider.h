@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/BoxComponent.h"
 #include "TutorialCollider.generated.h"
 
-class ABird;
+DECLARE_MULTICAST_DELEGATE(FOnReachedTarget);
+
+class UBoxComponent;
 UCLASS()
 class THEAFTERLIFE_API ATutorialCollider : public AActor
 {
@@ -23,8 +24,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	FString TutorialText;
 
-	UPROPERTY(EditAnywhere)
-	int32 ColliderIndex;
+	FOnReachedTarget OnReachedTargetEvent;
 
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -34,5 +34,5 @@ public:
 
 private:
 
-	ABird* Bird;
+	void OnReachedTarget();
 };

@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "Bird.generated.h"
 
+class ATutorialCollider;
 UCLASS()
 class THEAFTERLIFE_API ABird : public APawn
 {
@@ -17,12 +18,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, meta = (MakeEditWidget))
+	TArray<ATutorialCollider*> TutorialColliderArray;
+
 public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void SetNewPoint(int32 Index);
+	void SetNewPoint();
 
 private:
 

@@ -2,7 +2,7 @@
 
 
 #include "Bird.h"
-#include "AIController.h"
+#include "../../Actors/Interactive/Environment/TutorialCollider.h"
 
 ABird::ABird()
 {
@@ -12,6 +12,10 @@ ABird::ABird()
 void ABird::BeginPlay()
 {
 	Super::BeginPlay();
+	for (ATutorialCollider* Collider : TutorialColliderArray)
+	{
+		Collider->OnReachedTargetEvent.AddUObject(this, &ABird::SetNewPoint);
+	}
 }
 
 void ABird::Tick(float DeltaTime)
@@ -27,11 +31,11 @@ void ABird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void ABird::SetNewPoint(int32 Index)
+void ABird::SetNewPoint()
 {
-	if (Index > CurrnetIndex)
+	if (CurrnetIndex < (RouteArray.Num() - 1))
 	{
-		CurrnetIndex = Index;
+		CurrnetIndex = CurrnetIndex + 1;
 	}
 }
 

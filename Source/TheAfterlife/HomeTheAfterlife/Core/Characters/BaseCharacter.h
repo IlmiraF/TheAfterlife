@@ -70,6 +70,7 @@ typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
 DECLARE_DELEGATE_TwoParams(FOnInteractableObjectFound, bool, FName)
 DECLARE_DELEGATE(FOnFallingDelegate)
+DECLARE_DELEGATE_TwoParams(FOnTutorialColliderOverlapped, FString, bool);
 
 UCLASS()
 class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface, public ISaveSubsystemInterface
@@ -170,6 +171,8 @@ public:
 	FOnInteractableObjectFound OnInteractableObjectFound;
 
 	FOnFallingDelegate OnFalling;
+
+	FOnTutorialColliderOverlapped OnTutorialColliderOverlapped;
 
 protected:
 	virtual void BeginPlay() override;
