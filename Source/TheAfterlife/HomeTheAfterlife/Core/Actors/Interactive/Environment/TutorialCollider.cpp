@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "TutorialCollider.h"
 #include "../../../Characters/Birds/Bird.h"
 #include "../../../Characters/PlayerCharacter.h"
@@ -8,7 +5,6 @@
 #include "EngineUtils.h"
 #include "../../../UI/Widget/HintsWidget.h"
 
-// Sets default values
 ATutorialCollider::ATutorialCollider()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -60,16 +56,5 @@ void ATutorialCollider::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 	if (IsValid(BasePlayerController))
 	{
 		BasePlayerController->UpdateHintsWidget(TutorialText, false);
-	}
-
-	for (TActorIterator<ABird> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-	{
-		Bird = *ActorItr;
-		break;
-	}
-
-	if (IsValid(Bird))
-	{
-		Bird->SetNewPoint(ColliderIndex + 1);
 	}
 }

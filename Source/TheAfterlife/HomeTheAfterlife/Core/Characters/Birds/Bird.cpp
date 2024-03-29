@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Bird.h"
 #include "Components/AudioComponent.h"
 #include "AIController.h"
@@ -36,21 +33,6 @@ void ABird::InitializeSpline()
 }
 
 
-void ABird::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	Fly(DeltaTime);
-}
-
-void ABird::SetNewPoint(int32 Index)
-{
-	if (Index > CurrentIndex)
-	{
-		CurrentIndex = Index;
-	}
-}
-
 void ABird::Speak(USoundBase* SoundBase)
 {
 	BirdAudioComponent->SetSound(SoundBase);
@@ -60,13 +42,33 @@ void ABird::Speak(USoundBase* SoundBase)
 	}
 }
 
+void ABird::ActionDuringSpeech()
+{
+	SetNewPoint();
+}
+
+void ABird::SetNewPoint()
+{
+	if (CurrentIndex < (RouteArray.Num() - 1))
+	{
+		CurrentIndex = CurrentIndex + 1;
+	}
+}
+
+void ABird::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	Fly(DeltaTime);
+}
+
 void ABird::Fly(float DeltaTime)
 {
 	if (!SplineComponent || !RouteArray.IsValidIndex(CurrentIndex))
 	{
 		return;
 	}
-	
+
 	if (DistanceAlongSpline >= StopDistances[CurrentIndex])
 	{
 		return;
@@ -79,5 +81,4 @@ void ABird::Fly(float DeltaTime)
 	CurrentSplineRotation = CurrentSplineRotation - FRotator(0.f, 90.0f, 0.f);
 
 	BirdMesh->SetWorldLocationAndRotation(CurrentSplineLocation, CurrentSplineRotation);
-
 }

@@ -5,11 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Components/SplineComponent.h"
-#include "..\..\Actors\Interfaces\ISpeak.h"
+#include "../../Actors/Dialogs/DialoguePoint.h"
+#include "../../Actors/Interfaces/ISpeak.h"
+#include "../../Actors/Interfaces/ActionDuringSpeech.h"
 #include "Bird.generated.h"
 
+
 UCLASS()
-class THEAFTERLIFE_API ABird : public APawn, public ISpeak
+class THEAFTERLIFE_API ABird : public APawn, public ISpeak, public IActionDuringSpeech
 {
 	GENERATED_BODY()
 
@@ -18,14 +21,19 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	void SetNewPoint(int32 Index);
+	void SetNewPoint();
 
 	virtual void Speak(USoundBase* SoundBase) override;
+
+	virtual void ActionDuringSpeech() override;
 
 protected:
 
 	virtual void BeginPlay() override;
 
+
+	UPROPERTY(EditAnywhere, meta = (MakeEditWidget))
+	TArray<ADialoguePoint*> DialoguePointArray;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
 	USplineComponent* SplineComponent;
