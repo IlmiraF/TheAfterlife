@@ -32,7 +32,6 @@ void ABird::InitializeSpline()
 	}
 }
 
-
 void ABird::Speak(USoundBase* SoundBase)
 {
 	BirdAudioComponent->SetSound(SoundBase);
