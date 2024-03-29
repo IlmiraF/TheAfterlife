@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "..\..\..\Core\AI\Characters\BaseAICharacter.h"
 #include "EnemyPoolObject.generated.h"
 
 
@@ -45,7 +44,7 @@ private:
 
 	FVector CalculatingSpawnPoint();
 
-	TQueue<ABaseAICharacter*> FreeEnemys;
+	TQueue<class ABaseAICharacter*> FreeEnemys;
 
 	FDelegateHandle OnCharacterDeathHandle;
 

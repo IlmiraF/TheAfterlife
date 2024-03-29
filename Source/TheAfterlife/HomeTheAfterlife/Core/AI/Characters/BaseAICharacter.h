@@ -1,8 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "..\..\Characters\BaseCharacter.h"
-#include "..\..\Components\CharacterComponents/AIPatrollingComponent.h"
+#include "../../Characters/BaseCharacter.h"
+#include "../../Components/CharacterComponents/AIPatrollingComponent.h"
 #include "BaseAICharacter.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCharacterDeath, ABaseAICharacter*);

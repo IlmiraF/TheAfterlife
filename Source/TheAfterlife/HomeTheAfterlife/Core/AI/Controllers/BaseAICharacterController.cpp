@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Perception/AISense_Sight.h"
-#include "../Characters\BaseAICharacter.h"
+#include "../Characters/BaseAICharacter.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "TheAfterlife\TheAfterlifeTypes.h"
+#include "TheAfterlife/TheAfterlifeTypes.h"
 #include "BaseAICharacterController.h"
 
 void ABaseAICharacterController::SetPawn(APawn* InPawn)

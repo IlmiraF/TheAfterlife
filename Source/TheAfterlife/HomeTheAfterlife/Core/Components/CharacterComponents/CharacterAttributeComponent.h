@@ -34,6 +34,8 @@ public:
 
 	void StealHealth(float HealthStealingRatio);
 
+	void RestoreHealth();
+
 protected:
 
 	virtual void BeginPlay() override;

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "TheAfterlife/HomeTheAfterlife/Core/Actors/Navigation/PatrollingPath.h"
 #include "AIPatrollingComponent.generated.h"
 
 
@@ -23,7 +22,7 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path")
-	APatrollingPath* PatrollingPath;
+	class APatrollingPath* PatrollingPath;
 
 private:
 

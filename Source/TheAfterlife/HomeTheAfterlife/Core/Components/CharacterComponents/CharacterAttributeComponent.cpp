@@ -30,6 +30,11 @@ void UCharacterAttributeComponent::StealHealth(float HealthStealingRatio)
 	OnHealthStealing();
 }
 
+void UCharacterAttributeComponent::RestoreHealth()
+{
+	Health = MaxHealth;
+}
+
 void UCharacterAttributeComponent::OnLevelDeserialized_Implementation()
 {
 	OnHealthChanged();

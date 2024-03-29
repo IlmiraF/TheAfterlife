@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "..\..\Components\CharacterComponents\CharacterAttributeComponent.h"
-#include "..\..\Components\MovementComponents\BaseCharacterMovementComponent.h"
 #include "BaseAICharacter.h"
+#include "../../Components/CharacterComponents/CharacterAttributeComponent.h"
+#include "../../Components/MovementComponents/BaseCharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 
 

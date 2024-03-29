@@ -38,19 +38,6 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComp"));
 	CharacterEquipmentComponent = CreateDefaultSubobject<UCharacterEquipmentComponent>(TEXT("Character Equipment Component"));
 
-	LeftMeleeHitRegistrator = CreateDefaultSubobject<UMeleeHitRegistrator>(TEXT("LeftMeleeHitRegistrator"));
-	RightMeleeHitRegistrator = CreateDefaultSubobject<UMeleeHitRegistrator>(TEXT("RightMeleeHitRegistrator"));
-
-	LeftMeleeHitRegistrator->SetupAttachment(GetRootComponent());
-	LeftMeleeHitRegistrator->SetHiddenInGame(false);
-	LeftMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
-	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
-
-	RightMeleeHitRegistrator->SetupAttachment(GetRootComponent());
-	RightMeleeHitRegistrator->SetHiddenInGame(false);
-	RightMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
-	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
-
 	PunchAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PunchAudioComponent"));
 	PunchAudioComponent->SetupAttachment(GetRootComponent());
 }
@@ -479,34 +466,14 @@ void ABaseCharacter::EnableRagdoll()
 	GetMesh()->SetSimulatePhysics(true);
 }
 
-void ABaseCharacter::MeleeAttackStart()
-{
-	LeftMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfileEnabled);
-	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(true);
-
-	RightMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfileEnabled);
-	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(true);
-}
-
-void ABaseCharacter::MeleeAttackFinish()
-{
-	LeftMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
-	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
-
-	RightMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
-	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
-}
-
 void ABaseCharacter::HandsMeleeAttack()
 {
 	AMeleeWeaponItem* CurrentMeleeWeaponItem = CharacterEquipmentComponent->GetCurrentMeleeWeaponItem();
 	if (IsValid(CurrentMeleeWeaponItem))
-	{	
+	{
 		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 
-		LeftMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "hand_left_collision");
-		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "hand_right_collision");
-
+		CurrentMeleeWeaponItem->SetCharacter(this);
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::HANDS);
 
 		PlayAudio(PunchAudioComponent);
@@ -517,12 +484,10 @@ void ABaseCharacter::LegsMeleeAttack()
 {
 	AMeleeWeaponItem* CurrentMeleeWeaponItem = CharacterEquipmentComponent->GetCurrentMeleeWeaponItem();
 	if (IsValid(CurrentMeleeWeaponItem))
-	{	
+	{
 		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 
-		LeftMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "foot_left_collision");
-		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "foot_right_collision");
-
+		CurrentMeleeWeaponItem->SetCharacter(this);
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::LEGS);
 
 		PlayAudio(PunchAudioComponent);

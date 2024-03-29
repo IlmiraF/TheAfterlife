@@ -1,5 +1,5 @@
 #include "AIPatrollingComponent.h"
-
+#include "../../Actors/Navigation/PatrollingPath.h"
 
 bool UAIPatrollingComponent::CanPatrol() const
 {	

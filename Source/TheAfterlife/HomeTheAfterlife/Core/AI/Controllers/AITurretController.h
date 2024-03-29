@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "BaseAIController.h"
-#include "../../AI/Characters/Turret.h"
 #include "AITurretController.generated.h"
 
 
@@ -21,6 +20,6 @@ public:
 
 private:
 
-	TWeakObjectPtr<ATurret> CachedTurret;
+	TWeakObjectPtr<class ATurret> CachedTurret;
 	
 };
