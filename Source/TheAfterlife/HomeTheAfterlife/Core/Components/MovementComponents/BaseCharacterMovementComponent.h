@@ -83,7 +83,8 @@ public:
 	void StopWalkingOnBeam();
 	float GetOnBeamDirection() const;
 	void SetBalancingDirection(float Direction);
-	
+	FVector GetWalkableDirection();
+
 protected:
 
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
@@ -186,6 +187,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Movement: Balancing")
 	float MaxBalancingValue = 45.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Movement: Balancing")
+	FVector CharacterHeight = FVector(0.0f, 0.0f, 90.0f);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Movement: Balancing")
+	FVector DownTraceDistance = FVector(0.0f, 0.0f, -150.0f);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Movement: Balancing")
+	float ForwardTraceDistance = 70.0f;
+
 private:
 	FMantlingMovementParameters CurrentMantlingParameters;
 
@@ -235,8 +245,10 @@ private:
 
 	//Beam
 
+	void CharacterToBeamProjection();
 	float BalancingDirection;
 	float OnBeamDirection = 0.0f;
+	FVector WalkDirection = FVector::ZeroVector;
 
 	FTimerHandle FallingTimer;
 	void BackToLastSave();

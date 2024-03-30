@@ -5,6 +5,7 @@
 #include "../../Characters/BaseCharacter.h"
 #include "Curves/CurveVector.h"
 #include "../../Actors/Interactive/Environment/Ladder.h"
+#include "../../Actors/Interactive/Environment/Beam.h"
 #include "../../Actors/ParkourLedge.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "../../Utils/TheAfterlife_TraceUtils.h"
@@ -285,6 +286,11 @@ void UBaseCharacterMovementComponent::SetBalancingDirection(float Direction)
 	BalancingDirection = Direction;
 }
 
+FVector UBaseCharacterMovementComponent::GetWalkableDirection()
+{
+	return WalkDirection;
+}
+
 void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
@@ -346,6 +352,7 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 		case (uint8)ECustomMovementMode::CMOVE_OnBeam:
 		{
 			bOrientRotationToMovement = false;
+			CharacterToBeamProjection();
 			break;
 		}
 		default:
@@ -590,7 +597,6 @@ void UBaseCharacterMovementComponent::PhysClimb(float DeltaTime, int32 Iteration
 void UBaseCharacterMovementComponent::PhysBeam(float DeltaTime, int32 Iterations)
 {
 	CalcVelocity(DeltaTime, 1.0f, false, BrakingDecelerationWalking);
-	FVector Delta = Velocity * DeltaTime;
 
 	OnBeamDirection += DeltaTime * 10.0f * BalancingDirection;
 
@@ -602,8 +608,33 @@ void UBaseCharacterMovementComponent::PhysBeam(float DeltaTime, int32 Iterations
 		SetMovementMode(MOVE_Falling);
 	}
 
+	ABaseCharacter* Character = GetBaseCharacterOwner();
+	FRotator ControlRotation = Character->GetControlRotation();
+	FRotator NewRotator = FRotator(0.0f, ControlRotation.Yaw, 0.0f);
+	FVector RotationVector = UKismetMathLibrary::GetForwardVector(NewRotator) * ForwardTraceDistance + Character->GetActorLocation();
 	FHitResult Hit;
-	SafeMoveUpdatedComponent(Delta, UpdatedComponent->GetComponentRotation(), false, Hit);
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(GetOwner());
+	GetWorld()->LineTraceSingleByChannel(Hit, RotationVector + CharacterHeight, RotationVector + DownTraceDistance, ECC_Visibility, Params);
+	//DrawDebugLine(GetWorld(), Hit.TraceStart, Hit.TraceEnd, FColor::Cyan);
+	if (Hit.bBlockingHit)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, TEXT("TraceResult"));
+		FVector PlayerLocation = FVector(Character->GetActorLocation().X, Character->GetActorLocation().Y, 0.0f);
+		FVector TargetLocation = FVector(Hit.Location.X, Hit.Location.Y, 0.0f);
+		float Direction = (TargetLocation - PlayerLocation).X > 0.0f ? 1.0f : -1.0f;
+		FVector WorldDirection = UKismetMathLibrary::GetDirectionUnitVector(PlayerLocation, TargetLocation);
+		WalkDirection = WorldDirection;
+		FRotator WorldRotation = UKismetMathLibrary::FindLookAtRotation(PlayerLocation, TargetLocation);
+		FRotator NewRotation = FRotator(0.0f, WorldRotation.Yaw, 0.0f);
+
+		FHitResult HHit;
+		SafeMoveUpdatedComponent(Direction * WalkDirection * Velocity * DeltaTime, NewRotation, false, HHit);
+	}
+	else 
+	{
+		WalkDirection = FVector::ZeroVector;
+	}
 }
 
 ABaseCharacter* UBaseCharacterMovementComponent::GetBaseCharacterOwner() const
@@ -645,14 +676,6 @@ void UBaseCharacterMovementComponent::OnClimbMontageEnded(UAnimMontage* Montage,
 	{
 		bIsHopping = false;
 	}
-
-	/*if (Montage == HopUpMontage)
-	{
-		if (CheckHasReachedLedge())
-		{
-			GetBaseCharacterOwner()->Mantle(true);
-		}
-	}*/
 }
 
 FHitResult UBaseCharacterMovementComponent::GetClimbableSurfaces()
@@ -746,12 +769,11 @@ bool UBaseCharacterMovementComponent::TryWallRun()
 {
 	if (!IsFalling()) return false;
 	if (Velocity.SizeSquared2D() < pow(MinWallRunSpeed, 2)) return false;
-	if (Velocity.Z < -MaxVerticalWallRunSpeed) return false; //If player fall very quickly, he can not enter the wall run
+	if (Velocity.Z < -MaxVerticalWallRunSpeed) return false;
 
 	FHitResult FloorHit;
-	//Player height check
 	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(GetBaseCharacterOwner());
+	Params.AddIgnoredActor(GetOwner());
 	if (GetWorld()->LineTraceSingleByChannel(FloorHit,
 		UpdatedComponent->GetComponentLocation(),
 		UpdatedComponent->GetComponentLocation() + FVector::DownVector * (CharacterOwner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + MinWallRunHeight),
@@ -761,7 +783,6 @@ bool UBaseCharacterMovementComponent::TryWallRun()
 		return false;
 	}
 
-	//Side casts . Velocity | WallHit.Normal must be less than 90 degrees to be able to enter wall run
 	FHitResult WallHit;
 	IsWallOnSideTrace(WallHit, false);
 	if (WallHit.IsValidBlockingHit())
@@ -1021,6 +1042,16 @@ void UBaseCharacterMovementComponent::SetMotionWarpTarget(const FName& InWarpTar
 	GetBaseCharacterOwner()->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocation(
 		InWarpTargetName,
 		InTargetPosition);
+}
+
+void UBaseCharacterMovementComponent::CharacterToBeamProjection()
+{
+	ABaseCharacter* Character = GetBaseCharacterOwner();
+	const ABeam* Beam = Character->GetAvailableBeam();
+	FVector BeamForwardVector = Beam->GetActorForwardVector();
+	FVector BeamToCharacterDistance = Character->GetActorLocation() - Beam->GetActorLocation();
+	float ActorToBeamProjection = FMath::Abs(FVector::DotProduct(BeamForwardVector, BeamToCharacterDistance));
+	Character->SetActorLocation(Character->GetActorLocation() + Beam->GetActorForwardVector() * ActorToBeamProjection);
 }
 
 void UBaseCharacterMovementComponent::BackToLastSave()
