@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,10 +6,8 @@
 #include "Engine/DataTable.h"
 #include "AIController.h"
 #include "../../../TheAfterlifeTypes.h"
-#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h"
-#include "UObject/ScriptInterface.h"
+//#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h""
 #include "BaseCharacter.generated.h"
-
 
 USTRUCT(BlueprintType)
 struct FPlayerAttackMontage : public FTableRowBase
@@ -61,35 +57,28 @@ struct FMantlingSettings
 class UBaseCharacterMovementComponent;
 class UCharacterAttributeComponent;
 class AInteractiveActor;
-class UMeleeCombatComponent;
 class UCharacterEquipmentComponent;
 class UMotionWarpingComponent;
-class IInteractable;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
-DECLARE_DELEGATE_TwoParams(FOnInteractableObjectFound, bool, FName)
-DECLARE_DELEGATE(FOnFallingDelegate)
-DECLARE_DELEGATE_TwoParams(FOnTutorialColliderOverlapped, FString, bool)
 
 UCLASS()
-class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface, public ISaveSubsystemInterface
+class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface//, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 
-	virtual void OnLevelDeserialized_Implementation() override;
+	//virtual void OnLevelDeserialized_Implementation() override;
 
 	virtual void PossessedBy(AController* NewController) override;
 
-	virtual void Tick(float DeltaTime) override;
-
-	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
-	FORCEINLINE UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
-	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
+	UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
+	UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
+	UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
 
 	virtual void MoveForward(float value) {};
 	virtual void MoveRight(float value) {};
@@ -139,9 +128,6 @@ public:
 	void StartAiming();
 	void StopAiming();
 
-	void StartFire();
-	void StopFire();
-
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Character")
 	void OnStartAiming();
 
@@ -157,6 +143,9 @@ public:
 
 	void EquipPrimaryItem();
 
+	void MeleeAttackStart();
+	void MeleeAttackFinish();
+
 	void HandsMeleeAttack();
 	void LegsMeleeAttack();
 
@@ -167,13 +156,7 @@ public:
 
 	virtual FGenericTeamId GetGenericTeamId() const override;
 
-	void Interact();
-
-	FOnInteractableObjectFound OnInteractableObjectFound;
-
-	FOnFallingDelegate OnFalling;
-
-	FOnTutorialColliderOverlapped OnTutorialColliderOverlapped;
+	bool IsFalling() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -221,8 +204,11 @@ protected:
 
 	virtual void OnStopAimingIternal();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Audio")
-	class USoundBase* PunchSoundBase;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
+	class UMeleeHitRegistrator* LeftMeleeHitRegistrator;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
+	class UMeleeHitRegistrator* RightMeleeHitRegistrator;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
 	class UDataTable* PlayerAttackDataTable;
@@ -235,32 +221,27 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Team")
 	ETeams Team = ETeams::ENEMY;
 
-	void EnableRagdoll();
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement")
+	float MinFallingDistance = -100.0f;
 
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
-	float LineOfSightDistance = 500.0f;
-
-	void TraceLineOfSight();
-
-	UPROPERTY()
-	TScriptInterface<IInteractable> LineOfSightObject;
+	void PlaySound(USoundBase* SoundBase);
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
 
 	TInteractiveActorsArray AvailableInteractiveActors;
 
+	void EnableRagdoll();
 	FVector CurrentFallApex;
 
-	UAudioComponent* PunchAudioComponent;
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UAudioComponent* CharacterAudioComponent;
 
 	FPlayerAttackMontage* AttackMontage;
 
 	bool IsAnimationBlended;
 
-	void PlayAudio(UAudioComponent* AudioComponent);
-
 	bool bIsAiming;
+
 	float CurrentAimingMovementSpeed;
 };

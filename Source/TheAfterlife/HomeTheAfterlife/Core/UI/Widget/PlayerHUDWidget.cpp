@@ -5,8 +5,6 @@
 #include "AmmoWidget.h"
 #include "HintsWidget.h"
 #include "Blueprint/WidgetTree.h"
-#include "HighlightInteractable.h"
-#include "HealthStealingWidget.h"
 
 UAmmoWidget* UPlayerHUDWidget::GetWidgetAmmo()
 {	
@@ -23,34 +21,15 @@ UHintsWidget* UPlayerHUDWidget::GetHintsWidget()
 	return WidgetTree->FindWidget<UHintsWidget>(HintsWidgetName);
 }
 
-void UPlayerHUDWidget::SetHighlightInteractableVisibility(bool bIsVisible, FName KeyName)
+UDialogueWidget* UPlayerHUDWidget::GetDialogueWidget()
 {
-    if (!IsValid(InteractableKey))
-    {
-        return;
-    }
-
-    if (bIsVisible)
-    {
-        InteractableKey->SetVisibility(ESlateVisibility::Visible);
-        InteractableKey->SetActionText(KeyName);
-    }
-    else
-    {
-        InteractableKey->SetVisibility(ESlateVisibility::Hidden);
-    }
-}
-
-UHealthStealingWidget* UPlayerHUDWidget::GetHealthStealingWidget()
-{
-    return WidgetTree->FindWidget<UHealthStealingWidget>(HealthStealingWidgetName);
+    return WidgetTree->FindWidget<UDialogueWidget>(DialogueWidgetName);
 }
 
 int UPlayerHUDWidget::GetBombAmmo() const
 {	
 	return AmmoUI;
 }
-
 
 float UPlayerHUDWidget::GetHealthPercent() const
 {	
@@ -102,6 +81,3 @@ float UPlayerHUDWidget::GetRightBalancePercent() const
     }
     return (Result / 45.0f);
 }
-
-
-

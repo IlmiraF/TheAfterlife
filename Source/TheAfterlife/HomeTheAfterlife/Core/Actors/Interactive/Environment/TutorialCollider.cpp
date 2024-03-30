@@ -1,11 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "TutorialCollider.h"
-#include "Components/BoxComponent.h"
-#include "../../../Characters/BaseCharacter.h"
+#include "../../../Characters/Birds/Bird.h"
+#include "../../../Characters/PlayerCharacter.h"
+#include "../../../Characters/Controllers/BasePlayerController.h"
+#include "EngineUtils.h"
+#include "../../../UI/Widget/HintsWidget.h"
 
-// Sets default values
 ATutorialCollider::ATutorialCollider()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -23,12 +22,18 @@ void ATutorialCollider::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 		return;
 	}
 
-	ABaseCharacter* PlayerCharacter = Cast<ABaseCharacter>(OtherActor);
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
 
-	if (IsValid(PlayerCharacter))
+	if (!IsValid(PlayerCharacter))
 	{
-		OnReachedTarget();
-		PlayerCharacter->OnTutorialColliderOverlapped.ExecuteIfBound(TutorialText, true);
+		return;
+	}
+
+	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(PlayerCharacter->GetController());
+
+	if (IsValid(BasePlayerController))
+	{
+		BasePlayerController->UpdateHintsWidget(TutorialText, true);
 	}
 }
 
@@ -39,18 +44,17 @@ void ATutorialCollider::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 		return;
 	}
 
-	ABaseCharacter* PlayerCharacter = Cast<ABaseCharacter>(OtherActor);
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
 
-	if (IsValid(PlayerCharacter))
+	if (!IsValid(PlayerCharacter))
 	{
-		PlayerCharacter->OnTutorialColliderOverlapped.ExecuteIfBound("", false);
+		return;
 	}
-}
 
-void ATutorialCollider::OnReachedTarget()
-{
-	if (OnReachedTargetEvent.IsBound())
+	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(PlayerCharacter->GetController());
+
+	if (IsValid(BasePlayerController))
 	{
-		OnReachedTargetEvent.Broadcast();
+		BasePlayerController->UpdateHintsWidget(TutorialText, false);
 	}
 }

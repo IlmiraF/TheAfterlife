@@ -22,7 +22,6 @@
 #include "../Actors/Equipment/Weapons/RangeWeaponItem.h"
 #include "../Actors/Equipment/Throwables/ThrowableItem.h"
 #include "AIController.h"
-#include "../Actors/Interactive/Interactive.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -38,13 +37,26 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComp"));
 	CharacterEquipmentComponent = CreateDefaultSubobject<UCharacterEquipmentComponent>(TEXT("Character Equipment Component"));
 
-	PunchAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PunchAudioComponent"));
-	PunchAudioComponent->SetupAttachment(GetRootComponent());
+	LeftMeleeHitRegistrator = CreateDefaultSubobject<UMeleeHitRegistrator>(TEXT("LeftMeleeHitRegistrator"));
+	RightMeleeHitRegistrator = CreateDefaultSubobject<UMeleeHitRegistrator>(TEXT("RightMeleeHitRegistrator"));
+
+	LeftMeleeHitRegistrator->SetupAttachment(GetRootComponent());
+	LeftMeleeHitRegistrator->SetHiddenInGame(false);
+	LeftMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
+	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
+
+	RightMeleeHitRegistrator->SetupAttachment(GetRootComponent());
+	RightMeleeHitRegistrator->SetHiddenInGame(false);
+	RightMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
+	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
+
+	CharacterAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	CharacterAudioComponent->SetupAttachment(GetRootComponent());
 }
 
-void ABaseCharacter::OnLevelDeserialized_Implementation()
-{
-}
+//void ABaseCharacter::OnLevelDeserialized_Implementation()
+//{
+//}
 
 void ABaseCharacter::PossessedBy(AController* NewController)
 {
@@ -57,12 +69,6 @@ void ABaseCharacter::PossessedBy(AController* NewController)
 		FGenericTeamId TeamId((uint8)Team);
 		AIController->SetGenericTeamId(TeamId);
 	}
-}
-
-void ABaseCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	TraceLineOfSight();
 }
 
 void ABaseCharacter::Jump()
@@ -291,28 +297,6 @@ void ABaseCharacter::Fire()
 	}
 }
 
-void ABaseCharacter::StartFire()
-{
-	if (CharacterEquipmentComponent->IsEquipping())
-	{
-		return;
-	}
-	ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentRangeWeapon();
-	if (IsValid(CurrentRangeWeapon))
-	{
-		CurrentRangeWeapon->StartFire();
-	}
-}
-
-void ABaseCharacter::StopFire()
-{
-	ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentRangeWeapon();
-	if (IsValid(CurrentRangeWeapon))
-	{
-		CurrentRangeWeapon->StopFire();
-	}
-}
-
 void ABaseCharacter::Reload() const
 {
 	if (IsValid(CharacterEquipmentComponent->GetCurrentRangeWeapon()))
@@ -388,7 +372,6 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	CharacterAttributesComponent->OnDeathEvent.AddUObject(this, &ABaseCharacter::OnDeath);
-	PunchAudioComponent->SetSound(PunchSoundBase);
 }
 
 bool ABaseCharacter::CanMantle() const
@@ -398,7 +381,12 @@ bool ABaseCharacter::CanMantle() const
 
 void ABaseCharacter::OnDeath()
 {
-	
+	GetCharacterMovement()->DisableMovement();
+	float Duration = PlayAnimMontage(OnDeathAnimMontage);
+	if (Duration == 0.0f)
+	{
+		EnableRagdoll();
+	}
 }
 
 void ABaseCharacter::OnStartAimingIternal()
@@ -414,45 +402,9 @@ void ABaseCharacter::EquipPrimaryItem()
 	CharacterEquipmentComponent->EquipItemInSlot(EEquipmentSlots::PRIMARY_ITEM_SLOT);
 }
 
-void ABaseCharacter::Interact()
+bool ABaseCharacter::IsFalling() const
 {
-	if (LineOfSightObject.GetInterface())
-	{
-		LineOfSightObject->Interact(this);
-	}
-}
-
-void ABaseCharacter::TraceLineOfSight()
-{
-	if (!IsPlayerControlled())
-	{
-		return;
-	}
-
-	FVector ViewLocation;
-	FRotator ViewRotation;
-
-	APlayerController* PlayerController = GetController<APlayerController>();
-	PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
-
-	FVector ViewDirection = ViewRotation.Vector();
-	FVector	TraceEnd = ViewLocation + ViewDirection * LineOfSightDistance;
-
-	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_PickableItem);
-	if (LineOfSightObject.GetObject() != HitResult.GetActor())
-	{
-		LineOfSightObject = HitResult.GetActor();
-
-		if (LineOfSightObject.GetInterface())
-		{
-			OnInteractableObjectFound.ExecuteIfBound(true, "Interact");
-		}
-		else
-		{
-			OnInteractableObjectFound.ExecuteIfBound(false, NAME_None);
-		}
-	}
+	return GetActorLocation().Z <= MinFallingDistance;
 }
 
 const FMantlingSettings& ABaseCharacter::GetMantlingSettings(float LedgeHeight) const
@@ -466,17 +418,35 @@ void ABaseCharacter::EnableRagdoll()
 	GetMesh()->SetSimulatePhysics(true);
 }
 
+void ABaseCharacter::MeleeAttackStart()
+{
+	LeftMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfileEnabled);
+	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(true);
+
+	RightMeleeHitRegistrator->SetCollisionProfileName(MeleeCollisionProfileEnabled);
+	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(true);
+}
+
+void ABaseCharacter::MeleeAttackFinish()
+{
+	LeftMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
+	LeftMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
+
+	RightMeleeHitRegistrator->SetCollisionProfileName(NoCollisionProfile);
+	RightMeleeHitRegistrator->SetNotifyRigidBodyCollision(false);
+}
+
 void ABaseCharacter::HandsMeleeAttack()
 {
 	AMeleeWeaponItem* CurrentMeleeWeaponItem = CharacterEquipmentComponent->GetCurrentMeleeWeaponItem();
 	if (IsValid(CurrentMeleeWeaponItem))
-	{
+	{	
 		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 
-		CurrentMeleeWeaponItem->SetCharacter(this);
-		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::HANDS);
+		LeftMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "hand_left_collision");
+		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "hand_right_collision");
 
-		PlayAudio(PunchAudioComponent);
+		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::HANDS);
 	}
 }
 
@@ -484,13 +454,13 @@ void ABaseCharacter::LegsMeleeAttack()
 {
 	AMeleeWeaponItem* CurrentMeleeWeaponItem = CharacterEquipmentComponent->GetCurrentMeleeWeaponItem();
 	if (IsValid(CurrentMeleeWeaponItem))
-	{
+	{	
 		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 
-		CurrentMeleeWeaponItem->SetCharacter(this);
-		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::LEGS);
+		LeftMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "foot_left_collision");
+		RightMeleeHitRegistrator->AttachToComponent(GetMesh(), AttachmentRules, "foot_right_collision");
 
-		PlayAudio(PunchAudioComponent);
+		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::LEGS);
 	}
 }
 
@@ -509,11 +479,12 @@ void ABaseCharacter::ThrowBomb()
 	}
 }
 
-void ABaseCharacter::PlayAudio(UAudioComponent* AudioComponent)
-{
-	if (AudioComponent && !AudioComponent->IsPlaying())
+void ABaseCharacter::PlaySound(USoundBase* SoundBase)
+{	
+	CharacterAudioComponent->SetSound(SoundBase);
+	if (CharacterAudioComponent && !CharacterAudioComponent->IsPlaying())
 	{
-		AudioComponent->Play(0.f);
+		CharacterAudioComponent->Play(0.f);
 	}
 }
 

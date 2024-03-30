@@ -4,12 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "..\..\UI\Widget\DialogueWidget.h"
 #include "PlayerHUDWidget.generated.h"
 
 class UAmmoWidget;
 class UHintsWidget;
-class UHighlightInteractable;
-class UHealthStealingWidget;
 UCLASS()
 class THEAFTERLIFE_API UPlayerHUDWidget : public UUserWidget
 {
@@ -24,9 +23,7 @@ public :
 
 	UHintsWidget* GetHintsWidget();
 
-	void SetHighlightInteractableVisibility(bool bIsVisible, FName KeyName);
-
-	UHealthStealingWidget* GetHealthStealingWidget();
+	UDialogueWidget* GetDialogueWidget();
 
 protected:
 
@@ -49,10 +46,7 @@ protected:
 	FName HintsWidgetName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
-	FName HealthStealingWidgetName;
-
-	UPROPERTY(meta = (BindWidget))
-	UHighlightInteractable* InteractableKey;
+	FName DialogueWidgetName;
 
 private: 
 
