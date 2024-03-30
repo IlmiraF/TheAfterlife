@@ -4,7 +4,10 @@
 #include "../../Components/CharacterComponents/CharacterAttributeComponent.h"
 #include "AmmoWidget.h"
 #include "HintsWidget.h"
+#include "DialogueWidget.h"
 #include "Blueprint/WidgetTree.h"
+#include "HighlightInteractable.h"
+#include "HealthStealingWidget.h"
 
 UAmmoWidget* UPlayerHUDWidget::GetWidgetAmmo()
 {	
@@ -24,6 +27,29 @@ UHintsWidget* UPlayerHUDWidget::GetHintsWidget()
 UDialogueWidget* UPlayerHUDWidget::GetDialogueWidget()
 {
     return WidgetTree->FindWidget<UDialogueWidget>(DialogueWidgetName);
+}
+
+void UPlayerHUDWidget::SetHighlightInteractableVisibility(bool bIsVisible, FName KeyName)
+{
+    if (!IsValid(InteractableKey))
+    {
+        return;
+    }
+
+    if (bIsVisible)
+    {
+        InteractableKey->SetVisibility(ESlateVisibility::Visible);
+        InteractableKey->SetActionText(KeyName);
+    }
+    else
+    {
+        InteractableKey->SetVisibility(ESlateVisibility::Hidden);
+    }
+}
+
+UHealthStealingWidget* UPlayerHUDWidget::GetHealthStealingWidget()
+{
+    return WidgetTree->FindWidget<UHealthStealingWidget>(HealthStealingWidgetName);
 }
 
 int UPlayerHUDWidget::GetBombAmmo() const

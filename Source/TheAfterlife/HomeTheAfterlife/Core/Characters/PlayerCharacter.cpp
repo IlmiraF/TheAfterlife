@@ -68,8 +68,9 @@ void APlayerCharacter::Jump()
 		if (JumpCount == 2)
 		{
 			PlayAnimMontage(DoubleJumpMontage);
-			FVector JumpForce = GetVelocity();
-			LaunchCharacter(JumpForce, false, true);
+			FVector PlayerForwardVector = GetActorForwardVector();
+			FVector JumpVector = FVector(PlayerForwardVector.X * XYJumpForce, PlayerForwardVector.Y * XYJumpForce, ZJumpForce);
+			LaunchCharacter(JumpVector, true, true);
 			JumpCount++;
 		}
 	}
@@ -116,9 +117,10 @@ void APlayerCharacter::OnBeamMoveForward(float value)
 {
 	if (GetBaseCharacterMovementComponent()->IsOnBeam() && !FMath::IsNearlyZero(value, 1e-6f))
 	{
-		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
-		FVector ForwardVector = YawRotator.RotateVector(FVector::ForwardVector);
-		AddMovementInput(ForwardVector, value);
+		if (GetBaseCharacterMovementComponent()->GetWalkableDirection() != FVector::ZeroVector)
+		{
+			AddMovementInput(GetBaseCharacterMovementComponent()->GetWalkableDirection(), value);
+		}
 	}
 }
 
@@ -128,6 +130,20 @@ void APlayerCharacter::OnBeamMoveRight(float value)
 	{
 		GetBaseCharacterMovementComponent()->SetBalancingDirection(value);
 	}
+}
+
+void APlayerCharacter::OnDeath()
+{
+	Super::OnDeath();
+
+	GetCharacterMovement()->DisableMovement();
+	float Duration = PlayAnimMontage(OnDeathAnimMontage);
+	if (Duration == 0.0f)
+	{
+		EnableRagdoll();
+		GetMesh()->Stop();
+	}
+
 }
 
 void APlayerCharacter::Speak(USoundBase* SoundBase)

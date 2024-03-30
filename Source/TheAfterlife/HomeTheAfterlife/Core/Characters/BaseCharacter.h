@@ -6,7 +6,7 @@
 #include "Engine/DataTable.h"
 #include "AIController.h"
 #include "../../../TheAfterlifeTypes.h"
-//#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h""
+#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h""
 #include "BaseCharacter.generated.h"
 
 USTRUCT(BlueprintType)
@@ -59,22 +59,27 @@ class UCharacterAttributeComponent;
 class AInteractiveActor;
 class UCharacterEquipmentComponent;
 class UMotionWarpingComponent;
+class IInteractable;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
+DECLARE_DELEGATE_TwoParams(FOnInteractableObjectFound, bool, FName)
+DECLARE_DELEGATE(FOnFallingDelegate)
 
 UCLASS()
-class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface//, public ISaveSubsystemInterface
+class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 
-	//virtual void OnLevelDeserialized_Implementation() override;
+	virtual void OnLevelDeserialized_Implementation() override;
 
 	virtual void PossessedBy(AController* NewController) override;
+
+	virtual void Tick(float DeltaTime) override;
 
 	UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
 	UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
@@ -143,9 +148,6 @@ public:
 
 	void EquipPrimaryItem();
 
-	void MeleeAttackStart();
-	void MeleeAttackFinish();
-
 	void HandsMeleeAttack();
 	void LegsMeleeAttack();
 
@@ -156,7 +158,11 @@ public:
 
 	virtual FGenericTeamId GetGenericTeamId() const override;
 
-	bool IsFalling() const;
+	void Interact();
+
+	FOnInteractableObjectFound OnInteractableObjectFound;
+
+	FOnFallingDelegate OnFalling;
 
 protected:
 	virtual void BeginPlay() override;
@@ -204,11 +210,8 @@ protected:
 
 	virtual void OnStopAimingIternal();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
-	class UMeleeHitRegistrator* LeftMeleeHitRegistrator;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Melee|Collisions")
-	class UMeleeHitRegistrator* RightMeleeHitRegistrator;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Audio")
+	class USoundBase* PunchSoundBase;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Animations")
 	class UDataTable* PlayerAttackDataTable;
@@ -221,17 +224,23 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Team")
 	ETeams Team = ETeams::ENEMY;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Movement")
-	float MinFallingDistance = -100.0f;
+	void EnableRagdoll();
 
 	void PlaySound(USoundBase* SoundBase);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
+	float LineOfSightDistance = 500.0f;
+
+	void TraceLineOfSight();
+
+	UPROPERTY()
+	TScriptInterface<IInteractable> LineOfSightObject;
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
 
 	TInteractiveActorsArray AvailableInteractiveActors;
 
-	void EnableRagdoll();
 	FVector CurrentFallApex;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")

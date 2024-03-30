@@ -29,8 +29,6 @@ protected:
 
 	virtual void SetupInputComponent() override;
 
-	virtual void Tick(float DeltaTime) override;
-
 	void MoveForward(float value);
 	void MoveRight(float value);
 	void Turn(float value);
@@ -75,11 +73,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
 	TSubclassOf<class UPlayerHUDWidget> PlayerHUDWidgetClass;
 
+	void Interact();
+
 private:
 
 	void CreateAndInitializeWidgets();
 
 	class UPlayerHUDWidget* PlayerHUDWidget = nullptr;
+
+	void OnInteractableObjectFound(bool bIsVisible, FName KeyName);
 
 	bool bIgnoreCameraPitch = false;
 

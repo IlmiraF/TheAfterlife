@@ -9,6 +9,7 @@
 #include "../../UI/Widget/HintsWidget.h"
 #include "../../UI/Widget/AmmoWidget.h"
 #include "../../UI/Widget/HealthStealingWidget.h"
+#include "../../UI/Widget/DialogueWidget.h"
 #include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "../../Components/CharacterComponents/CharacterAttributeComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -23,7 +24,6 @@ void ABasePlayerController::SetPawn(APawn* InPawn)
 		CreateAndInitializeWidgets();
 		CachedBaseCharacter->OnInteractableObjectFound.BindUObject(this, &ABasePlayerController::OnInteractableObjectFound);
 		CachedBaseCharacter->OnFalling.BindUObject(this, &ABasePlayerController::QuickLoadGame);
-		CachedBaseCharacter->OnTutorialColliderOverlapped.BindUObject(this, &ABasePlayerController::UpdateHintsWidget);
 	}
 }
 

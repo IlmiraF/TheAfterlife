@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
-#include "..\..\Core\Actors\Interfaces\ISpeak.h"
+#include "../Actors/Interfaces/ISpeak.h"
 #include "PlayerCharacter.generated.h"
 
 /**
@@ -36,6 +36,8 @@ public:
 
 	virtual void Speak(USoundBase* SoundBase) override;
 
+	virtual void OnDeath() override;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Camera")
@@ -46,6 +48,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character|Jump")
 	class UAnimMontage* DoubleJumpMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Jumping")
+	float XYJumpForce = 200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Jumping")
+	float ZJumpForce = 500.0f;
 
 	virtual void OnStartAimingIternal() override;
 	virtual void OnStopAimingIternal() override;
