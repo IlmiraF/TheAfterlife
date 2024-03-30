@@ -6,7 +6,7 @@
 #include "Engine/DataTable.h"
 #include "AIController.h"
 #include "../../../TheAfterlifeTypes.h"
-#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h""
+//#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h""
 #include "BaseCharacter.generated.h"
 
 USTRUCT(BlueprintType)
@@ -68,14 +68,14 @@ DECLARE_DELEGATE_TwoParams(FOnInteractableObjectFound, bool, FName)
 DECLARE_DELEGATE(FOnFallingDelegate)
 
 UCLASS()
-class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface, public ISaveSubsystemInterface
+class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface//, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 
-	virtual void OnLevelDeserialized_Implementation() override;
+	//virtual void OnLevelDeserialized_Implementation() override;
 
 	virtual void PossessedBy(AController* NewController) override;
 
@@ -129,6 +129,11 @@ public:
 	void Fire();
 
 	void Reload() const;
+
+	void StartFire();
+
+	void StopFire();
+
 
 	void StartAiming();
 	void StopAiming();

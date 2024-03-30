@@ -42,9 +42,9 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	CharacterAudioComponent->SetupAttachment(GetRootComponent());
 }
 
-void ABaseCharacter::OnLevelDeserialized_Implementation()
-{
-}
+//void ABaseCharacter::OnLevelDeserialized_Implementation()
+//{
+//}
 
 void ABaseCharacter::PossessedBy(AController* NewController)
 {
@@ -288,6 +288,28 @@ void ABaseCharacter::Fire()
 	if (IsValid(CurrentRangeWeapon))
 	{
 		CurrentRangeWeapon->StartFire();
+	}
+}
+
+void ABaseCharacter::StartFire()
+{
+	if (CharacterEquipmentComponent->IsEquipping())
+	{
+		return;
+	}
+	ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentRangeWeapon();
+	if (IsValid(CurrentRangeWeapon))
+	{
+		CurrentRangeWeapon->StartFire();
+	}
+}
+
+void ABaseCharacter::StopFire()
+{
+	ARangeWeaponItem* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentRangeWeapon();
+	if (IsValid(CurrentRangeWeapon))
+	{
+		CurrentRangeWeapon->StopFire();
 	}
 }
 
