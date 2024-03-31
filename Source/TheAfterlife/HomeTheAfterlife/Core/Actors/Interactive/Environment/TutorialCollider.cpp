@@ -33,7 +33,7 @@ void ATutorialCollider::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 
 	if (IsValid(BasePlayerController))
 	{
-		BasePlayerController->UpdateHintsWidget(TutorialText, true);
+		BasePlayerController->UpdateHintsWidget(TutorialImage, true);
 	}
 }
 
@@ -55,6 +55,6 @@ void ATutorialCollider::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 
 	if (IsValid(BasePlayerController))
 	{
-		BasePlayerController->UpdateHintsWidget(TutorialText, false);
+		BasePlayerController->UpdateHintsWidget(nullptr, false);
 	}
 }

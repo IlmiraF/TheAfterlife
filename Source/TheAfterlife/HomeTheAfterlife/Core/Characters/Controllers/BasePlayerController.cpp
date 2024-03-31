@@ -330,14 +330,14 @@ void ABasePlayerController::OnInteractableObjectFound(bool bIsVisible, FName Key
 	PlayerHUDWidget->SetHighlightInteractableVisibility(bIsVisible, KeyName);
 }
 
-void ABasePlayerController::UpdateHintsWidget(FString TutorialText, bool Visibility)
+void ABasePlayerController::UpdateHintsWidget(UTexture2D* NewHintlImage, bool Visibility)
 {	
 	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
 	{	
 		UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
 		if (IsValid(HintsWidget))
 		{	
-			HintsWidget->UpdateHint(TutorialText);
+			HintsWidget->UpdateHint(NewHintlImage);
 			HintsWidget->UpdateVisible(Visibility);
 		}
 	}

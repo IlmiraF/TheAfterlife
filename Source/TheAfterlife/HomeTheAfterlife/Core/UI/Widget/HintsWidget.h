@@ -20,13 +20,13 @@ class THEAFTERLIFE_API UHintsWidget : public UUserWidget
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hints")
-	FString Hint;
+	UTexture2D* HintImage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hints")
 	bool bIsVisible;
 
 	UFUNCTION()
-	void UpdateHint(FString newHint);
+	void UpdateHint(UTexture2D* NewHintlImage);
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateVisible(bool Visible);

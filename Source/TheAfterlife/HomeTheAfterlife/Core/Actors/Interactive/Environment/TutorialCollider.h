@@ -20,7 +20,7 @@ public:
 	UBoxComponent* Collider;
 
 	UPROPERTY(EditAnywhere)
-	FString TutorialText;
+	UTexture2D* TutorialImage;
 
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

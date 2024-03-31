@@ -3,9 +3,9 @@
 
 #include "HintsWidget.h"
 
-void UHintsWidget::UpdateHint(FString newHint)
+void UHintsWidget::UpdateHint(UTexture2D* NewHintlImage)
 {
-	Hint = newHint;
+	HintImage = NewHintlImage;
 }
 
 void UHintsWidget::UpdateVisible(bool Visible)

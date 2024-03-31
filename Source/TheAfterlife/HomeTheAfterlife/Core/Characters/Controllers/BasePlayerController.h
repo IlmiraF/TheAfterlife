@@ -21,7 +21,7 @@ public:
 
 	virtual void SetPawn(APawn* InPawn) override;
 
-	void UpdateHintsWidget(FString TutorialText, bool Visibility);
+	void UpdateHintsWidget(UTexture2D* NewHintlImage, bool Visibility);
 
 	void UpdateDialogueWidget(FString SpeachText, bool Visibility);
 
