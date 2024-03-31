@@ -21,6 +21,7 @@ public:
 	APowerup();
 
 	virtual void Interact(ABaseCharacter* ConsumeTarget) override;
+	virtual bool IsForce() override;
 
 protected:
 

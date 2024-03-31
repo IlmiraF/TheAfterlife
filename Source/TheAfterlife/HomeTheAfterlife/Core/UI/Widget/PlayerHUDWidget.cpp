@@ -8,6 +8,7 @@
 #include "Blueprint/WidgetTree.h"
 #include "HighlightInteractable.h"
 #include "HealthStealingWidget.h"
+#include "TextableWidget.h"
 
 UAmmoWidget* UPlayerHUDWidget::GetWidgetAmmo()
 {	
@@ -50,6 +51,11 @@ void UPlayerHUDWidget::SetHighlightInteractableVisibility(bool bIsVisible, FName
 UHealthStealingWidget* UPlayerHUDWidget::GetHealthStealingWidget()
 {
     return WidgetTree->FindWidget<UHealthStealingWidget>(HealthStealingWidgetName);
+}
+
+UTextableWidget* UPlayerHUDWidget::GetTextableWidget(FName WidgetName)
+{
+    return WidgetTree->FindWidget<UTextableWidget>(WidgetName);
 }
 
 int UPlayerHUDWidget::GetBombAmmo() const

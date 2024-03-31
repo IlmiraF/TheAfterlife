@@ -26,4 +26,5 @@ public:
 	DECLARE_MULTICAST_DELEGATE(FOnInteraction);
 
 	virtual void Interact(ABaseCharacter* Character) PURE_VIRTUAL(IInteractable::Interact, );
+	virtual bool IsForce() PURE_VIRTUAL(IInteractable::IsForce, return false;);
 };

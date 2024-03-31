@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "TextableWidget.h"
 #include "DialogueWidget.generated.h"
 
 /**
@@ -14,23 +15,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueVisible, bool, IsVisible)
 
 
 UCLASS()
-class THEAFTERLIFE_API UDialogueWidget : public UUserWidget
+class THEAFTERLIFE_API UDialogueWidget : public UTextableWidget
 {
 	GENERATED_BODY()
 
 public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hints")
-	FString Speach;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hints")
-	bool bIsVisible;
-
-	UFUNCTION()
-	void UpdateDialogue(FString newSpeach);
-
-	UFUNCTION(BlueprintCallable)
-	void UpdateVisible(bool Visible);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnDialogueVisible OnVisible;

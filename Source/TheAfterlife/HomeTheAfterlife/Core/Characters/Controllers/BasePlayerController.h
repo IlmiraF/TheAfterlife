@@ -21,10 +21,6 @@ public:
 
 	virtual void SetPawn(APawn* InPawn) override;
 
-	void UpdateHintsWidget(FString TutorialText, bool Visibility);
-
-	void UpdateDialogueWidget(FString SpeachText, bool Visibility);
-
 protected:
 
 	virtual void SetupInputComponent() override;
@@ -83,7 +79,8 @@ private:
 
 	void OnInteractableObjectFound(bool bIsVisible, FName KeyName);
 
+	void WidgetUpdate(FName WidgetName, FString Text, bool Visible);
+
 	bool bIgnoreCameraPitch = false;
 
-	//void ToggleMainMenu();
 };

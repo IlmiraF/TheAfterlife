@@ -30,3 +30,8 @@ void APowerup::Interact(ABaseCharacter* ConsumeTarget)
 	CharacterAttributes->AddHealth(HealthToAdd);
 	this->ConditionalBeginDestroy();
 }
+
+bool APowerup::IsForce()
+{
+	return false;
+}

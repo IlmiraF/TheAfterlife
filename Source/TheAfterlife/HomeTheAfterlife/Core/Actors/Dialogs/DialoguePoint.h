@@ -2,9 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/BoxComponent.h"
-#include "../../Characters/PlayerCharacter.h"
-#include "../../Characters/Controllers/BasePlayerController.h"
 #include "DialoguePoint.generated.h"
 
 USTRUCT(BlueprintType)
@@ -28,6 +25,8 @@ struct FSpeechSettings
 	bool ActionAtEndPhrase;
 };
 
+class APlayerCharacter;
+class UBoxComponent;
 UCLASS()
 class THEAFTERLIFE_API ADialoguePoint : public AActor
 {
@@ -35,6 +34,8 @@ class THEAFTERLIFE_API ADialoguePoint : public AActor
 	
 public:	
 	ADialoguePoint();
+
+protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* Collider;
@@ -48,6 +49,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bCanMovePlayer;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName WidgetName = "WBP_DialogueWidget";
+
 private:
 
 	FTimerHandle SpeechTimerHandle;
@@ -59,14 +63,10 @@ private:
 
 	void NextSpeech();
 
-	APlayerCharacter* CachedPlayerCharacter;
-
-	ABasePlayerController* CachedPlayerController;
+	TWeakObjectPtr<APlayerCharacter> CachedPlayerCharacter;
+	TWeakObjectPtr<AActor> CurrentSpeaker;
 
 	bool bItSounded = false;
 
 	void StartAction();
-
-	AActor* CurrentSpeaker;
-
 };

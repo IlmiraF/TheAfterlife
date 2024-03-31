@@ -11,6 +11,7 @@ class UHintsWidget;
 class UDialogueWidget;
 class UHighlightInteractable;
 class UHealthStealingWidget;
+class UTextableWidget;
 UCLASS()
 class THEAFTERLIFE_API UPlayerHUDWidget : public UUserWidget
 {
@@ -30,6 +31,8 @@ public :
 	void SetHighlightInteractableVisibility(bool bIsVisible, FName KeyName);
 
 	UHealthStealingWidget* GetHealthStealingWidget();
+
+	UTextableWidget* GetTextableWidget(FName WidgetName);
 
 protected:
 

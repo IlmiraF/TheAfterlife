@@ -1,7 +1,8 @@
 #include "DialoguePoint.h"
 #include "../../Actors/Interfaces/ISpeak.h"
 #include "../../Actors/Interfaces/ActionDuringSpeech.h"
-#include "../../Characters/BaseCharacter.h"
+#include "Components/BoxComponent.h"
+#include "../../Characters/PlayerCharacter.h"
 
 
 ADialoguePoint::ADialoguePoint()
@@ -24,9 +25,8 @@ void ADialoguePoint::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 	}
 
 	CachedPlayerCharacter = Cast<APlayerCharacter>(OtherActor);
-	CachedPlayerController = Cast<ABasePlayerController>(CachedPlayerCharacter->GetController());
 
-	if (IsValid(CachedPlayerCharacter) && SpeechArray.Num() > 0)
+	if (CachedPlayerCharacter.IsValid() && SpeechArray.Num() > 0)
 	{
 		CachedPlayerCharacter->SetCanMove(bCanMovePlayer);
 		StartSpeech(CurrentSpeechIndex);
@@ -43,7 +43,7 @@ void ADialoguePoint::StartSpeech(int32 SpeechIndex)
 
 	FSpeechSettings& Speech = SpeechArray[SpeechIndex];
 
-	if (Speech.CurrentSpeakerNotPlayer == nullptr)
+	if (!IsValid(Speech.CurrentSpeakerNotPlayer))
 	{
 		CurrentSpeaker = CachedPlayerCharacter;
 	}
@@ -58,10 +58,8 @@ void ADialoguePoint::StartSpeech(int32 SpeechIndex)
 
 		Speak->Speak(SpeechArray[SpeechIndex].SoundBase);
 
-		if (IsValid(CachedPlayerController))
-		{
-			CachedPlayerController->UpdateDialogueWidget(SpeechArray[SpeechIndex].SubtitlesText, true);
-		}
+
+		CachedPlayerCharacter->WidgetUpdateEvent.Broadcast(WidgetName, SpeechArray[SpeechIndex].SubtitlesText, true);
 
 		if (Speech.ActionAtBeginningPhrase)
 		{
@@ -86,14 +84,10 @@ void ADialoguePoint::NextSpeech()
 	}
 	else
 	{
-		if (IsValid(CachedPlayerCharacter))
+		if (CachedPlayerCharacter.IsValid())
 		{
 			CachedPlayerCharacter->SetCanMove(true);
-		}
-
-		if (IsValid(CachedPlayerController))
-		{
-			CachedPlayerController->UpdateDialogueWidget("", false);
+			CachedPlayerCharacter->WidgetUpdateEvent.Broadcast(WidgetName, "", false);
 		}
 	}
 }

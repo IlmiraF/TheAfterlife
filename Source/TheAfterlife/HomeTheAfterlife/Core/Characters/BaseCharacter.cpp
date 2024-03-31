@@ -508,14 +508,22 @@ void ABaseCharacter::TraceLineOfSight()
 	FVector	TraceEnd = ViewLocation + ViewDirection * LineOfSightDistance;
 
 	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_PickableItem);
+	GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_Interactive);
+	DrawDebugLine(GetWorld(), HitResult.TraceStart, HitResult.TraceEnd, FColor::Green);
 	if (LineOfSightObject.GetObject() != HitResult.GetActor())
 	{
 		LineOfSightObject = HitResult.GetActor();
 
 		if (LineOfSightObject.GetInterface())
 		{
-			OnInteractableObjectFound.ExecuteIfBound(true, "Interact");
+			if (LineOfSightObject.GetInterface()->IsForce())
+			{
+				LineOfSightObject->Interact(this);
+			}
+			else
+			{
+				OnInteractableObjectFound.ExecuteIfBound(true, "Interact");
+			}
 		}
 		else
 		{

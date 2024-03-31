@@ -14,6 +14,7 @@
 #include "../../Components/CharacterComponents/CharacterAttributeComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "../../Subsystems/SaveSubsystem/SaveSubsystem.h"
+#include "../../UI/Widget/TextableWidget.h"
 
 void ABasePlayerController::SetPawn(APawn* InPawn)
 {
@@ -24,6 +25,7 @@ void ABasePlayerController::SetPawn(APawn* InPawn)
 		CreateAndInitializeWidgets();
 		CachedBaseCharacter->OnInteractableObjectFound.BindUObject(this, &ABasePlayerController::OnInteractableObjectFound);
 		CachedBaseCharacter->OnFalling.BindUObject(this, &ABasePlayerController::QuickLoadGame);
+		CachedBaseCharacter->WidgetUpdateEvent.AddUObject(this, &ABasePlayerController::WidgetUpdate);
 	}
 }
 
@@ -305,7 +307,7 @@ void ABasePlayerController::CreateAndInitializeWidgets()
 		UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
 		if (IsValid(HintsWidget))
 		{
-			HintsWidget->UpdateVisible(false);
+			HintsWidget->UpdateWidget("", false);
 		}
 
 		UAmmoWidget* AmmoWidget = PlayerHUDWidget->GetWidgetAmmo();
@@ -330,28 +332,14 @@ void ABasePlayerController::OnInteractableObjectFound(bool bIsVisible, FName Key
 	PlayerHUDWidget->SetHighlightInteractableVisibility(bIsVisible, KeyName);
 }
 
-void ABasePlayerController::UpdateHintsWidget(FString TutorialText, bool Visibility)
-{	
-	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
-	{	
-		UHintsWidget* HintsWidget = PlayerHUDWidget->GetHintsWidget();
-		if (IsValid(HintsWidget))
-		{	
-			HintsWidget->UpdateHint(TutorialText);
-			HintsWidget->UpdateVisible(Visibility);
-		}
-	}
-}
-
-void ABasePlayerController::UpdateDialogueWidget(FString SpeachText, bool Visibility)
+void ABasePlayerController::WidgetUpdate(FName WidgetName, FString Text, bool Visible)
 {
 	if (IsValid(PlayerHUDWidget) && CachedBaseCharacter.IsValid())
 	{
-		UDialogueWidget* DialogueWidget = PlayerHUDWidget->GetDialogueWidget();
-		if (IsValid(DialogueWidget))
+		UTextableWidget* Widget = PlayerHUDWidget->GetTextableWidget(WidgetName);
+		if (IsValid(Widget))
 		{
-			DialogueWidget->UpdateDialogue(SpeachText);
-			DialogueWidget->UpdateVisible(Visibility);
+			Widget->UpdateWidget(Text, Visible);
 		}
 	}
 }

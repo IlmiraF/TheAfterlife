@@ -65,6 +65,7 @@ typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
 DECLARE_DELEGATE_TwoParams(FOnInteractableObjectFound, bool, FName)
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnWidgetUpdate, FName, FString, bool)
 DECLARE_DELEGATE(FOnFallingDelegate)
 
 UCLASS()
@@ -168,6 +169,8 @@ public:
 	FOnInteractableObjectFound OnInteractableObjectFound;
 
 	FOnFallingDelegate OnFalling;
+
+	FOnWidgetUpdate WidgetUpdateEvent;
 
 protected:
 	virtual void BeginPlay() override;
