@@ -148,7 +148,10 @@ void APlayerCharacter::OnDeath()
 
 void APlayerCharacter::Speak(USoundBase* SoundBase)
 {
-	PlaySound(SoundBase);
+	if (IsValid(SoundBase))
+	{
+		PlaySound(SoundBase);
+	}
 }
 
 void APlayerCharacter::OnStartAimingIternal()

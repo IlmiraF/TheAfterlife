@@ -20,7 +20,18 @@ class THEAFTERLIFE_API UHintsWidget : public UTextableWidget
 
 public:
 
+	virtual void UpdateWidget(FString Text, bool Visible) override;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnHintsVisible OnVisible;
-	
+
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Timer = 5.0f;
+
+private:
+
+	FTimerHandle VisibilityTimer;
+	void DisableHint();
 };

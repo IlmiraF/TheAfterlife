@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Interactive/Interactive.h"
 #include "DialoguePoint.generated.h"
 
 USTRUCT(BlueprintType)
@@ -25,23 +26,23 @@ struct FSpeechSettings
 	bool ActionAtEndPhrase;
 };
 
-class APlayerCharacter;
 class UBoxComponent;
+class ABaseCharacter;
 UCLASS()
-class THEAFTERLIFE_API ADialoguePoint : public AActor
+class THEAFTERLIFE_API ADialoguePoint : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 	
 public:	
 	ADialoguePoint();
 
+	virtual void Interact(ABaseCharacter* Character) override;
+	virtual bool IsForce() override;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* Collider;
-
-	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FSpeechSettings> SpeechArray;
@@ -51,6 +52,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName WidgetName = "WBP_DialogueWidget";
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bIsForce = true;
 
 private:
 
@@ -63,8 +67,8 @@ private:
 
 	void NextSpeech();
 
-	TWeakObjectPtr<APlayerCharacter> CachedPlayerCharacter;
-	TWeakObjectPtr<AActor> CurrentSpeaker;
+	TWeakObjectPtr<ABaseCharacter> CachedPlayerCharacter;
+	AActor* CurrentSpeaker;
 
 	bool bItSounded = false;
 

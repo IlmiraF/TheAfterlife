@@ -2,7 +2,7 @@
 #include "../../Actors/Interfaces/ISpeak.h"
 #include "../../Actors/Interfaces/ActionDuringSpeech.h"
 #include "Components/BoxComponent.h"
-#include "../../Characters/PlayerCharacter.h"
+#include "../../Characters/BaseCharacter.h"
 
 
 ADialoguePoint::ADialoguePoint()
@@ -12,26 +12,29 @@ ADialoguePoint::ADialoguePoint()
 	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
 	RootComponent = Collider;
 
-	Collider->OnComponentBeginOverlap.AddDynamic(this, &ADialoguePoint::OnOverlapBegin);
-
 	CurrentSpeechIndex = 0;
 }
 
-void ADialoguePoint::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ADialoguePoint::Interact(ABaseCharacter* Character)
 {
 	if (bItSounded)
 	{
 		return;
 	}
 
-	CachedPlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+	CachedPlayerCharacter = Character;
 
-	if (CachedPlayerCharacter.IsValid() && SpeechArray.Num() > 0)
+	if (CachedPlayerCharacter.IsValid() && (SpeechArray.Num() > 0))
 	{
 		CachedPlayerCharacter->SetCanMove(bCanMovePlayer);
 		StartSpeech(CurrentSpeechIndex);
 		bItSounded = true;
 	}
+}
+
+bool ADialoguePoint::IsForce()
+{
+	return bIsForce;
 }
 
 void ADialoguePoint::StartSpeech(int32 SpeechIndex)
@@ -45,7 +48,7 @@ void ADialoguePoint::StartSpeech(int32 SpeechIndex)
 
 	if (!IsValid(Speech.CurrentSpeakerNotPlayer))
 	{
-		CurrentSpeaker = CachedPlayerCharacter;
+		CurrentSpeaker = CachedPlayerCharacter.Get();
 	}
 	else
 	{
@@ -55,6 +58,11 @@ void ADialoguePoint::StartSpeech(int32 SpeechIndex)
 	if (CurrentSpeaker->Implements<USpeak>())
 	{
 		ISpeak* Speak = Cast<ISpeak>(CurrentSpeaker);
+
+		if (!SpeechArray[SpeechIndex].SoundBase)
+		{
+			return;
+		}
 
 		Speak->Speak(SpeechArray[SpeechIndex].SoundBase);
 

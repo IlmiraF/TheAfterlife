@@ -17,7 +17,7 @@ class THEAFTERLIFE_API UTextableWidget : public UUserWidget
 public:
 
 	UFUNCTION()
-	void UpdateWidget(FString Text, bool Visible);
+	virtual void UpdateWidget(FString Text, bool Visible);
 
 protected:
 

@@ -514,9 +514,11 @@ void ABaseCharacter::TraceLineOfSight()
 	{
 		LineOfSightObject = HitResult.GetActor();
 
-		if (LineOfSightObject.GetInterface())
+		IInteractable* InteractiveObject = LineOfSightObject.GetInterface();
+
+		if (InteractiveObject)
 		{
-			if (LineOfSightObject.GetInterface()->IsForce())
+			if (InteractiveObject->IsForce())
 			{
 				LineOfSightObject->Interact(this);
 			}
