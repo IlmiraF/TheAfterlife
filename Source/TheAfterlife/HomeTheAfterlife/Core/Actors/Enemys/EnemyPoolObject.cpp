@@ -1,5 +1,5 @@
-#include "BrainComponent.h"
 #include "EnemyPoolObject.h"
+#include "BrainComponent.h"
 #include "../../AI/Characters/BaseAICharacter.h"
 #include "../../AI/Controllers/BaseAICharacterController.h"
 

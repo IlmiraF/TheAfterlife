@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "BTTask_CheckDistance.h"
 #include "BehaviorTree\BlackboardComponent.h"
 #include "../../Characters\BaseCharacter.h"
-#include "BTTask_CheckDistance.h"
 
 UBTTask_CheckDistance::UBTTask_CheckDistance()
 {

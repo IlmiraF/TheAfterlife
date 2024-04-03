@@ -1,6 +1,5 @@
-
-#include "../../../../TheAfterlifeTypes.h"
 #include "MovingSplineActor.h"
+#include "../../../../TheAfterlifeTypes.h"
 
 AMovingSplineActor::AMovingSplineActor()
 {

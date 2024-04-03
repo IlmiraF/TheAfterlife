@@ -6,9 +6,8 @@
 #include "UObject/Interface.h"
 #include "ISpeak.generated.h"
 
-// This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class USpeak : public UInterface
+class UISpeakable : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,12 +15,11 @@ class USpeak : public UInterface
 /**
  * 
  */
-class THEAFTERLIFE_API ISpeak
+class THEAFTERLIFE_API IISpeakable
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual void Speak(USoundBase* SoundBase) {};
+	virtual void Speak(USoundBase* SoundBase) PURE_VIRTUAL(IISpeakable::Speak, );
 };

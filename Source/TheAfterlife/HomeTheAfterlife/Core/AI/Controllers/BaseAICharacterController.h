@@ -5,7 +5,7 @@
 #include "BaseAIController.h"
 #include "BaseAICharacterController.generated.h"
 
-
+class ABaseAICharacter;
 UCLASS()
 class THEAFTERLIFE_API ABaseAICharacterController : public ABaseAIController
 {

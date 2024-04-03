@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class THEAFTERLIFE_API APlayerCharacter : public ABaseCharacter, public ISpeak
+class THEAFTERLIFE_API APlayerCharacter : public ABaseCharacter, public IISpeakable
 {
 	GENERATED_BODY()
 

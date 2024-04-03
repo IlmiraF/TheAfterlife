@@ -55,9 +55,9 @@ void ADialoguePoint::StartSpeech(int32 SpeechIndex)
 		CurrentSpeaker = Speech.CurrentSpeakerNotPlayer;
 	}
 
-	if (CurrentSpeaker->Implements<USpeak>())
+	if (CurrentSpeaker->Implements<UISpeakable>())
 	{
-		ISpeak* Speak = Cast<ISpeak>(CurrentSpeaker);
+		IISpeakable* Speak = Cast<IISpeakable>(CurrentSpeaker);
 
 		if (!SpeechArray[SpeechIndex].SoundBase)
 		{

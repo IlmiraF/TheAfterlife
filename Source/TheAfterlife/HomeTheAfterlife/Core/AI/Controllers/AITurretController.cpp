@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "AITurretController.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISense_Sight.h"
-#include "AITurretController.h"
 #include "../../AI/Characters/Turret.h"
 
 void AAITurretController::SetPawn(APawn* InPawn)

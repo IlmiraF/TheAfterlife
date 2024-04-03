@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/BoxComponent.h"
+#include "../Interactive/Interactive.h"
 #include "Door.generated.h"
 
+class UBoxComponent;
+class ABaseCharacter;
 UCLASS()
-class THEAFTERLIFE_API ADoor : public AActor
+class THEAFTERLIFE_API ADoor : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 	
@@ -21,8 +23,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	UBoxComponent* TriggerComponent;
 
-	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void Interact(ABaseCharacter* Character) override;
+	virtual bool IsForce() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* LeftDoor;
@@ -39,6 +41,9 @@ public:
 private:
 
 	void OpenDoors(float DeltaTime);
+
+	UPROPERTY(EditAnywhere)
+	bool bIsForce = true;
 
 	bool bIsDoorOpened = false;
 

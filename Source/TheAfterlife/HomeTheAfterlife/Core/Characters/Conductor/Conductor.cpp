@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Components/AudioComponent.h"
 #include "Conductor.h"
+#include "Components/AudioComponent.h"
 
 AConductor::AConductor()
 {
@@ -27,6 +27,10 @@ void AConductor::StopSpeaking()
 {
 	ConductorAudioComponent->Stop();
 	CurrentSpeechIndex = 999;
+}
+
+void AConductor::Speak(USoundBase* SoundBase)
+{
 }
 
 void AConductor::Speak()

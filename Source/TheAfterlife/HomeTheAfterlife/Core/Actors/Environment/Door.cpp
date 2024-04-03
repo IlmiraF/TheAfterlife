@@ -1,19 +1,17 @@
-#include "../../../../TheAfterlifeTypes.h"
-#include "Components/BoxComponent.h"
 #include "Door.h"
+#include "../../../../TheAfterlifeTypes.h"
+#include "../../Characters/BaseCharacter.h"
+#include "Components/BoxComponent.h"
 
 ADoor::ADoor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	TriggerComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerComponent"));
-	TriggerComponent->SetupAttachment(GetRootComponent());
-	
-	TriggerComponent->SetCollisionProfileName(CollisionProfilePawnInteractionVolume);
-	TriggerComponent->SetGenerateOverlapEvents(true);
-	
-	TriggerComponent->OnComponentBeginOverlap.AddDynamic(this, &ADoor::OnOverlapBegin);
+	SetActorTickEnabled(false);
 
+	TriggerComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerComponent"));
+	RootComponent = TriggerComponent;	
+	TriggerComponent->SetCollisionProfileName(CollisionProfilePawnInteractionVolume);
 
 	LeftDoor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftDoor"));
 	LeftDoor->SetupAttachment(GetRootComponent());
@@ -22,11 +20,17 @@ ADoor::ADoor()
 	RightDoor->SetupAttachment(GetRootComponent());
 }
 
-void ADoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ADoor::Interact(ABaseCharacter* Character)
 {
+	SetActorTickEnabled(true);
+
 	bStartOpen = true;
 }
 
+bool ADoor::IsForce()
+{
+	return bIsForce;
+}
 
 void ADoor::Tick(float DeltaTime)
 {

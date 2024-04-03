@@ -9,7 +9,7 @@
 
 
 UCLASS()
-class THEAFTERLIFE_API AConductor : public APawn
+class THEAFTERLIFE_API AConductor : public APawn, public IISpeakable
 {
 	GENERATED_BODY()
 
@@ -19,6 +19,8 @@ public:
 	void StartSpeaking();
 
 	void StopSpeaking();
+
+	virtual void Speak(USoundBase* SoundBase) override;
 
 private:
 
@@ -44,6 +46,4 @@ private:
 	int32 CurrentSpeechIndex;
 
 	void Speak();
-
-
 };

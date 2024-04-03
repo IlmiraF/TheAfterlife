@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "BTTask_CheckPlayerIsAlive.h"
 #include "AIController.h"
 #include "BehaviorTree\BlackboardComponent.h"
 #include "../../Characters\BaseCharacter.h"
 #include "../../Components\CharacterComponents\CharacterAttributeComponent.h"
-#include "BTTask_CheckPlayerIsAlive.h"
 
 UBTTask_CheckPlayerIsAlive::UBTTask_CheckPlayerIsAlive()
 {

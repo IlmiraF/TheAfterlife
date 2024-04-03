@@ -2,5 +2,3 @@
 
 
 #include "ISpeak.h"
-
-// Add default functionality here for any IISpeak functions that are not pure virtual.

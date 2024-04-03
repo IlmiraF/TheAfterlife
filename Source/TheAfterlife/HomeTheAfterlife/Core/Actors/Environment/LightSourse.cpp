@@ -1,8 +1,6 @@
-
+#include "LightSourse.h"
 #include "Components/PointLightComponent.h"
 #include "NiagaraComponent.h"
-#include "LightSourse.h"
-
 
 ALightSourse::ALightSourse()
 {
@@ -18,6 +16,12 @@ ALightSourse::ALightSourse()
 	PointLight->SetupAttachment(LightSourse);
 
 	TargetIntensity = PointLight->Intensity;
+}
+
+void ALightSourse::LightActivate()
+{
+	PointLight->SetIntensity(TargetIntensity);
+	StylizedFire->Activate();
 }
 
 void ALightSourse::BeginPlay()

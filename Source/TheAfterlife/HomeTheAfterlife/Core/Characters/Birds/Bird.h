@@ -12,7 +12,7 @@
 
 
 UCLASS()
-class THEAFTERLIFE_API ABird : public APawn, public ISpeak, public IActionDuringSpeech
+class THEAFTERLIFE_API ABird : public APawn, public IISpeakable, public IActionDuringSpeech
 {
 	GENERATED_BODY()
 

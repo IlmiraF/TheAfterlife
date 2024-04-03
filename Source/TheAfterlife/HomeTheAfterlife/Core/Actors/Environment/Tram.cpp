@@ -1,10 +1,8 @@
-
-#include "../../../../TheAfterlifeTypes.h"
 #include "Tram.h"
+#include "../../../../TheAfterlifeTypes.h"
 #include "../../Characters/BaseCharacter.h"
 #include "../../Components/MovementComponents/BaseCharacterMovementComponent.h"
 #include "../../Characters/PlayerCharacter.h"
-#include "../../Characters/Controllers/BasePlayerController.h"
 
 ATram::ATram()
 {
