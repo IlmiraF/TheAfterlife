@@ -25,6 +25,11 @@ void ADoor::Interact(ABaseCharacter* Character)
 	SetActorTickEnabled(true);
 
 	bStartOpen = true;
+
+	if (OnDoorsOpening.IsBound())
+	{
+		OnDoorsOpening.Broadcast();
+	}
 }
 
 bool ADoor::IsForce()
@@ -65,6 +70,3 @@ void ADoor::OpenDoors(float DeltaTime)
 		SetActorTickEnabled(false);
 	}
 }
-
-
-

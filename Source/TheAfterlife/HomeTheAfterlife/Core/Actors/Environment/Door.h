@@ -7,6 +7,8 @@
 #include "../Interactive/Interactive.h"
 #include "Door.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnDoorsOpening);
+
 class UBoxComponent;
 class ABaseCharacter;
 UCLASS()
@@ -37,6 +39,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Doors")
 	float OpenAngle = 120.0f;
+
+	FOnDoorsOpening OnDoorsOpening;
 
 private:
 
