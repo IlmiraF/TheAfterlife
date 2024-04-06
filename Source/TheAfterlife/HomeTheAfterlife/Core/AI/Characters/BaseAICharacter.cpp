@@ -46,24 +46,13 @@ void ABaseAICharacter::DisableCharacter()
 		SetActorEnableCollision(false);
 		SetActorTickEnabled(false);
 	}
-
-	//GetMesh()->SetVisibility(false);
-	//SetActorEnableCollision(false);
-	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//SetActorTickEnabled(false);
-	//SetActorHiddenInGame(true);
-
 }
 
 void ABaseAICharacter::Revival()
 {
 	CharacterAttributesComponent->RestoreHealth();
-	//SetActorHiddenInGame(false);
 
 	GetCharacterMovement()->SetMovementMode(MOVE_NavWalking);
-	//GetMesh()->SetVisibility(true);
-	//SetActorEnableCollision(true);
-	//SetActorTickEnabled(true);
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
