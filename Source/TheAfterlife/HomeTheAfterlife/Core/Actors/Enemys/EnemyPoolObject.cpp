@@ -101,15 +101,10 @@ FVector AEnemyPoolObject::CalculatingSpawnPoint()
 
 void AEnemyPoolObject::MakeEnemisVisible()
 {	
-	int32 VisibleEnemiesCount = 0;
-
 	while (!FreeEnemys.IsEmpty())
 	{
 		GetFreeEnemy();
-		VisibleEnemiesCount++;
 	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("GOIDA %d"), VisibleEnemiesCount));
 }
 
 void AEnemyPoolObject::ReturnEnemy(ABaseAICharacter* Enemy)

@@ -160,6 +160,7 @@ public:
 
 	void HandsMeleeAttack();
 	void LegsMeleeAttack();
+	void SwordMeleeAttack();
 
 	void ThrowBomb();
 

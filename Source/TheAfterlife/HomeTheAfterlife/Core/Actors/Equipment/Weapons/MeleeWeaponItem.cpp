@@ -18,6 +18,7 @@ void AMeleeWeaponItem::StartAttack(EMeleeAttackTypes AttackType)
 
 	HitActors.Empty();
 	CurrentAttack = Attacks.Find(AttackType);
+	
 
 	if (CurrentAttack && IsValid(CurrentAttack->AttackMontage))
 	{	
@@ -45,6 +46,7 @@ void AMeleeWeaponItem::StartAttack(EMeleeAttackTypes AttackType)
 
 			float Duration = CharacterAnimInstance->Montage_Play(CurrentAttack->AttackMontage, 1.0f, EMontagePlayReturnType::Duration);
 			CharacterAnimInstance->Montage_JumpToSection(RandomElement, CurrentAttack->AttackMontage);
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::White, TEXT("GOIDA"));
 			bIsAttacking = true;
 			GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AMeleeWeaponItem::OnAttackTimerElapsed, Duration, false);
 		}
@@ -88,22 +90,29 @@ void AMeleeWeaponItem::BeginPlay()
 }
 
 void AMeleeWeaponItem::ProcessHit(const FHitResult& HitResult, const FVector& HitDirection)
-{
+{	
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::White, TEXT("GOIDA"));
+
 	if (CurrentAttack == nullptr)
 	{
 		return;
 	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Black, TEXT("GOIDA"));
 
 	AActor* HitActor = HitResult.GetActor();
 	if (!IsValid(HitActor))
 	{
 		return;
 	}
+	
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("GOIDA"));
 
 	if (HitActors.Contains(HitActor))
 	{
 		return;
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("GOIDA"));
 
 	if (HitActor == GetOwner())
 	{	
@@ -118,7 +127,7 @@ void AMeleeWeaponItem::ProcessHit(const FHitResult& HitResult, const FVector& Hi
 	ABaseCharacter* CharacterOwner = GetCharacterOwner();
 	AController* Controller = IsValid(CharacterOwner) ? CharacterOwner->GetController<AController>() : nullptr;
 	HitActor->TakeDamage(CurrentAttack->DamageAmount, DamageEvent, Controller, GetOwner());
-
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("GOIDA"));
 	HitActors.Add(HitActor);
 }
 

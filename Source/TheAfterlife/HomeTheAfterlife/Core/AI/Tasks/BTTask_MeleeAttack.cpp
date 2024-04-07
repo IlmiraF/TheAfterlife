@@ -59,6 +59,6 @@ EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& Own
 		return EBTNodeResult::Failed;
 	}
 
-	Character->HandsMeleeAttack();
+	Character->SwordMeleeAttack();
 	return EBTNodeResult::Succeeded;
 }

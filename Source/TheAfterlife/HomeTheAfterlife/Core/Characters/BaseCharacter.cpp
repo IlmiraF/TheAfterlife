@@ -458,6 +458,20 @@ void ABaseCharacter::LegsMeleeAttack()
 	}
 }
 
+void ABaseCharacter::SwordMeleeAttack()
+{
+	AMeleeWeaponItem* CurrentMeleeWeaponItem = CharacterEquipmentComponent->GetCurrentMeleeWeaponItem();
+	if (IsValid(CurrentMeleeWeaponItem))
+	{
+		const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+
+		CurrentMeleeWeaponItem->SetCharacter(this);
+		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::SWORD);
+
+		PlaySound(PunchSoundBase);
+	}
+}
+
 void ABaseCharacter::ThrowBomb()
 {
 	if (CharacterEquipmentComponent->IsEquipping())

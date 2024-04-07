@@ -24,7 +24,6 @@ void UMeleeHitRegistrator::TickComponent(float DeltaTime, enum ELevelTick TickTy
 void UMeleeHitRegistrator::ProcessHitRegistration()
 {
 	FVector CurrentLocation = GetComponentLocation();
-
 	FHitResult HitResult;
 
 	bool bHasHit = TheAfterlife_TraceUtils::SweepSphereSingleByChannel(
