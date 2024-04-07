@@ -1,10 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "EnemyPoolObject.generated.h"
+
 
 
 UCLASS()
@@ -28,19 +27,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn Position")
 	float MinimumDistanceToPlayer = 300.0f;
 
+	void MakeEnemisVisible();
+
 protected:
 
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	void SpawnNewEnemy();
-
-	UFUNCTION()
-	void ReturnEnemy(ABaseAICharacter* Enemy);
-
 private:
 
 	void InitSpawnEnemys();
+
+	UFUNCTION()
+	void GetFreeEnemy();
+
+	void SpawnEnemy();
+
+	UFUNCTION()
+	void ReturnEnemy(ABaseAICharacter* Enemy);
 
 	FVector CalculatingSpawnPoint();
 

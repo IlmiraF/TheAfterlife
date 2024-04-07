@@ -1,6 +1,6 @@
 #include "Boss.h"
 
-ABoss::ABoss()
+ABoss::ABoss(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -16,8 +16,12 @@ UBehaviorTree* ABoss::GetBehaviorTree() const
 	return BehaviorTree;
 }
 
+void ABoss::SpawnEnemy()
+{
+	EnemyPoolObject->MakeEnemisVisible();
+}
+
 void ABoss::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }

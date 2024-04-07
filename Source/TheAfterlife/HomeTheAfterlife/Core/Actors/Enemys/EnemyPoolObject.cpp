@@ -9,10 +9,11 @@ AEnemyPoolObject::AEnemyPoolObject()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+
 void AEnemyPoolObject::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	InitSpawnEnemys();
 }
 
@@ -20,7 +21,47 @@ void AEnemyPoolObject::InitSpawnEnemys()
 {	
 	for (int32 i = 0; i < AmmountEnemy; i++)
 	{	
-        SpawnNewEnemy();
+		SpawnEnemy();
+	}
+}
+
+void AEnemyPoolObject::GetFreeEnemy()
+{
+	FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	FVector SpawnLocation = CalculatingSpawnPoint();
+
+	ABaseAICharacter* NewEnemy = nullptr;
+
+	if (!FreeEnemys.IsEmpty())
+	{
+		FreeEnemys.Dequeue(NewEnemy);
+	}
+	else
+	{
+		SpawnEnemy();
+		FreeEnemys.Dequeue(NewEnemy);
+	}
+
+	if (NewEnemy)
+	{
+		NewEnemy->SetActorLocation(SpawnLocation);
+		NewEnemy->SetActorRotation((PlayerLocation - SpawnLocation).Rotation());
+		NewEnemy->SetActorHiddenInGame(false);
+		NewEnemy->Revival();
+
+		OnCharacterDeathHandle = NewEnemy->OnCharacterDeath.AddUFunction(this, FName("ReturnEnemy"));
+	}
+}
+
+void AEnemyPoolObject::SpawnEnemy()
+{	
+	int32 RandomIndex = FMath::RandRange(0, EnemysType.Num() - 1);
+	ABaseAICharacter* NewEnemy = GetWorld()->SpawnActor<ABaseAICharacter>(EnemysType[RandomIndex]);
+
+	if (NewEnemy)
+	{
+		NewEnemy->SetActorHiddenInGame(true);
+		FreeEnemys.Enqueue(NewEnemy);
 	}
 }
 
@@ -58,31 +99,17 @@ FVector AEnemyPoolObject::CalculatingSpawnPoint()
 	return SpawnLocation;
 }
 
-void AEnemyPoolObject::SpawnNewEnemy()
-{   
-	FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-	FVector SpawnLocation = CalculatingSpawnPoint();
+void AEnemyPoolObject::MakeEnemisVisible()
+{	
+	int32 VisibleEnemiesCount = 0;
 
-	ABaseAICharacter* NewEnemy = nullptr;
-
-	if (!FreeEnemys.IsEmpty())
+	while (!FreeEnemys.IsEmpty())
 	{
-		FreeEnemys.Dequeue(NewEnemy);
-	}
-	else
-	{
-		int32 RandomIndex = FMath::RandRange(0, EnemysType.Num() - 1);
-		NewEnemy = GetWorld()->SpawnActor<ABaseAICharacter>(EnemysType[RandomIndex]);
+		GetFreeEnemy();
+		VisibleEnemiesCount++;
 	}
 
-	if (NewEnemy)
-	{
-		NewEnemy->SetActorLocation(SpawnLocation);
-		NewEnemy->SetActorRotation((PlayerLocation - SpawnLocation).Rotation());
-		NewEnemy->Revival();
-
-		OnCharacterDeathHandle = NewEnemy->OnCharacterDeath.AddUFunction(this, FName("ReturnEnemy"));
-	}
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("GOIDA %d"), VisibleEnemiesCount));
 }
 
 void AEnemyPoolObject::ReturnEnemy(ABaseAICharacter* Enemy)
@@ -91,7 +118,6 @@ void AEnemyPoolObject::ReturnEnemy(ABaseAICharacter* Enemy)
     {	
 		Enemy->OnCharacterDeath.Remove(OnCharacterDeathHandle);
         FreeEnemys.Enqueue(Enemy);
-		SpawnNewEnemy();
-		
+		GetFreeEnemy();
     }
 }
