@@ -541,3 +541,11 @@ void ABaseCharacter::Interact()
 		LineOfSightObject->Interact(this);
 	}
 }
+
+void ABaseCharacter::Speak(USoundBase* SoundBase)
+{
+	if (IsValid(SoundBase))
+	{
+		PlaySound(SoundBase);
+	}
+}

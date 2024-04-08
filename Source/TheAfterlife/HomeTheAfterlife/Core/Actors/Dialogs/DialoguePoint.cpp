@@ -3,6 +3,7 @@
 #include "../../Actors/Interfaces/ActionDuringSpeech.h"
 #include "Components/BoxComponent.h"
 #include "../../Characters/BaseCharacter.h"
+#include "../../UI/Widget/DialogueWidget.h"
 
 
 ADialoguePoint::ADialoguePoint()
@@ -24,12 +25,21 @@ void ADialoguePoint::Interact(ABaseCharacter* Character)
 
 	CachedPlayerCharacter = Character;
 
-	if (CachedPlayerCharacter.IsValid() && (SpeechArray.Num() > 0))
+	if (!IsValid(SelectedDialogTable))
+	{
+		return;
+	}
+
+	Collider->ConditionalBeginDestroy();
+
+	StartDialogue();
+
+	/*if (CachedPlayerCharacter.IsValid() && (SpeechArray.Num() > 0))
 	{
 		CachedPlayerCharacter->SetCanMove(bCanMovePlayer);
 		StartSpeech(CurrentSpeechIndex);
 		bItSounded = true;
-	}
+	}*/
 }
 
 bool ADialoguePoint::IsForce()
@@ -37,9 +47,67 @@ bool ADialoguePoint::IsForce()
 	return bIsForce;
 }
 
-void ADialoguePoint::StartSpeech(int32 SpeechIndex)
+void ADialoguePoint::StartDialogue()
 {
-	if (!SpeechArray.IsValidIndex(SpeechIndex))
+	if (SelectedDialogTable)
+	{
+		if (IsValid(DialogWidgetClass))
+		{
+			DialogBox = CreateWidget<UDialogueWidget>(GetWorld(), DialogWidgetClass);
+			if (DialogBox)
+			{
+				DialogBox->AddToViewport();
+				CurrentSpeechIndex = 0;
+
+				ShowNextDialogueLine();
+			}
+		}
+	}
+}
+
+void ADialoguePoint::ShowNextDialogueLine()
+{
+	GetWorld()->GetTimerManager().ClearTimer(SpeechTimerHandle);
+	if (CurrentSpeechIndex < SelectedDialogTable->GetRowMap().Num())
+	{
+		const FName RowName = SelectedDialogTable->GetRowNames()[CurrentSpeechIndex];
+		if (const FDialogueLine* Row = SelectedDialogTable->FindRow<FDialogueLine>(RowName, ""))
+		{
+			if (IsValid(Row->Sound))
+			{
+				CurrentSpeechIndex++;
+				DialogBox->UpdateWidget(Row->SubtitleText, true);
+				CurrentSpeaker = SpeakingActors.Find(Row->SpeakerType)->Get();
+				if (IsValid(CurrentSpeaker) && CurrentSpeaker->Implements<UISpeakable>())
+				{
+					IISpeakable* SpeakableActor = Cast<IISpeakable>(CurrentSpeaker);
+					SpeakableActor->Speak(Row->Sound);
+				}
+				else
+				{
+					CachedPlayerCharacter->Speak(Row->Sound);
+				}
+				GetWorld()->GetTimerManager().SetTimer(SpeechTimerHandle, this, &ADialoguePoint::ShowNextDialogueLine, Row->Sound->GetDuration());
+			}
+		}
+	}
+	else
+	{
+		FinishDialogue();
+	}
+}
+
+void ADialoguePoint::FinishDialogue()
+{
+	DialogBox->RemoveFromParent();
+	DialogBox->ConditionalBeginDestroy();
+	DialogBox = nullptr;
+	Destroy();
+}
+
+//void ADialoguePoint::StartSpeech(int32 SpeechIndex)
+//{
+	/*if (!SpeechArray.IsValidIndex(SpeechIndex))
 	{
 		return;
 	}
@@ -79,12 +147,12 @@ void ADialoguePoint::StartSpeech(int32 SpeechIndex)
 		}
 
 		GetWorld()->GetTimerManager().SetTimer(SpeechTimerHandle, this, &ADialoguePoint::NextSpeech, Speech.SoundBase->Duration, false);
-	}
-}
+	}*/
+//}
 
-void ADialoguePoint::NextSpeech()
-{
-	CurrentSpeechIndex++;
+//void ADialoguePoint::NextSpeech()
+//{
+	/*CurrentSpeechIndex++;
 
 	if (SpeechArray.IsValidIndex(CurrentSpeechIndex))
 	{
@@ -97,8 +165,8 @@ void ADialoguePoint::NextSpeech()
 			CachedPlayerCharacter->SetCanMove(true);
 			CachedPlayerCharacter->WidgetUpdateEvent.Broadcast(WidgetName, "", false);
 		}
-	}
-}
+	}*/
+//}
 
 void ADialoguePoint::StartAction()
 {

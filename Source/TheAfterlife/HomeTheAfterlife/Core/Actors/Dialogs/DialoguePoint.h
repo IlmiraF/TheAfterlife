@@ -2,22 +2,35 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Engine/DataTable.h"
 #include "../Interactive/Interactive.h"
+#include "../../Actors/Interfaces/ISpeak.h"
 #include "DialoguePoint.generated.h"
 
+UENUM(BlueprintType)
+enum class ESpeakerType : uint8
+{
+	None,
+	Player,
+	NotPlayer,
+	Max UMETA(Hidden)
+};
+
 USTRUCT(BlueprintType)
-struct FSpeechSettings
+struct FDialogueLine : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class USoundBase* SoundBase;
+public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	AActor* CurrentSpeakerNotPlayer;
+	USoundBase* Sound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FString SubtitlesText;
+	FString SubtitleText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ESpeakerType SpeakerType = ESpeakerType::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool ActionAtBeginningPhrase;
@@ -28,6 +41,7 @@ struct FSpeechSettings
 
 class UBoxComponent;
 class ABaseCharacter;
+class UDialogueWidget;
 UCLASS()
 class THEAFTERLIFE_API ADialoguePoint : public AActor, public IInteractable
 {
@@ -44,31 +58,36 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* Collider;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FSpeechSettings> SpeechArray;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
+	TMap<ESpeakerType, TSoftObjectPtr<AActor>> SpeakingActors;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bCanMovePlayer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FName WidgetName = "WBP_DialogueWidget";
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bIsForce = true;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UDataTable* SelectedDialogTable = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UDialogueWidget> DialogWidgetClass;
+
 private:
+
+	void StartDialogue();
+	void ShowNextDialogueLine();
+	void FinishDialogue();
+
+	UDialogueWidget* DialogBox = nullptr;
 
 	FTimerHandle SpeechTimerHandle;
 	FTimerHandle ActionTimerHandle;
 
 	int32 CurrentSpeechIndex;
 
-	void StartSpeech(int32 SpeechIndex);
-
-	void NextSpeech();
-
 	TWeakObjectPtr<ABaseCharacter> CachedPlayerCharacter;
-	AActor* CurrentSpeaker;
+	AActor* CurrentSpeaker = nullptr;
 
 	bool bItSounded = false;
 

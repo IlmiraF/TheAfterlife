@@ -6,6 +6,7 @@
 #include "Engine/DataTable.h"
 #include "AIController.h"
 #include "../../../TheAfterlifeTypes.h"
+#include "../Actors/Interfaces/ISpeak.h"
 //#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h""
 #include "BaseCharacter.generated.h"
 
@@ -69,7 +70,7 @@ DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnWidgetUpdate, FName, FString, bool)
 DECLARE_DELEGATE(FOnFallingDelegate)
 
 UCLASS()
-class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IGenericTeamAgentInterface//, public ISaveSubsystemInterface
+class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IISpeakable, public IGenericTeamAgentInterface//, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
@@ -81,6 +82,8 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void Speak(USoundBase* SoundBase) override;
 
 	UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
 	UCharacterAttributeComponent* GetCharacterAttributeComponent() const { return CharacterAttributesComponent; };
