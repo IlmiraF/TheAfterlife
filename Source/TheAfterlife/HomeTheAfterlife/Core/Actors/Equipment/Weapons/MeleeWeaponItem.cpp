@@ -94,8 +94,6 @@ void AMeleeWeaponItem::ProcessHit(const FHitResult& HitResult, const FVector& Hi
 		return;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("XYI"));
-
 	AActor* HitActor = HitResult.GetActor();
 	if (!IsValid(HitActor))
 	{
