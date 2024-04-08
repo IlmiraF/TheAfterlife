@@ -439,8 +439,6 @@ void ABaseCharacter::HandsMeleeAttack()
 
 		CurrentMeleeWeaponItem->SetCharacter(this);
 		CurrentMeleeWeaponItem->StartAttack(EMeleeAttackTypes::HANDS);
-
-		PlaySound(PunchSoundBase);
 	}
 }
 

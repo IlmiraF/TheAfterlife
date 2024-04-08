@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -14,7 +12,6 @@ class THEAFTERLIFE_API APatrollingPath : public AActor
 public:
 
 	const TArray<FVector>& GetWayPoints() const;
-
 
 protected:
 

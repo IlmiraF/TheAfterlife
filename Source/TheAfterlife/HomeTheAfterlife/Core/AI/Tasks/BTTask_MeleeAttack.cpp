@@ -1,5 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
 #include "BTTask_MeleeAttack.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -15,7 +14,7 @@ UBTTask_MeleeAttack::UBTTask_MeleeAttack()
 EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AIController = OwnerComp.GetAIOwner();
-	UBlackboardComponent* Blackboard= OwnerComp.GetBlackboardComponent();
+	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
 
 	if (!IsValid(AIController) || !IsValid(Blackboard))
 	{
@@ -59,6 +58,6 @@ EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& Own
 		return EBTNodeResult::Failed;
 	}
 
-	Character->SwordMeleeAttack();
+	Character->HandsMeleeAttack();
 	return EBTNodeResult::Succeeded;
 }

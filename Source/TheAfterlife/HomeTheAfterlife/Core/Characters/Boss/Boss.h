@@ -7,7 +7,10 @@
 #include "AIController.h"
 #include "../../Characters/BaseCharacter.h"
 #include "../../Actors/Enemys/EnemyPoolObject.h"
+#include "Components/SplineComponent.h"
 #include "Boss.generated.h"
+
+
 
 DECLARE_MULTICAST_DELEGATE(FOnDoorsOpening);
 
@@ -26,17 +29,31 @@ public:
 	UBehaviorTree* GetBehaviorTree() const;
 
 	void SpawnEnemy();
+
+	//void SplineMovement();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spline", meta = (MakeEditWidget))
+	USplineComponent* SplineComponent;
 	
 protected:
 
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
-	USkeletalMeshComponent* FirstStageBossMesh;
+	USkeletalMesh* FirstStageBossMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
-	USkeletalMeshComponent* SecondStageBossMesh;	
+	USkeletalMesh* SecondStageBossMesh;	
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 	UBehaviorTree* BehaviorTree;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
+	float DistanceAlongSpline;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+	float FlySpeed;
+
+	USkeletalMeshComponent* CachedSkeletalMesh;
 };
