@@ -2,7 +2,7 @@
 
 #include "AAltar.h"
 
-AAAltar::AAAltar()
+AAltar::AAltar()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -11,16 +11,16 @@ AAAltar::AAAltar()
 }
 
 
-void AAAltar::BeginPlay()
+void AAltar::BeginPlay()
 {
 	Super::BeginPlay();
 
 	Health = MaxHealth;
 
-	OnTakeAnyDamage.AddDynamic(this, &AAAltar::TakeAnyDamage);
+	OnTakeAnyDamage.AddDynamic(this, &AAltar::TakeAnyDamage);
 }
 
-void AAAltar::TakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+void AAltar::TakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
 	UE_LOG(LogDamage, Warning, TEXT("AAltar::OnTakeAnyDamag %s recevied %.2f amount of damage from %s"), *DamagedActor->GetName(), Damage, *DamageCauser->GetName());
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
@@ -30,7 +30,7 @@ void AAAltar::TakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageTyp
 	}
 }
 
-void AAAltar::Destroy()
+void AAltar::Destroy()
 {	
 
 	SetActorHiddenInGame(true);

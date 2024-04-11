@@ -10,13 +10,13 @@
 #include "AAltar.generated.h"
 
 UCLASS()
-class THEAFTERLIFE_API AAAltar : public AActor
+class THEAFTERLIFE_API AAltar : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 
-	AAAltar();
+	AAltar();
 
 protected:
 	virtual void BeginPlay() override;
