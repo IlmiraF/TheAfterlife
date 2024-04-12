@@ -8,11 +8,8 @@
 #include "../../Characters/BaseCharacter.h"
 #include "../../Actors/Enemys/EnemyPoolObject.h"
 #include "Components/SplineComponent.h"
+#include "../../Actors/Environment/AAltar.h"
 #include "Boss.generated.h"
-
-
-
-DECLARE_MULTICAST_DELEGATE(FOnDoorsOpening);
 
 UCLASS()
 class THEAFTERLIFE_API ABoss : public ABaseCharacter
@@ -32,8 +29,8 @@ public:
 
 	//void SplineMovement();
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spline", meta = (MakeEditWidget))
-	USplineComponent* SplineComponent;
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spline", meta = (MakeEditWidget))
+	//USplineComponent* SplineComponent;
 	
 protected:
 
@@ -48,12 +45,20 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 	UBehaviorTree* BehaviorTree;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Altars")
+	TArray<AAltar*> Altars;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
-	float DistanceAlongSpline;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
+	//float DistanceAlongSpline;
+	//
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+	//float FlySpeed;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
-	float FlySpeed;
+private:
+
+	int32 FirstStageHealth;
 
 	USkeletalMeshComponent* CachedSkeletalMesh;
+
+	void TakeDamageFirstStage();
 };

@@ -43,4 +43,9 @@ void AAltar::Destroy()
 			Enemy->DisableCharacter();
 		}
 	}
+
+	if (OnAltarDestroyed.IsBound())
+	{
+		OnAltarDestroyed.Broadcast();
+	}
 }

@@ -57,5 +57,6 @@ void APlatformTrigger::OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedCompon
 	}
 
 	OverlappedPawns.RemoveSingleSwap(OtherPawn);
+	SetIsActivated(false);
 	bIsActivated = false;
 }

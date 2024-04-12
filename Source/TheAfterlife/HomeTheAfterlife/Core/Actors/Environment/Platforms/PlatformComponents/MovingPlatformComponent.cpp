@@ -29,7 +29,10 @@ void UMovingPlatformComponent::BeginPlay()
 
 	StartLocation = CachedPlatformBase->GetActorLocation();
 
-	PlatformTrigger->OnTriggerActivated.AddDynamic(this, &UMovingPlatformComponent::OnPlatformTriggerActivated);
+	if (IsValid(PlatformTrigger))
+	{
+		PlatformTrigger->OnTriggerActivated.AddDynamic(this, &UMovingPlatformComponent::OnPlatformTriggerActivated);
+	}
 }
 
 void UMovingPlatformComponent::OnPlatformTriggerActivated(bool bIsActivated)
@@ -69,7 +72,6 @@ void UMovingPlatformComponent::MovePlatform()
 	{
 		return;
 	}
-
 	if (bIsMovingForward)
 	{
 		PlatformTimeline.Reverse();

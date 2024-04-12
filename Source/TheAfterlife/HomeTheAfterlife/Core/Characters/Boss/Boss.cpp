@@ -37,4 +37,22 @@ void ABoss::BeginPlay()
 
 	//CachedSkeletalMesh = GetMesh();
 	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
+
+	for (AAltar* Altar : Altars)
+	{
+		Altar->OnAltarDestroyed.AddUObject(this, &ABoss::TakeDamageFirstStage);
+	}
+
+	FirstStageHealth = Altars.Num();
+}
+
+void ABoss::TakeDamageFirstStage()
+{
+	FirstStageHealth--;
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Ox Blya"));
+
+	if (FirstStageHealth <= 0)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Trash"));
+	}
 }

@@ -9,6 +9,8 @@
 #include "TheAfterlife/TheAfterlifeTypes.h"
 #include "AAltar.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnAltarDestroyed);
+
 UCLASS()
 class THEAFTERLIFE_API AAltar : public AActor
 {
@@ -17,6 +19,8 @@ class THEAFTERLIFE_API AAltar : public AActor
 public:	
 
 	AAltar();
+
+	FOnAltarDestroyed OnAltarDestroyed;
 
 protected:
 	virtual void BeginPlay() override;
@@ -30,7 +34,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health", meta = (UIMin = 0.0f), SaveGame)
 	float MaxHealth = 30.0f;
 
-public:	
+private:	
 	float Health = 0.0f;
 
 	UFUNCTION()
