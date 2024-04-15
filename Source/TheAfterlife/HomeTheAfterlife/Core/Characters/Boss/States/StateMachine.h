@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "../Source/TheAfterlife/TheAfterlifeTypes.h"
+#include "State.h"
 #include "StateMachine.generated.h"
+
 
 USTRUCT(BlueprintType)
 struct FStateHolder
@@ -13,18 +15,21 @@ struct FStateHolder
 	GENERATED_BODY()
 
 	EBossStateType Type;
-	//UState State;
+	UState* State;
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class THEAFTERLIFE_API UStateMachine : public UActorComponent
+class THEAFTERLIFE_API UStateMachine : public UState
 {
 	GENERATED_BODY()
 
 public:	
-	UStateMachine();
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void Enter() override;
+
+	void Exit() override;
+
+	void SwitchState(EBossStateType StateType);
 
 protected:
 
@@ -39,5 +44,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
 	TArray<FStateHolder> States;
 
-		
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
+	EBossStateType CurrentStateType;
+
+private:
+
+	UState* CurrentState;
+
+	UState* FindState(EBossStateType StateType);
 };

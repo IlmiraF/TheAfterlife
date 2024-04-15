@@ -1,34 +1,56 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "StateMachine.h"
 
-// Sets default values for this component's properties
-UStateMachine::UStateMachine()
-{
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
-}
-
-
-// Called when the game starts
 void UStateMachine::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	if (EnterOnEnable)
+	{
+		Enter();
+	}
 }
 
-
-// Called every frame
-void UStateMachine::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UStateMachine::Enter()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	Super::Enter();
 
-	// ...
+	if (IsValid(CurrentState))
+	{
+		CurrentState = FindState(CurrentStateType);
+		CurrentState->Enter();
+	}
 }
 
+void UStateMachine::Exit()
+{
+	Super::Exit();
+
+	if (!IsValid(CurrentState))
+	{
+		CurrentState->Exit();
+		CurrentState = nullptr;
+	}
+}
+
+void UStateMachine::SwitchState(EBossStateType StateType)
+{
+	Exit();
+	CurrentStateType = StateType;
+	Enter();
+}
+
+UState* UStateMachine::FindState(EBossStateType StateType)
+{
+	for (FStateHolder Holder : States)
+	{
+		if (Holder.Type == StateType)
+		{
+			return Holder.State;
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("State with Type %d not found"), (int32)StateType);
+	return nullptr;
+}
