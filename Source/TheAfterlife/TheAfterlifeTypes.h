@@ -81,3 +81,16 @@ enum  class ETeams: uint8
 	NPC,
 	ENEMY
 };
+
+UENUM(BlueprintType)
+enum  class EBossStateType : uint8
+{
+	NONE,
+	FirstStage,
+	MeleeEnhancement,
+	MediumCombatEnhancement,
+	StrengtheningRangedCombat,
+	CombatPatternStandard,
+	CombatPatternPriorityRanged,
+	CombatPatternPriorityMelee
+};

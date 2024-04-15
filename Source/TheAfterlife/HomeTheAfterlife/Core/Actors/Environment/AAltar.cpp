@@ -22,7 +22,7 @@ void AAltar::BeginPlay()
 
 void AAltar::TakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-	UE_LOG(LogDamage, Warning, TEXT("AAltar::OnTakeAnyDamag %s recevied %.2f amount of damage from %s"), *DamagedActor->GetName(), Damage, *DamageCauser->GetName());
+	UE_LOG(LogDamage, Warning, TEXT("AAltar::OnTakeAnyDamag %s recevied %.2f amount of damage from %s  type %s"), *DamagedActor->GetName(), Damage, *DamageCauser->GetName(), *DamageType->GetName());
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
 	if (Health <= 0)
 	{
