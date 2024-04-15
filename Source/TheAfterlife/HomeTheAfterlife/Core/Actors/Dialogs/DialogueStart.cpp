@@ -5,27 +5,48 @@
 #include "../../UI/Widget/DialogueWidget.h"
 #include "../Interfaces/ISpeak.h"
 #include "../Interactive/Interactive.h"
-#include "Kismet/GameplayStatics.h"
-#include "Components/BoxComponent.h"
-#include "GameFramework/Character.h"
 
 ADialogueStart::ADialogueStart()
 {
-	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
-	RootComponent = Collider;
+	CurrentSpeechIndex = 0;
 }
 
 void ADialogueStart::BeginPlay()
 {
 	Super::BeginPlay();
 
-	DialogueSettings.SpeakingActors.Add(ESpeakerType::Player, UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	DialogueSettings.SpeakingActors.Add(ESpeakerType::Player, GetWorld()->GetFirstPlayerController()->GetOwner());
+
+	if (Trigger.GetInterface())
+	{
+		TriggerHandle = Trigger->AddOnInteractionUFunction(this, FName("StartDialogue"));
+	}
+}
+
+void ADialogueStart::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+	if (PropertyChangedEvent.Property->GetName() == GET_MEMBER_NAME_STRING_CHECKED(ADialogueStart, TriggerActor))
+	{
+		Trigger = TriggerActor;
+		if (Trigger.GetInterface())
+		{
+			if (!Trigger->HasOnInteractionCallback())
+			{
+				TriggerActor = nullptr;
+				Trigger = nullptr;
+			}
+		}
+		else
+		{
+			TriggerActor = nullptr;
+			Trigger = nullptr;
+		}
+	}
 }
 
 void ADialogueStart::StartDialogue()
 {
-	Collider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	bIsAlreadyFinished = false;
 	if (DialogueSettings.SelectedDialogTable)
 	{
 		if (IsValid(DialogWidgetClass))
@@ -45,7 +66,7 @@ void ADialogueStart::StartDialogue()
 void ADialogueStart::ShowNextDialogueLine()
 {
 	GetWorld()->GetTimerManager().ClearTimer(SpeechTimerHandle);
-	if ((CurrentSpeechIndex < DialogueSettings.SelectedDialogTable->GetRowMap().Num()))
+	if (CurrentSpeechIndex < DialogueSettings.SelectedDialogTable->GetRowMap().Num())
 	{
 		const FName RowName = DialogueSettings.SelectedDialogTable->GetRowNames()[CurrentSpeechIndex];
 		if (const FDialogueLine* Row = DialogueSettings.SelectedDialogTable->FindRow<FDialogueLine>(RowName, ""))
@@ -60,14 +81,7 @@ void ADialogueStart::ShowNextDialogueLine()
 					IISpeakable* SpeakableActor = Cast<IISpeakable>(CurrentSpeaker);
 					SpeakableActor->Speak(Row->Sound);
 				}
-				if (Row->NeedPauseBeforePhrase)
-				{
-					GetWorld()->GetTimerManager().SetTimer(SpeechTimerHandle, this, &ADialogueStart::ShowNextDialogueLine, Row->PauseTime);
-				}
-				else
-				{
-					GetWorld()->GetTimerManager().SetTimer(SpeechTimerHandle, this, &ADialogueStart::ShowNextDialogueLine, Row->Sound->GetDuration());
-				}
+				GetWorld()->GetTimerManager().SetTimer(SpeechTimerHandle, this, &ADialogueStart::ShowNextDialogueLine, Row->Sound->GetDuration());
 			}
 		}
 	}
@@ -79,11 +93,17 @@ void ADialogueStart::ShowNextDialogueLine()
 
 void ADialogueStart::FinishDialogue()
 {
-	bIsAlreadyFinished = true;
-	GetWorld()->GetTimerManager().ClearTimer(SpeechTimerHandle);
 	DialogBox->RemoveFromParent();
 	DialogBox->ConditionalBeginDestroy();
 	DialogBox = nullptr;
-	Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	UnSubscribeFromTrigger();
+}
+
+void ADialogueStart::UnSubscribeFromTrigger()
+{
+	if (TriggerHandle.IsValid() && Trigger.GetInterface())
+	{
+		Trigger->RemoveOnInteractionDelegate(TriggerHandle);
+	}
 }
 
