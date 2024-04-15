@@ -27,4 +27,7 @@ public:
 
 	virtual void Interact(ABaseCharacter* Character) PURE_VIRTUAL(IInteractable::Interact, );
 	virtual bool IsForce() PURE_VIRTUAL(IInteractable::IsForce, return false;);
+	virtual bool HasOnInteractionCallback() const PURE_VIRTUAL(IInteractable::HasOnInteractionCallback, return false; );
+	virtual FDelegateHandle AddOnInteractionUFunction(UObject * Object, const FName & FunctionName) PURE_VIRTUAL(IInteractable::AddOnInteractionDelegate, return FDelegateHandle(); );
+	virtual void RemoveOnInteractionDelegate(FDelegateHandle DelegateHandle) PURE_VIRTUAL(IInteractable::RemoveOnInteractionDelegate, );
 };
