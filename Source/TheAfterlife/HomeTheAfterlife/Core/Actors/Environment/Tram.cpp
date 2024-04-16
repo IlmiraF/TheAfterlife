@@ -38,17 +38,7 @@ ATram::ATram()
 
 void ATram::TriggerToPlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {	
-	if (!bOnTramStarted)
-	{
-		Conductor->AttachToComponent(TramMesh, FAttachmentTransformRules::KeepWorldTransform);
-
-		bIsMoving = true;
-
-		float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(StopWorldLocation);
-		StopDistance = SplineComponent->GetDistanceAlongSplineAtSplineInputKey(InputKey);
-	}
-
-	bOnTramStarted = true;
+	StartMove();
 }
 
 void ATram::TriggerFromlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -66,6 +56,16 @@ void ATram::TriggerFromlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp
 	//Conductor->StopSpeaking();
 }
 
+void ATram::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (StartAtBegin)
+	{
+		StartMove();
+	}
+}
+
 void ATram::Move(float DeltaTime)
 {
 	if (!bIsMoving)
@@ -80,6 +80,7 @@ void ATram::Move(float DeltaTime)
 		//Conductor->StartSpeaking();
 	}
 
+
 	DistanceAlongSpline += Speed * DeltaTime;
 	const float SplineLength = SplineComponent->GetSplineLength();
 	DistanceAlongSpline = FMath::Min(DistanceAlongSpline, SplineLength);
@@ -88,6 +89,21 @@ void ATram::Move(float DeltaTime)
 	FRotator CurrentSplineRotation = SplineComponent->GetRotationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World);
 
 	TramMesh->SetWorldLocationAndRotation(CurrentSplineLocation, CurrentSplineRotation);
+}
+
+void ATram::StartMove()
+{
+	if (!bOnTramStarted)
+	{
+		Conductor->AttachToComponent(TramMesh, FAttachmentTransformRules::KeepWorldTransform);
+
+		bIsMoving = true;
+
+		float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(StopWorldLocation);
+		StopDistance = SplineComponent->GetDistanceAlongSplineAtSplineInputKey(InputKey);
+	}
+
+	bOnTramStarted = true;
 }
 
 void ATram::Tick(float DeltaTime)

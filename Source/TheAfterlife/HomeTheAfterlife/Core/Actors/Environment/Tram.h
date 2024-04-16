@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
 	float Speed = 300.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
+	bool StartAtBegin;
+
 	UFUNCTION()
 	void TriggerToPlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -44,6 +47,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Conductor")
 	AConductor* Conductor;
+
+protected:
+
+	virtual void BeginPlay() override;
 
 private:	
 
@@ -55,4 +62,7 @@ private:
 	float StopDistance;
 
 	bool bOnTramStarted = false;
+
+	void StartMove();
+
 };
