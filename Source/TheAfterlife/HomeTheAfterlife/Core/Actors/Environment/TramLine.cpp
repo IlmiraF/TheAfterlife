@@ -5,18 +5,18 @@ ATramLine::ATramLine()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-    Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
+	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 }
 
 void ATramLine::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//MoveMeshesAlongSpline(DeltaTime);
+	MoveMeshesAlongSpline(DeltaTime);
 }
 
 void ATramLine::BeginPlay()
-{	
+{
 	Super::BeginPlay();
 
 	SpawnMeshes();
@@ -24,70 +24,67 @@ void ATramLine::BeginPlay()
 
 void ATramLine::SpawnMeshes()
 {
-    float Direction = (MovementDirection == ETramLineDirection::Clockwise) ? 1.0f : -1.0f;
+	float Direction = (MovementDirection == ETramLineDirection::Clockwise) ? 1.0f : -1.0f;
 
-    float SplineLength = GetSplineLength();
-    float SegmentLength = SplineLength / AmountTram; 
+	float SplineLength = GetSplineLength();
+	float SegmentLength = SplineLength / AmountTram;
 
-    for (int32 i = 0; i < AmountTram; ++i)
-    {
-        float StartDistance = i * SegmentLength * Direction;
+	for (int32 i = 0; i < AmountTram; ++i)
+	{
+		float StartDistance = i * SegmentLength * Direction;
 
-        //GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Cyan,FString::Printf( TEXT("StartDistance: %f"), StartDistance));
+		FVector Location = Spline->GetLocationAtDistanceAlongSpline(StartDistance, ESplineCoordinateSpace::World);
 
-        FVector Location = Spline->GetLocationAtDistanceAlongSpline(StartDistance, ESplineCoordinateSpace::World);
+		FRotator Rotation = Spline->GetRotationAtDistanceAlongSpline(StartDistance, ESplineCoordinateSpace::World);
 
-        //GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Cyan, FString::Printf(TEXT("Location: %f; %f ; %f"), Location.X, Location.Y, Location.Z));
+		AMeshActor* TramMesh = GetWorld()->SpawnActor<AMeshActor>();
+		TramMesh->SetMesh(Mesh);
+		TramMesh->SetActorLocationAndRotation(Location, Rotation);
+		TramMesh->SetDistanceAlongSpline(StartDistance);
 
-        FRotator Rotation = Spline->GetRotationAtDistanceAlongSpline(StartDistance, ESplineCoordinateSpace::World);
+		TramMesh->AttachToComponent(Spline, FAttachmentTransformRules::KeepWorldTransform);
 
-        AMeshActor* TramMesh = GetWorld()->SpawnActor<AMeshActor>();
-        TramMesh->SetMesh(Mesh);
-        TramMesh->SetActorLocationAndRotation(Location, Rotation);
-
-        GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Cyan, FString::Printf(TEXT("Location: %f; %f ; %f"), TramMesh->GetActorLocation().X, TramMesh->GetActorLocation().Y, TramMesh->GetActorLocation().Z));
-
-        TramMesh->AttachToComponent(Spline, FAttachmentTransformRules::KeepWorldTransform);
-
-        MovingTrams.Add(TramMesh);
-    }
+		MovingTrams.Add(TramMesh);
+	}
 }
 
 void ATramLine::MoveMeshesAlongSpline(float DeltaTime)
 {
-    float Direction = (MovementDirection == ETramLineDirection::Clockwise) ? 1.0f : -1.0f;
+	float Direction = (MovementDirection == ETramLineDirection::Clockwise) ? 1.0f : -1.0f;
+	float SplineLength = GetSplineLength();
 
-    for (AMeshActor* MovingMesh : MovingTrams)
-    {
-        float DistanceToTravel = Speed * DeltaTime * Direction;
+	for (AMeshActor* MovingMesh : MovingTrams)
+	{
+		float CurrentDistance = MovingMesh->GetDistanceAlongSpline();
+		float NewDistance = CurrentDistance + Speed * DeltaTime * Direction;
 
-        if (DistanceToTravel >= GetSplineLength())
-        {
-            DistanceToTravel -= GetSplineLength();
-        }
-        else if (DistanceToTravel < 0.0f)
-        {
-            DistanceToTravel += GetSplineLength();
-        }
+		if (NewDistance >= SplineLength)
+		{
+			NewDistance -= SplineLength;
+		}
+		else if (NewDistance < 0.0f)
+		{
+			NewDistance += SplineLength;
+		}
+		FVector NewLocation = Spline->GetLocationAtDistanceAlongSpline(NewDistance, ESplineCoordinateSpace::World);
+		FRotator NewRotation = Spline->GetRotationAtDistanceAlongSpline(NewDistance, ESplineCoordinateSpace::World);
 
-        FVector Location = Spline->GetLocationAtDistanceAlongSpline(DistanceToTravel, ESplineCoordinateSpace::World);
-        FRotator Rotation = Spline->GetRotationAtDistanceAlongSpline(DistanceToTravel, ESplineCoordinateSpace::World);
-
-        MovingMesh->SetActorLocationAndRotation(Location, Rotation);
-    }
+		MovingMesh->SetActorLocationAndRotation(NewLocation, NewRotation);
+		MovingMesh->SetDistanceAlongSpline(NewDistance);
+	}
 }
 
 float ATramLine::GetSplineLength()
 {
-    float Length = 0.0f;
-    int32 NumPoints = Spline->GetNumberOfSplinePoints();
+	float Length = 0.0f;
+	int32 NumPoints = Spline->GetNumberOfSplinePoints();
 
-    for (int32 i = 1; i < NumPoints; ++i)
-    {
-        FVector PrevPoint = Spline->GetLocationAtSplinePoint(i - 1, ESplineCoordinateSpace::World);
-        FVector CurPoint = Spline->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::World);
-        Length += FVector::Distance(PrevPoint, CurPoint);
-    }
+	for (int32 i = 1; i < NumPoints; ++i)
+	{
+		FVector PrevPoint = Spline->GetLocationAtSplinePoint(i - 1, ESplineCoordinateSpace::World);
+		FVector CurPoint = Spline->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::World);
+		Length += FVector::Distance(PrevPoint, CurPoint);
+	}
 
-    return Length;
+	return Length;
 }

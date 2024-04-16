@@ -9,6 +9,8 @@ AMeshActor::AMeshActor()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(GetRootComponent());
+
+	DistanceAlongSpline = 0.0f;
 }
 
 AMeshActor* AMeshActor::GetMeshActor()
@@ -19,4 +21,14 @@ AMeshActor* AMeshActor::GetMeshActor()
 void AMeshActor::SetMesh(UStaticMesh* NewMesh)
 {
 	Mesh->SetStaticMesh(NewMesh);
+}
+
+float AMeshActor::GetDistanceAlongSpline() const
+{
+	return DistanceAlongSpline;
+}
+
+void AMeshActor::SetDistanceAlongSpline(float NewDistance)
+{
+	DistanceAlongSpline = NewDistance;
 }
