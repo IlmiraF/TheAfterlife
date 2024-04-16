@@ -33,6 +33,8 @@ public:
 	virtual void OnBeamMoveForward(float value) override;
 	virtual void OnBeamMoveRight(float value) override;
 
+	virtual void OnDeath() override;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Camera")
@@ -49,4 +51,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character|Jumping")
 	float ZJumpForce = 500.0f;
+
+	virtual void OnStartAimingIternal() override;
+	virtual void OnStopAimingIternal() override;
 };
