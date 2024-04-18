@@ -86,11 +86,11 @@ UENUM(BlueprintType)
 enum  class EBossStateType : uint8
 {
 	NONE,
-	FirstStage,
+	Bird,
+	FlyUP,
+	FlyDOWN,
+	Concussion,
 	MeleeEnhancement,
 	MediumCombatEnhancement,
-	StrengtheningRangedCombat,
-	CombatPatternStandard,
-	CombatPatternPriorityRanged,
-	CombatPatternPriorityMelee
+	StrengtheningRangedCombat
 };

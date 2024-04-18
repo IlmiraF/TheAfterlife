@@ -3,6 +3,15 @@
 ABoss::ABoss(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	StateMachine = CreateDefaultSubobject<UStateMachine>("StateMachine");
+	StateResolver = CreateDefaultSubobject<UStateResolver>("StateResolver");
+
+	BirdState = CreateDefaultSubobject<UBirdState>("BirdState");
+	StateMachine->AddState(EBossStateType::Bird, BirdState);
+
+	FlyUPState = CreateDefaultSubobject<UFlyUPState>("FlyUPState");
+	StateMachine->AddState(EBossStateType::FlyUP, FlyUPState);
 }
 
 UBehaviorTree* ABoss::GetBehaviorTree() const
@@ -44,6 +53,7 @@ void ABoss::BeginPlay()
 	}
 
 	FirstStageHealth = Altars.Num();
+
 }
 
 void ABoss::TakeDamageFirstStage()

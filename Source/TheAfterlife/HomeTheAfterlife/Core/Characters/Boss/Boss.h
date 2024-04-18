@@ -9,7 +9,13 @@
 #include "../../Actors/Enemys/EnemyPoolObject.h"
 #include "Components/SplineComponent.h"
 #include "../../Actors/Environment/AAltar.h"
+#include "States/StateMachine.h"
+#include "States/StateResolver.h"
+#include "States/BirdState.h"
+#include "States/FlyUPState.h"
 #include "Boss.generated.h"
+
+
 
 UCLASS()
 class THEAFTERLIFE_API ABoss : public ABaseCharacter
@@ -53,6 +59,18 @@ protected:
 	//
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
 	//float FlySpeed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
+	UStateMachine* StateMachine;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
+	UStateResolver* StateResolver;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
+	UBirdState* BirdState;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
+	UFlyUPState* FlyUPState;
 
 private:
 

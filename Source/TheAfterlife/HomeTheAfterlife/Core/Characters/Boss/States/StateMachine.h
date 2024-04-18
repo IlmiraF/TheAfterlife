@@ -31,6 +31,8 @@ public:
 
 	void SwitchState(EBossStateType StateType);
 
+	void AddState(EBossStateType Type, UState* State);
+
 protected:
 
 	virtual void BeginPlay() override;
