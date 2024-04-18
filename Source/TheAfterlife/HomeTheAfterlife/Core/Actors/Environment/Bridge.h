@@ -29,11 +29,4 @@ protected:
 private:
 
 	void DisablingBridge();
-
-
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	UAudioComponent* BridgeAudioComponent;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Sound")
-	USoundBase* SoundDestruction;
 };

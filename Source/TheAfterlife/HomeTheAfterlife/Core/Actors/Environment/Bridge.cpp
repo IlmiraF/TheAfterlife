@@ -8,9 +8,6 @@ ABridge::ABridge()
 
 	BridgeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftDoor"));
 	BridgeMesh->SetupAttachment(GetRootComponent());
-
-	BridgeAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	BridgeAudioComponent->SetupAttachment(BridgeMesh);
 }
 
 void ABridge::BeginPlay()
@@ -22,9 +19,5 @@ void ABridge::BeginPlay()
 
 void ABridge::DisablingBridge()
 {
-	BridgeMesh->SetVisibility(false);
-	BridgeMesh->SetCollisionProfileName(CollisionProfileNoCollision);
-
-	BridgeAudioComponent->SetSound(SoundDestruction);
-	BridgeAudioComponent->Play();
+	Destroy();
 }

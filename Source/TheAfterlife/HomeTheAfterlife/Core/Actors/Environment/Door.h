@@ -34,10 +34,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* RightDoor;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Doors")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Doors")
 	float DoorOpenSpeed = 20.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Doors")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Doors")
 	float OpenAngle = 120.0f;
 
 	FOnDoorsOpening OnDoorsOpening;
