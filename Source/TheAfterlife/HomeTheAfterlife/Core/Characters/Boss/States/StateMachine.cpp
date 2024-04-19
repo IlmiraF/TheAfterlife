@@ -19,23 +19,12 @@ void UStateMachine::Enter()
 {
 	Super::Enter();
 
-	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Yellow, FString::Printf(TEXT("BRUH: %d"), static_cast<int32>(CurrentStateType)));
-	//if (IsValid(CurrentState))
-	//{
-	//	CurrentState = FindState(CurrentStateType);
-	//	CurrentState->Enter();
-	//	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Yellow, FString::Printf(TEXT("ENTER")));
-	//}
-	//else
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Yellow, FString::Printf(TEXT("BRUH")));
-	//}
-
-	CurrentState = FindState(CurrentStateType); // Возвращает nullptr
-	CurrentState->Enter();
-	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Yellow, FString::Printf(TEXT("ENTER")));
+	if (IsValid(CurrentState))
+	{
+		CurrentState = FindState(CurrentStateType);
+		CurrentState->Enter();
+	}
 }
-
 
 void UStateMachine::Exit()
 {

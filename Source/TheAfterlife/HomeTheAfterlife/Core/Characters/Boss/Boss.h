@@ -32,11 +32,6 @@ public:
 	UBehaviorTree* GetBehaviorTree() const;
 
 	void SpawnEnemy();
-
-	//void SplineMovement();
-
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spline", meta = (MakeEditWidget))
-	//USplineComponent* SplineComponent;
 	
 protected:
 
@@ -54,27 +49,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Altars")
 	TArray<AAltar*> Altars;
 
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
-	//float DistanceAlongSpline;
-	//
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
-	//float FlySpeed;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
-	UStateMachine* StateMachine;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
-	UStateResolver* StateResolver;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
-	UBirdState* BirdState;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
-	UFlyUPState* FlyUPState;
-
 private:
 
-	int32 FirstStageHealth;
+	int32 AmountAltars;
 
 	USkeletalMeshComponent* CachedSkeletalMesh;
 

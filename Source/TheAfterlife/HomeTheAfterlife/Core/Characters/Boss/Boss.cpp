@@ -3,15 +3,6 @@
 ABoss::ABoss(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	StateMachine = CreateDefaultSubobject<UStateMachine>("StateMachine");
-	StateResolver = CreateDefaultSubobject<UStateResolver>("StateResolver");
-
-	BirdState = CreateDefaultSubobject<UBirdState>("BirdState");
-	StateMachine->AddState(EBossStateType::Bird, BirdState);
-
-	FlyUPState = CreateDefaultSubobject<UFlyUPState>("FlyUPState");
-	StateMachine->AddState(EBossStateType::FlyUP, FlyUPState);
 }
 
 UBehaviorTree* ABoss::GetBehaviorTree() const
@@ -24,27 +15,9 @@ void ABoss::SpawnEnemy()
 	EnemyPoolObject->MakeEnemisVisible();
 }
 
-//void ABoss::SplineMovement()
-//{
-//	if (!SplineComponent)
-//	{
-//		return;
-//	}
-//
-//	DistanceAlongSpline += FlySpeed;
-//
-//	FVector CurrentSplineLocation = SplineComponent->GetLocationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World);
-//	FRotator CurrentSplineRotation = SplineComponent->GetRotationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World);
-//	CurrentSplineRotation = CurrentSplineRotation - FRotator(0.f, 90.0f, 0.f);
-//
-//	GetMesh()->SetWorldLocationAndRotation(CurrentSplineLocation, CurrentSplineRotation);
-//}
-
 void ABoss::BeginPlay()
 {
-	Super::BeginPlay();
-
-	//CachedSkeletalMesh = GetMesh();
+	Super::BeginPlay();;
 	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
 
 	for (AAltar* Altar : Altars)
@@ -52,17 +25,15 @@ void ABoss::BeginPlay()
 		Altar->OnAltarDestroyed.AddUObject(this, &ABoss::TakeDamageFirstStage);
 	}
 
-	FirstStageHealth = Altars.Num();
+	AmountAltars = Altars.Num();
 
 }
 
 void ABoss::TakeDamageFirstStage()
 {
-	FirstStageHealth--;
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Ox Blya"));
+	AmountAltars--;
 
-	if (FirstStageHealth <= 0)
+	if (AmountAltars <= 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Trash"));
 	}
 }
