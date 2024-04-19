@@ -33,4 +33,8 @@ private:
 	APlayerCharacter* CachedPlayer;
 
 	void SearchPlayer(const TArray<AActor*>& UpdatedActors);
+
+	void FinishFirstStage();
+
+	void CheckingEndFirstStage();
 };

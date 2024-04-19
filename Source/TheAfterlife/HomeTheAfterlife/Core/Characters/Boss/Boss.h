@@ -9,10 +9,6 @@
 #include "../../Actors/Enemys/EnemyPoolObject.h"
 #include "Components/SplineComponent.h"
 #include "../../Actors/Environment/AAltar.h"
-#include "States/StateMachine.h"
-#include "States/StateResolver.h"
-#include "States/BirdState.h"
-#include "States/FlyUPState.h"
 #include "Boss.generated.h"
 
 
@@ -32,6 +28,8 @@ public:
 	UBehaviorTree* GetBehaviorTree() const;
 
 	void SpawnEnemy();
+
+	bool AltarsIntact();
 	
 protected:
 
@@ -55,5 +53,5 @@ private:
 
 	USkeletalMeshComponent* CachedSkeletalMesh;
 
-	void TakeDamageFirstStage();
+	void DestructionAltars();
 };

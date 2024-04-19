@@ -15,6 +15,11 @@ void ABoss::SpawnEnemy()
 	EnemyPoolObject->MakeEnemisVisible();
 }
 
+bool ABoss::AltarsIntact()
+{
+	return AmountAltars>0;
+}
+
 void ABoss::BeginPlay()
 {
 	Super::BeginPlay();;
@@ -22,18 +27,14 @@ void ABoss::BeginPlay()
 
 	for (AAltar* Altar : Altars)
 	{
-		Altar->OnAltarDestroyed.AddUObject(this, &ABoss::TakeDamageFirstStage);
+		Altar->OnAltarDestroyed.AddUObject(this, &ABoss::DestructionAltars);
 	}
 
 	AmountAltars = Altars.Num();
 
 }
 
-void ABoss::TakeDamageFirstStage()
+void ABoss::DestructionAltars()
 {
 	AmountAltars--;
-
-	if (AmountAltars <= 0)
-	{
-	}
 }

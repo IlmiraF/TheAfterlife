@@ -1,4 +1,6 @@
 #include "BossAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "TheAfterlife/TheAfterlifeTypes.h"
 
 void ABossAIController::SetPawn(APawn* InPawn)
 {
@@ -8,7 +10,6 @@ void ABossAIController::SetPawn(APawn* InPawn)
 	{
 		checkf(InPawn->IsA<ABoss>(), TEXT("AAICharacterController::SetPawn GCAICharacterController can possess only GCAICharacter"));
 		CachedAIBoss = StaticCast<ABoss*>(InPawn);
-		
 	}
 	else
 	{
@@ -24,8 +25,9 @@ void ABossAIController::OnPossess(APawn* InPawn)
 void ABossAIController::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
 	Super::ActorsPerceptionUpdated(UpdatedActors);
-	
+
 	SearchPlayer(UpdatedActors);
+	CheckingEndFirstStage();
 }
 
 void ABossAIController::BeginPlay()
@@ -35,19 +37,38 @@ void ABossAIController::BeginPlay()
 
 void ABossAIController::SearchPlayer(const TArray<AActor*>& UpdatedActors)
 {
-	if (!IsValid(CachedPlayer))
+	if (IsValid(CachedPlayer))
 	{
-		for (AActor* Actor : UpdatedActors)
-		{
-			APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(Actor);
+		return;
+	}
 
-			if (PlayerCharacter && PlayerCharacter->IsPlayerControlled())
-			{
-				CachedPlayer = PlayerCharacter;
-				RunBehaviorTree(CachedAIBoss->GetBehaviorTree());
-				CachedAIBoss->SpawnEnemy();
-				break;
-			}
+	for (AActor* Actor : UpdatedActors)
+	{
+		APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(Actor);
+
+		if (PlayerCharacter && PlayerCharacter->IsPlayerControlled())
+		{
+			CachedPlayer = PlayerCharacter;
+			RunBehaviorTree(CachedAIBoss->GetBehaviorTree());
+			CachedAIBoss->SpawnEnemy();
+			break;
 		}
 	}
+
 }
+
+
+void ABossAIController::CheckingEndFirstStage()
+{
+	if (!CachedAIBoss->AltarsIntact())
+	{
+		FinishFirstStage();
+	}
+}
+
+
+void ABossAIController::FinishFirstStage()
+{
+	Blackboard->SetValueAsBool(BB_IsAltarsIntact, false);
+}
+
