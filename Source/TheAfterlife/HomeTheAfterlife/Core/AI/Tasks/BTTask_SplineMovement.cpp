@@ -26,7 +26,12 @@ EBTNodeResult::Type UBTTask_SplineMovement::ExecuteTask(UBehaviorTreeComponent& 
 		return EBTNodeResult::Failed;
 	}
 
-	//Boss->SplineMovement();
+	if (Blackboard->GetValueAsBool(BB_OnSpline))
+	{
+		return EBTNodeResult::Failed;
+	}
+
+	Boss->CanFlyToSpline = true;
 
 	return EBTNodeResult::Succeeded;
 }

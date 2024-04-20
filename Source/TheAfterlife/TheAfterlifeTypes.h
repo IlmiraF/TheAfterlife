@@ -22,7 +22,9 @@ const FName DebugCategoryCharacterAttributes = FName("CharacterAttributes");
 
 const FName BB_CurrentTarget = FName("CurrentTarget");
 const FName BB_NextLocation = FName("NextLocation");
-const FName BB_IsAltarsIntact = FName("IsAltarsIntact");
+const FName BB_AltarsDestroyed = FName("AltarsDestroyed");
+const FName BB_OnSpline = FName("OnSpline");
+const FName BB_BossConcussed = FName("BossConcussed");
 
 
 UENUM(BlueprintType)

@@ -57,7 +57,6 @@ void ABossAIController::SearchPlayer(const TArray<AActor*>& UpdatedActors)
 
 }
 
-
 void ABossAIController::CheckingEndFirstStage()
 {
 	if (!CachedAIBoss->AltarsIntact())
@@ -66,9 +65,8 @@ void ABossAIController::CheckingEndFirstStage()
 	}
 }
 
-
 void ABossAIController::FinishFirstStage()
 {
-	Blackboard->SetValueAsBool(BB_IsAltarsIntact, false);
+	Blackboard->SetValueAsBool(BB_AltarsDestroyed, false);
 }
 

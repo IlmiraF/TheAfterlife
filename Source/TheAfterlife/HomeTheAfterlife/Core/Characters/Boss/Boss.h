@@ -9,6 +9,7 @@
 #include "../../Actors/Enemys/EnemyPoolObject.h"
 #include "Components/SplineComponent.h"
 #include "../../Actors/Environment/AAltar.h"
+#include "../../Actors/Navigation/SplineActor.h"
 #include "Boss.generated.h"
 
 
@@ -30,6 +31,16 @@ public:
 	void SpawnEnemy();
 
 	bool AltarsIntact();
+
+	bool CanFlyToSpline = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
+	float FlySpeed = 300.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ASplineActor* SplineActor;
+
+	virtual void Tick(float DeltaTime) override;
 	
 protected:
 
@@ -54,4 +65,10 @@ private:
 	USkeletalMeshComponent* CachedSkeletalMesh;
 
 	void DestructionAltars();
+
+	float GetSplineLength();
+
+	void SplineMovement(float DeltaTime);
+
+	float DistanceAlongSpline;
 };
