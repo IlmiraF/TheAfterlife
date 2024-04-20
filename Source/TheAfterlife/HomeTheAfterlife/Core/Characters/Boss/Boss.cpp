@@ -64,36 +64,21 @@ void ABoss::SplineMovement(float DeltaTime)
 	}
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
-
-	float SplineLength = GetSplineLength();
+	
 	float NewDistance = DistanceAlongSpline + FlySpeed * DeltaTime;
-
-	//if (NewDistance >= SplineLength)
-	//{
-	//	NewDistance -= SplineLength;
-	//}
-	//else if (NewDistance < 0.0f)
-	//{
-	//	
-	// NewDistance += SplineLength;
-	//}
-
-	if (NewDistance >= SplineLength)
-	{
-		// Плавный переход от конца к началу сплайна
-		NewDistance = FMath::Fmod(NewDistance, SplineLength);
-	}
-	else if (NewDistance < 0.0f)
-	{
-		// Плавный переход от начала к концу сплайна
-		NewDistance = SplineLength - FMath::Abs(FMath::Fmod(NewDistance, SplineLength));
-	}
 
 	FVector NewLocation = SplineActor->GetSplineComponent()->GetLocationAtDistanceAlongSpline(NewDistance, ESplineCoordinateSpace::World);
 	FRotator NewRotation = SplineActor->GetSplineComponent()->GetRotationAtDistanceAlongSpline(NewDistance, ESplineCoordinateSpace::World);
 
 	SetActorLocationAndRotation(NewLocation, NewRotation);
+
 	DistanceAlongSpline = NewDistance;
+	float SplineLength = GetSplineLength();
+
+	if (DistanceAlongSpline >= SplineLength)
+	{
+		DistanceAlongSpline = 0;
+	}
 }
 
 float ABoss::GetSplineLength()
