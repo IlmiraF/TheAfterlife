@@ -1,14 +1,16 @@
-#include "BTTask_MakeInvulnerable.h"
+#include "BTTask_MakeVulnerable.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "../../Characters/Boss/Boss.h"
 
-UBTTask_MakeInvulnerable::UBTTask_MakeInvulnerable()
+
+UBTTask_MakeVulnerable::UBTTask_MakeVulnerable()
 {
-	NodeName = "MakeInvulnerableTask";
+	NodeName = "MakeVulnerableTask";
 }
 
-EBTNodeResult::Type UBTTask_MakeInvulnerable::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_MakeVulnerable::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
 
@@ -24,7 +26,7 @@ EBTNodeResult::Type UBTTask_MakeInvulnerable::ExecuteTask(UBehaviorTreeComponent
 		return EBTNodeResult::Failed;
 	}
 
-	Boss->SetInvulnerable(true);
+	Boss->SetInvulnerable(false);
 
 	return EBTNodeResult::Succeeded;
 }
