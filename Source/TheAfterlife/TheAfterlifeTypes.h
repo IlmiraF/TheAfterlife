@@ -23,7 +23,7 @@ const FName DebugCategoryCharacterAttributes = FName("CharacterAttributes");
 const FName BB_CurrentTarget = FName("CurrentTarget");
 const FName BB_NextLocation = FName("NextLocation");
 const FName BB_AltarsDestroyed = FName("AltarsDestroyed");
-const FName BB_OnSpline = FName("OnSpline");
+const FName BB_OnCircleSpline = FName("OnCirleSpline");
 const FName BB_BossConcussed = FName("BossConcussed");
 
 
@@ -86,14 +86,10 @@ enum  class ETeams: uint8
 };
 
 UENUM(BlueprintType)
-enum  class EBossStateType : uint8
+enum class EBirdFlinghtTypes : uint8
 {
 	NONE,
-	Bird,
-	FlyUP,
-	FlyDOWN,
-	Concussion,
-	MeleeEnhancement,
-	MediumCombatEnhancement,
-	StrengtheningRangedCombat
+	Rise,
+	FlyingInCircle,
+	MAX UMETA(Hidden)
 };

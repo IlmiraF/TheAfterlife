@@ -34,7 +34,7 @@ private:
 
 	void SearchPlayer(const TArray<AActor*>& UpdatedActors);
 
-	void FinishFirstStage();
+	void FirstStageCompleted();
 
-	void CheckingEndFirstStage();
+	void MovedToCircleSpline();
 };

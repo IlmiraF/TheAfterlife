@@ -1,15 +1,14 @@
-#include "BTTask_SplineMovement.h"
+#include "BTTask_MoveToSpline.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "..\..\Characters\Boss\Boss.h"
 
-
-UBTTask_SplineMovement::UBTTask_SplineMovement()
+UBTTask_MoveToSpline::UBTTask_MoveToSpline()
 {
-	NodeName = "SplineMovementTask";
+	NodeName = "MoveToCircleSplineTask";
 }
 
-EBTNodeResult::Type UBTTask_SplineMovement::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_MoveToSpline::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
@@ -26,12 +25,12 @@ EBTNodeResult::Type UBTTask_SplineMovement::ExecuteTask(UBehaviorTreeComponent& 
 		return EBTNodeResult::Failed;
 	}
 
-	if (!Blackboard->GetValueAsBool(BB_OnCircleSpline))
+	if (Blackboard->GetValueAsBool(BB_OnCircleSpline))
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	Boss->SwitchSplines(EBirdFlinghtTypes::FlyingInCircle);
+	Boss->SwitchSplines(EBirdFlinghtTypes::Rise);
 	Boss->SetSplineMovement(true);
 
 	return EBTNodeResult::Succeeded;

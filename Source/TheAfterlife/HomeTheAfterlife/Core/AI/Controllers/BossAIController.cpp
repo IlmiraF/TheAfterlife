@@ -27,12 +27,14 @@ void ABossAIController::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedAc
 	Super::ActorsPerceptionUpdated(UpdatedActors);
 
 	SearchPlayer(UpdatedActors);
-	CheckingEndFirstStage();
 }
 
 void ABossAIController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CachedAIBoss->OnFirstStageCompleted.AddUObject(this, &ABossAIController::FirstStageCompleted);
+	CachedAIBoss->OnMovedToCircleSpline.AddUObject(this, &ABossAIController::MovedToCircleSpline);
 }
 
 void ABossAIController::SearchPlayer(const TArray<AActor*>& UpdatedActors)
@@ -57,16 +59,13 @@ void ABossAIController::SearchPlayer(const TArray<AActor*>& UpdatedActors)
 
 }
 
-void ABossAIController::CheckingEndFirstStage()
-{
-	if (!CachedAIBoss->AltarsIntact())
-	{
-		FinishFirstStage();
-	}
-}
-
-void ABossAIController::FinishFirstStage()
+void ABossAIController::FirstStageCompleted()
 {
 	Blackboard->SetValueAsBool(BB_AltarsDestroyed, false);
+}
+
+void ABossAIController::MovedToCircleSpline()
+{
+	Blackboard->SetValueAsBool(BB_OnCircleSpline, true);
 }
 

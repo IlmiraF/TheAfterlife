@@ -14,7 +14,7 @@ struct FStateHolder
 {	
 	GENERATED_BODY()
 
-	EBossStateType Type;
+	//EBossStateType Type;
 	UState* State;
 };
 
@@ -29,9 +29,9 @@ public:
 
 	void Exit() override;
 
-	void SwitchState(EBossStateType StateType);
+	//void SwitchState(EBossStateType StateType);
 
-	void AddState(EBossStateType Type, UState* State);
+	//void AddState(EBossStateType Type, UState* State);
 
 protected:
 
@@ -46,12 +46,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
 	TArray<FStateHolder> States;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
-	EBossStateType CurrentStateType;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States")
+	//EBossStateType CurrentStateType;
 
 private:
 
 	UState* CurrentState;
 
-	UState* FindState(EBossStateType StateType);
+	//UState* FindState(EBossStateType StateType);
 };

@@ -13,6 +13,8 @@
 #include "Boss.generated.h"
 
 
+DECLARE_MULTICAST_DELEGATE(FOnFirstStageCompleted);
+DECLARE_MULTICAST_DELEGATE(FOnMovedToCircleSpline);
 
 UCLASS()
 class THEAFTERLIFE_API ABoss : public ABaseCharacter
@@ -30,17 +32,25 @@ public:
 
 	void SpawnEnemy();
 
-	bool AltarsIntact();
-
-	bool CanFlyToSpline = false;
+	bool bIsMovingToSpline = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
 	float FlySpeed = 300.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	ASplineActor* SplineActor;
+	ASplineActor* CircleSplineActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ASplineActor* RiseSplineActor;
 
 	virtual void Tick(float DeltaTime) override;
+
+	void SetSplineMovement(bool Value);
+
+	void SwitchSplines(EBirdFlinghtTypes FlyType);
+
+	FOnFirstStageCompleted OnFirstStageCompleted;
+	FOnMovedToCircleSpline OnMovedToCircleSpline;
 	
 protected:
 
@@ -66,9 +76,17 @@ private:
 
 	void DestructionAltars();
 
+	void FirstStageCompleted();
+
 	float GetSplineLength();
 
 	void SplineMovement(float DeltaTime);
 
-	float DistanceAlongSpline;
+	float DistanceAlongSpline = 0;
+
+	USplineComponent* CachedSplineComponent;
+
+	EBirdFlinghtTypes CurrentFlyType = EBirdFlinghtTypes::Rise;
+
+	void MovementAlongCompleted();
 };

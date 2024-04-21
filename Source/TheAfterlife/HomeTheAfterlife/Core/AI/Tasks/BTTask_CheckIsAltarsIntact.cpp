@@ -1,6 +1,8 @@
 #include "BTTask_CheckIsAltarsIntact.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "..\..\Characters\Boss\Boss.h"
+#include "../../Characters/Boss/Boss.h"
+#include "../../AI/Controllers/BossAIController.h"
+#include "TheAfterlife/TheAfterlifeTypes.h"
 
 UBTTask_CheckIsAltarsIntact::UBTTask_CheckIsAltarsIntact()
 {
@@ -17,14 +19,7 @@ EBTNodeResult::Type UBTTask_CheckIsAltarsIntact::ExecuteTask(UBehaviorTreeCompon
 		return EBTNodeResult::Failed;
 	}
 
-	ABoss* Boss = Cast<ABoss>(AIController->GetPawn());
-
-	if (!IsValid(Boss))
-	{
-		return EBTNodeResult::Failed;
-	}
-
-	if (Boss->AltarsIntact())
+	if (Blackboard->GetValueAsBool(BB_AltarsDestroyed))
 	{
 		return EBTNodeResult::Succeeded;
 	}
