@@ -15,6 +15,8 @@
 
 DECLARE_MULTICAST_DELEGATE(FOnFirstStageCompleted);
 DECLARE_MULTICAST_DELEGATE(FOnMovedToCircleSpline);
+DECLARE_MULTICAST_DELEGATE(FOnBossConcussed);
+DECLARE_MULTICAST_DELEGATE(FOnBossHasLanded);
 
 UCLASS()
 class THEAFTERLIFE_API ABoss : public ABaseCharacter
@@ -47,12 +49,19 @@ public:
 
 	void SetSplineMovement(bool Value);
 
+	void SetMovementToGround(bool Value);
+
 	void SwitchSplines(EBirdFlinghtTypes FlyType);
 
 	void SetInvulnerable(bool Value);
 
 	FOnFirstStageCompleted OnFirstStageCompleted;
+
 	FOnMovedToCircleSpline OnMovedToCircleSpline;
+
+	FOnBossConcussed OnBossConcussed;
+
+	FOnBossHasLanded OnBossHasLanded;
 	
 protected:
 
@@ -70,11 +79,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Altars")
 	TArray<AAltar*> Altars;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
+	FVector BossLocation;
+
 private:
 
 	int32 AmountAltars;
-
-	USkeletalMeshComponent* CachedSkeletalMesh;
 
 	void DestructionAltars();
 
@@ -84,6 +94,8 @@ private:
 
 	void SplineMovement(float DeltaTime);
 
+	void MoveToBossLocation(float DeltaTime);
+
 	float DistanceAlongSpline = 0;
 
 	USplineComponent* CachedSplineComponent;
@@ -91,4 +103,10 @@ private:
 	EBirdFlinghtTypes CurrentFlyType = EBirdFlinghtTypes::Rise;
 
 	void MovementAlongCompleted();
+
+	bool bOnGround = false;
+
+	bool bOnConcussed;
+
+	void BossConcussed();
 };

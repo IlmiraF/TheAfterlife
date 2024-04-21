@@ -22,11 +22,17 @@ void ABoss::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	SplineMovement(DeltaTime);
+	MoveToBossLocation(DeltaTime);
 }
 
 void ABoss::SetSplineMovement(bool Value)
 {
 	bIsMovingToSpline = Value;
+}
+
+void ABoss::SetMovementToGround(bool Value)
+{
+	bOnGround = !Value;
 }
 
 void ABoss::SwitchSplines(EBirdFlinghtTypes FlyType)
@@ -55,8 +61,6 @@ void ABoss::BeginPlay()
 
 	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
 
-	CachedSkeletalMesh = GetMesh();
-
 	for (AAltar* Altar : Altars)
 	{
 		Altar->OnAltarDestroyed.AddUObject(this, &ABoss::DestructionAltars);
@@ -69,10 +73,24 @@ void ABoss::DestructionAltars()
 {
 	AmountAltars--;
 
+	BossConcussed();
+	
+
 	if (AmountAltars<=0)
 	{
 		FirstStageCompleted();
 	}
+}
+
+void ABoss::BossConcussed()
+{
+	if (OnBossConcussed.IsBound())
+	{
+		OnBossConcussed.Broadcast();
+	}
+
+	bOnConcussed = true;
+	bIsMovingToSpline = false;
 }
 
 void ABoss::FirstStageCompleted()
@@ -86,11 +104,6 @@ void ABoss::FirstStageCompleted()
 void ABoss::SplineMovement(float DeltaTime)
 {	
 	if (!bIsMovingToSpline)
-	{
-		return;
-	}
-
-	if (!IsValid(CachedSkeletalMesh))
 	{
 		return;
 	}
@@ -141,4 +154,37 @@ float ABoss::GetSplineLength()
 	}
 
 	return Length;
+}
+
+
+void ABoss::MoveToBossLocation(float DeltaTime)
+{	
+	if (!bOnConcussed)
+	{
+		return;
+	}
+
+	if (bOnGround)
+	{
+		return;
+	}
+
+	if (!GetActorLocation().Equals(BossLocation, 10.0f))
+	{
+		FVector Direction = (BossLocation - GetActorLocation()).GetSafeNormal();
+
+		FVector NewLocation = GetActorLocation() + (Direction * FlySpeed * DeltaTime);
+		FRotator NewRotation = Direction.Rotation();
+
+		SetActorLocationAndRotation(NewLocation, NewRotation);
+	}
+	else
+	{	
+		bOnGround = true;
+
+		if (OnBossHasLanded.IsBound())
+		{
+			OnBossHasLanded.Broadcast();
+		}
+	}
 }

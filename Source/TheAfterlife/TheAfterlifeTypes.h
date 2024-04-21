@@ -25,6 +25,7 @@ const FName BB_NextLocation = FName("NextLocation");
 const FName BB_AltarsDestroyed = FName("AltarsDestroyed");
 const FName BB_OnCircleSpline = FName("OnCirleSpline");
 const FName BB_BossConcussed = FName("BossConcussed");
+const FName BB_OnGround = FName("OnGround");
 
 
 UENUM(BlueprintType)
