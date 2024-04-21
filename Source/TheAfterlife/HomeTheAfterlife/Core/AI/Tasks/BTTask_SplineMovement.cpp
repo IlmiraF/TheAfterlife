@@ -31,6 +31,11 @@ EBTNodeResult::Type UBTTask_SplineMovement::ExecuteTask(UBehaviorTreeComponent& 
 		return EBTNodeResult::Failed;
 	}
 
+	if (Blackboard->GetValueAsBool(BB_BossConcussed))
+	{
+		return EBTNodeResult::Failed;
+	}
+
 	Boss->SwitchSplines(EBirdFlinghtTypes::FlyingInCircle);
 	Boss->SetSplineMovement(true);
 

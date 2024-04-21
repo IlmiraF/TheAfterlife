@@ -108,6 +108,8 @@ void ABoss::SplineMovement(float DeltaTime)
 		return;
 	}
 
+	
+
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
 	
 	float NewDistance = DistanceAlongSpline + FlySpeed * DeltaTime;
