@@ -15,6 +15,7 @@ class THEAFTERLIFE_API UCharacterAttributeComponent : public UActorComponent, pu
 	GENERATED_BODY()
 
 public:
+
 	UCharacterAttributeComponent();
 
 	FOnDeathEventSignature OnDeathEvent;
@@ -36,6 +37,8 @@ public:
 
 	void RestoreHealth();
 
+	void SetInvulnerable(bool Value);
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -45,6 +48,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Health")
 	USoundBase* HealthStealingAudio;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool Invulnerable = false;
 
 private:
 

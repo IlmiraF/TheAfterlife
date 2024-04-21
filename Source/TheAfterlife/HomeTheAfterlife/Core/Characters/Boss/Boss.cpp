@@ -1,6 +1,7 @@
 #include "Boss.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+
 ABoss::ABoss(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -40,6 +41,11 @@ void ABoss::SwitchSplines(EBirdFlinghtTypes FlyType)
 		CachedSplineComponent = RiseSplineActor->GetSplineComponent();
 		CurrentFlyType = EBirdFlinghtTypes::Rise;
 	}
+}
+
+void ABoss::SetInvulnerable(bool Value)
+{
+	GetCharacterAttributeComponent() ->SetInvulnerable(Value);
 }
 
 

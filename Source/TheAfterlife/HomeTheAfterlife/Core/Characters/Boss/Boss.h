@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -10,6 +9,7 @@
 #include "Components/SplineComponent.h"
 #include "../../Actors/Environment/AAltar.h"
 #include "../../Actors/Navigation/SplineActor.h"
+#include "../../Components/CharacterComponents/CharacterAttributeComponent.h"
 #include "Boss.generated.h"
 
 
@@ -48,6 +48,8 @@ public:
 	void SetSplineMovement(bool Value);
 
 	void SwitchSplines(EBirdFlinghtTypes FlyType);
+
+	void SetInvulnerable(bool Value);
 
 	FOnFirstStageCompleted OnFirstStageCompleted;
 	FOnMovedToCircleSpline OnMovedToCircleSpline;

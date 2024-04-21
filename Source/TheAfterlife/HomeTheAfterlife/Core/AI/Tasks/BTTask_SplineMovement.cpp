@@ -1,7 +1,7 @@
 #include "BTTask_SplineMovement.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "..\..\Characters\Boss\Boss.h"
+#include "../../Characters/Boss/Boss.h"
 
 
 UBTTask_SplineMovement::UBTTask_SplineMovement()

@@ -35,6 +35,11 @@ void UCharacterAttributeComponent::RestoreHealth()
 	Health = MaxHealth;
 }
 
+void UCharacterAttributeComponent::SetInvulnerable(bool Value)
+{
+	Invulnerable = Value;
+}
+
 void UCharacterAttributeComponent::OnLevelDeserialized_Implementation()
 {
 	OnHealthChanged();
@@ -92,6 +97,11 @@ void UCharacterAttributeComponent::OnHealthStealing()
 void UCharacterAttributeComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {	
 	if (!IsAlive())
+	{
+		return;
+	}
+
+	if (Invulnerable)
 	{
 		return;
 	}
