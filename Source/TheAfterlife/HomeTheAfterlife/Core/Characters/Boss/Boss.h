@@ -14,9 +14,10 @@
 
 
 DECLARE_MULTICAST_DELEGATE(FOnFirstStageCompleted);
-DECLARE_MULTICAST_DELEGATE(FOnMovedToCircleSpline);
-DECLARE_MULTICAST_DELEGATE(FOnBossConcussed);
-DECLARE_MULTICAST_DELEGATE(FOnBossHasLanded);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMovedToCircleSpline, bool);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossConcussed, bool);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossHasLanded, bool);
+
 
 UCLASS()
 class THEAFTERLIFE_API ABoss : public ABaseCharacter
@@ -55,6 +56,8 @@ public:
 
 	void SetInvulnerable(bool Value);
 
+	void Concussion();
+
 	FOnFirstStageCompleted OnFirstStageCompleted;
 
 	FOnMovedToCircleSpline OnMovedToCircleSpline;
@@ -81,6 +84,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
 	FVector BossLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Concussion")
+	float TimeConcussion;
 
 private:
 
@@ -109,4 +115,10 @@ private:
 	bool bOnConcussed;
 
 	void BossConcussed();
+
+	FTimerHandle ConcussionTimerHandle;
+
+	void ReturnToBird();
+
+	bool bIsConcussionTimerRunning = false;
 };

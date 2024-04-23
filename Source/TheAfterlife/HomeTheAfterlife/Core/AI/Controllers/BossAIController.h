@@ -36,9 +36,9 @@ private:
 
 	void FirstStageCompleted();
 
-	void MovedToCircleSpline();
+	void MovedToCircleSpline(bool MovedToSpline);
 
-	void BossConcussed();
+	void BossConcussed(bool Concussed);
 
-	void BossHasLanded();
+	void BossHasLanded(bool Landed);
 };

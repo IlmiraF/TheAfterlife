@@ -54,6 +54,20 @@ void ABoss::SetInvulnerable(bool Value)
 	GetCharacterAttributeComponent() ->SetInvulnerable(Value);
 }
 
+void ABoss::Concussion()
+{
+	if (bIsConcussionTimerRunning)
+	{
+		return;
+	}
+
+	bIsConcussionTimerRunning = true;
+
+	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
+
+	GetWorld()->GetTimerManager().SetTimer(ConcussionTimerHandle, this, &ABoss::ReturnToBird, TimeConcussion, false);
+}
+
 
 void ABoss::BeginPlay()
 {
@@ -83,14 +97,41 @@ void ABoss::DestructionAltars()
 }
 
 void ABoss::BossConcussed()
-{
-	if (OnBossConcussed.IsBound())
-	{
-		OnBossConcussed.Broadcast();
-	}
-
+{	
 	bOnConcussed = true;
 	bIsMovingToSpline = false;
+
+	if (OnBossConcussed.IsBound())
+	{	
+		OnBossConcussed.Broadcast(bOnConcussed);
+	}
+}
+
+void ABoss::ReturnToBird()
+{
+	bIsConcussionTimerRunning = false;
+
+	bOnConcussed = false;
+	bOnGround = false;
+	bIsMovingToSpline = true;
+
+	if (OnMovedToCircleSpline.IsBound())
+	{
+		OnMovedToCircleSpline.Broadcast(bIsMovingToSpline);
+	}
+	
+	if (OnBossConcussed.IsBound())
+	{
+		OnBossConcussed.Broadcast(bOnConcussed);
+	}
+
+	if (OnBossHasLanded.IsBound())
+	{
+		OnBossHasLanded.Broadcast(bOnGround);
+	}
+
+	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
+	CurrentFlyType = EBirdFlinghtTypes::Rise;
 }
 
 void ABoss::FirstStageCompleted()
@@ -107,8 +148,6 @@ void ABoss::SplineMovement(float DeltaTime)
 	{
 		return;
 	}
-
-	
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
 	
@@ -138,7 +177,7 @@ void ABoss::MovementAlongCompleted()
 	{
 		if (OnMovedToCircleSpline.IsBound())
 		{
-			OnMovedToCircleSpline.Broadcast();
+			OnMovedToCircleSpline.Broadcast(true);
 		}
 	}
 }
@@ -186,7 +225,7 @@ void ABoss::MoveToBossLocation(float DeltaTime)
 
 		if (OnBossHasLanded.IsBound())
 		{
-			OnBossHasLanded.Broadcast();
+			OnBossHasLanded.Broadcast(bOnGround);
 		}
 	}
 }

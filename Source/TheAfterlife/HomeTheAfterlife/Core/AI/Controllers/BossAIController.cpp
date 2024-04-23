@@ -66,18 +66,18 @@ void ABossAIController::FirstStageCompleted()
 	Blackboard->SetValueAsBool(BB_AltarsDestroyed, true);
 }
 
-void ABossAIController::MovedToCircleSpline()
+void ABossAIController::MovedToCircleSpline(bool MovedToSpline)
 {
-	Blackboard->SetValueAsBool(BB_OnCircleSpline, true);
+	Blackboard->SetValueAsBool(BB_OnCircleSpline, MovedToSpline);
 }
 
-void ABossAIController::BossConcussed()
-{
-	Blackboard->SetValueAsBool(BB_BossConcussed, true);
+void ABossAIController::BossConcussed(bool Concussed)
+{	
+	Blackboard->SetValueAsBool(BB_BossConcussed, Concussed);
 }
 
-void ABossAIController::BossHasLanded()
+void ABossAIController::BossHasLanded(bool Landed)
 {
-	Blackboard->SetValueAsBool(BB_OnGround, true);
+	Blackboard->SetValueAsBool(BB_OnGround, Landed);
 }
 
