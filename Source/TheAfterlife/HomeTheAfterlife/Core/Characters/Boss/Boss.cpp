@@ -36,7 +36,7 @@ void ABoss::SetMovementToGround(bool Value)
 }
 
 void ABoss::SwitchSplines(EBirdFlinghtTypes FlyType)
-{
+{	
 	if (FlyType == EBirdFlinghtTypes::FlyingInCircle)
 	{
 		CachedSplineComponent = CircleSplineActor->GetSplineComponent();
@@ -108,16 +108,16 @@ void ABoss::BossConcussed()
 }
 
 void ABoss::ReturnToBird()
-{
+{	
+	DistanceAlongSpline = 0;
 	bIsConcussionTimerRunning = false;
 
 	bOnConcussed = false;
 	bOnGround = false;
-	bIsMovingToSpline = true;
 
 	if (OnMovedToCircleSpline.IsBound())
 	{
-		OnMovedToCircleSpline.Broadcast(bIsMovingToSpline);
+		OnMovedToCircleSpline.Broadcast(false);
 	}
 	
 	if (OnBossConcussed.IsBound())
@@ -174,7 +174,7 @@ void ABoss::MovementAlongCompleted()
 		DistanceAlongSpline = 0;
 	}
 	else if (CurrentFlyType == EBirdFlinghtTypes::Rise)
-	{
+	{	
 		if (OnMovedToCircleSpline.IsBound())
 		{
 			OnMovedToCircleSpline.Broadcast(true);

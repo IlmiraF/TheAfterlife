@@ -67,7 +67,7 @@ void ABossAIController::FirstStageCompleted()
 }
 
 void ABossAIController::MovedToCircleSpline(bool MovedToSpline)
-{
+{	
 	Blackboard->SetValueAsBool(BB_OnCircleSpline, MovedToSpline);
 }
 
