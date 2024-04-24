@@ -88,6 +88,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Concussion")
 	float TimeConcussion;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Concussion")
+	float ConcussionDamage;
+
 private:
 
 	int32 AmountAltars;

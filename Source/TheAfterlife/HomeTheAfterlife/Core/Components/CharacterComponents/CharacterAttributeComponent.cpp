@@ -51,6 +51,12 @@ void UCharacterAttributeComponent::AddHealth(float HealthToAdd)
 	OnHealthChanged();
 }
 
+void UCharacterAttributeComponent::ReduceHealth(float Damage)
+{
+	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
+	OnHealthChanged();
+}
+
 void UCharacterAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();

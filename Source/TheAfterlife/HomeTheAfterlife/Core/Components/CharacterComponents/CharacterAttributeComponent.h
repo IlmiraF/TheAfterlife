@@ -31,6 +31,8 @@ public:
 
 	void AddHealth(float HealthToAdd);
 
+	void ReduceHealth(float Damage);
+
 	float GetBalancePercent() const;
 
 	void StealHealth(float HealthStealingRatio);

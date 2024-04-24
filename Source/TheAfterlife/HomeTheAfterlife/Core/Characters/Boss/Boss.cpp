@@ -65,6 +65,8 @@ void ABoss::Concussion()
 
 	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
 
+	GetCharacterAttributeComponent()->ReduceHealth(ConcussionDamage);
+
 	GetWorld()->GetTimerManager().SetTimer(ConcussionTimerHandle, this, &ABoss::ReturnToBird, TimeConcussion, false);
 }
 
