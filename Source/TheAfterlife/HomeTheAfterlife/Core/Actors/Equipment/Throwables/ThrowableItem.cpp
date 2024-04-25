@@ -1,6 +1,7 @@
 #include "ThrowableItem.h"
 #include "../../../Characters/BaseCharacter.h"
 #include "../../../Actors/Projectiles/Projectile.h"
+#include "TheAfterlife/TheAfterlifeTypes.h"
 
 void AThrowableItem::StartThrow()
 {
@@ -43,7 +44,7 @@ void AThrowableItem::Throw()
 	
 	FVector LaunchDirection = ViewDirection + FMath::Tan(FMath::DegreesToRadians(ThrowAngle)) * ViewUpVector;
 
-	FVector ThrowableSocketLocaction = CharacterOwner->GetMesh()->GetSocketLocation("hand_right_collision");
+	FVector ThrowableSocketLocaction = CharacterOwner->GetMesh()->GetSocketLocation(HandSocket);
 
 	AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ThrowableSocketLocaction, FRotator::ZeroRotator);
 

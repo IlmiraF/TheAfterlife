@@ -37,9 +37,9 @@ protected:
 	float ThrowAngle = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Throwables | Ammo", meta = (UIMin = 0, ClampMin = 0));
-	int32 MaxAmmo = 5;
+	int32 MaxAmmo = 10000000;
 
 private: 
 
-	int32 CurrentAmmo = 3;
+	int32 CurrentAmmo = 10000000;
 };

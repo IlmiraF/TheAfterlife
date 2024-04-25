@@ -17,6 +17,7 @@ DECLARE_MULTICAST_DELEGATE(FOnFirstStageCompleted);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMovedToCircleSpline, bool);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossConcussed, bool);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossHasLanded, bool);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossIsBoy, bool);
 
 
 UCLASS()
@@ -65,6 +66,8 @@ public:
 	FOnBossConcussed OnBossConcussed;
 
 	FOnBossHasLanded OnBossHasLanded;
+
+	FOnBossIsBoy OnBossIsBoy;
 	
 protected:
 
@@ -90,6 +93,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Concussion")
 	float ConcussionDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boosters")
+	float BoosterMeleeDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boosters")
+	float BoosterBombDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boosters")
+	float BoosterBulletDamage;
 
 private:
 
@@ -124,4 +136,14 @@ private:
 	void ReturnToBird();
 
 	bool bIsConcussionTimerRunning = false;
+
+	void ChangeHealth(float newHealthPercent);
+
+	bool FirstPhase = true;
+	bool SecondPhase = false;
+	bool ThirdPhase = false;
+
+	void NewPhase();
+
+	void BoosterSelection();
 };

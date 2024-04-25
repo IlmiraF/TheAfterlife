@@ -2,9 +2,9 @@
 
 #include "BTTask_CheckPlayerIsAlive.h"
 #include "AIController.h"
-#include "BehaviorTree\BlackboardComponent.h"
-#include "../../Characters\BaseCharacter.h"
-#include "../../Components\CharacterComponents\CharacterAttributeComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "../../Characters/BaseCharacter.h"
+#include "../../Components/CharacterComponents/CharacterAttributeComponent.h"
 
 UBTTask_CheckPlayerIsAlive::UBTTask_CheckPlayerIsAlive()
 {

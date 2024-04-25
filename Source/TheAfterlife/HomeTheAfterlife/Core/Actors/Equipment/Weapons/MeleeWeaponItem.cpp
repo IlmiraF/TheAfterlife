@@ -75,6 +75,16 @@ void AMeleeWeaponItem::SetCharacter(ABaseCharacter* BaseCharacter)
 	CachedBaseCharacter = BaseCharacter;
 }
 
+void AMeleeWeaponItem::SetBoosterDamage(float Multiplier)
+{
+	BoosterDamage *= Multiplier;
+}
+
+void AMeleeWeaponItem::SetDefaultBoosterDamage()
+{
+	BoosterDamage = 1;
+}
+
 void AMeleeWeaponItem::BeginPlay()
 {
 	Super::BeginPlay();
@@ -117,7 +127,7 @@ void AMeleeWeaponItem::ProcessHit(const FHitResult& HitResult, const FVector& Hi
 
 	ABaseCharacter* CharacterOwner = GetCharacterOwner();
 	AController* Controller = IsValid(CharacterOwner) ? CharacterOwner->GetController<AController>() : nullptr;
-	HitActor->TakeDamage(CurrentAttack->DamageAmount, DamageEvent, Controller, GetOwner());
+	HitActor->TakeDamage(CurrentAttack->DamageAmount * BoosterDamage, DamageEvent, Controller, GetOwner());
 
 	HitActors.Add(HitActor);
 }

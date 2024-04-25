@@ -1,5 +1,7 @@
 #include "Boss.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
+#include "../../Actors/Equipment/Weapons/MeleeWeaponItem.h"
 
 
 ABoss::ABoss(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -83,6 +85,8 @@ void ABoss::BeginPlay()
 	}
 
 	AmountAltars = Altars.Num();
+
+	GetCharacterAttributeComponent()->OnHealthChangedEvent.AddUObject(this, &ABoss::ChangeHealth);
 }
 
 void ABoss::DestructionAltars()
@@ -134,6 +138,52 @@ void ABoss::ReturnToBird()
 
 	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
 	CurrentFlyType = EBirdFlinghtTypes::Rise;
+}
+
+void ABoss::ChangeHealth(float newHealthPercent)
+{
+	if (newHealthPercent <= 66.6 && newHealthPercent > 33.3 && SecondPhase == false)
+	{
+		SecondPhase = true;
+		NewPhase();
+	}
+	else if (newHealthPercent <= 33.3 && newHealthPercent > 0 && ThirdPhase == false)
+	{
+		SecondPhase = true;
+		NewPhase();
+	}
+}
+
+void ABoss::NewPhase()
+{
+	if (OnBossIsBoy.IsBound())
+	{
+		OnBossIsBoy.Broadcast(false);
+	}
+
+	BoosterSelection();
+
+}
+
+void ABoss::BoosterSelection()
+{
+
+	EDamageType DamageType = GetCharacterAttributeComponent()->GetMostDamagingType();
+
+	if (DamageType == EDamageType::Bullet)
+	{	
+		GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
+	}
+	else if(DamageType == EDamageType::Explosive)
+	{	
+		GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
+	}
+	else if (DamageType == EDamageType::Melee)
+	{
+		GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetBoosterDamage(BoosterMeleeDamage);
+	}
+
+	GetCharacterAttributeComponent()->ClearDamageCounters();
 }
 
 void ABoss::FirstStageCompleted()

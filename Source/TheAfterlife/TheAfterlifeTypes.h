@@ -27,6 +27,8 @@ const FName BB_OnCircleSpline = FName("OnCirleSpline");
 const FName BB_BossConcussed = FName("BossConcussed");
 const FName BB_OnGround = FName("OnGround");
 
+const FName HandSocket = FName(TEXT("PickableItem"));
+
 
 UENUM(BlueprintType)
 enum class EEquipableItemType : uint8
@@ -92,5 +94,13 @@ enum class EBirdFlinghtTypes : uint8
 	NONE,
 	Rise,
 	FlyingInCircle,
+	MAX UMETA(Hidden)
+};
+
+enum class EDamageType : uint8
+{
+	Bullet,      // Пуля
+	Explosive,   // Взрыв
+	Melee,       // Рукопашный
 	MAX UMETA(Hidden)
 };

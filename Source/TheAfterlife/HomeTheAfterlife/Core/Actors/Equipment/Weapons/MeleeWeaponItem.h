@@ -45,6 +45,10 @@ public:
 
 	void SetCharacter(ABaseCharacter* BaseCharacter);
 
+	void SetBoosterDamage(float Multiplier);
+
+	void SetDefaultBoosterDamage();
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Melee attack")
@@ -67,4 +71,6 @@ private:
 	bool bIsAttacking;
 
 	TWeakObjectPtr<class ABaseCharacter> CachedBaseCharacter;
+
+	float BoosterDamage;
 };

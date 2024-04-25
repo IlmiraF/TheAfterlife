@@ -40,6 +40,14 @@ void UCharacterAttributeComponent::SetInvulnerable(bool Value)
 	Invulnerable = Value;
 }
 
+void UCharacterAttributeComponent::ClearDamageCounters()
+{
+	for (uint8 i = 1; i < (uint8)EDamageType::MAX; ++i)
+	{
+		DamageCounters[i] = 0;
+	}
+}
+
 void UCharacterAttributeComponent::OnLevelDeserialized_Implementation()
 {
 	OnHealthChanged();
@@ -112,8 +120,45 @@ void UCharacterAttributeComponent::OnTakeAnyDamage(AActor* DamagedActor, float D
 		return;
 	}
 
-	UE_LOG(LogDamage, Warning, TEXT("UCharacterAttributesComponent::OnTakeAnyDamage %s recevied %.2f amount of damage from %s"), *CachedBaseCharacterOwner->GetName(), Damage, *DamageCauser->GetName());
+	UE_LOG(LogDamage, Warning, TEXT("AAltar::OnTakeAnyDamag %s recevied %.2f amount of damage from %s  type %s"), *DamagedActor->GetName(), Damage, *DamageCauser->GetName(), *DamageType->GetName());
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
+
+	UpdateDamageCounters(DamageType->GetName(), Damage);
 
 	OnHealthChanged();
 }
+
+void UCharacterAttributeComponent::UpdateDamageCounters(FString DamageType, float Damage)
+{
+	if (DamageType == FString("DT_Bullet"))
+	{
+		DamageCounters[(uint8)EDamageType::Bullet] += Damage;
+	}
+	else if (DamageType == FString("DT_Explosive"))
+	{
+		DamageCounters[(uint8)EDamageType::Explosive] += Damage;
+	}
+	else if (DamageType == FString("DT_Melee"))
+	{
+		DamageCounters[(uint8)EDamageType::Melee] += Damage;
+	}
+}
+
+EDamageType UCharacterAttributeComponent::GetMostDamagingType() const
+{
+	EDamageType MostDamagingType = EDamageType::Bullet;
+	float MaxDamage = DamageCounters[(uint8)EDamageType::Bullet];
+
+	for (uint8 i = 1; i < (uint8)EDamageType::MAX; ++i)
+	{
+		if (DamageCounters[i] > MaxDamage)
+		{
+			MaxDamage = DamageCounters[i];
+			MostDamagingType = (EDamageType)i;
+		}
+	}
+
+	return MostDamagingType;
+}
+
+
