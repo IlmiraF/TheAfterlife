@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
 #include "TheAfterlife\TheAfterlifeTypes.h"
-#include "..\..\Components\CharacterComponents\CharacterEquipmentComponent.h"
+#include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "BTTask_EquipItem.generated.h"
 
 /**

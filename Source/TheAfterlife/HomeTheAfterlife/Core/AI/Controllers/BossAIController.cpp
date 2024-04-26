@@ -54,6 +54,7 @@ void ABossAIController::SearchPlayer(const TArray<AActor*>& UpdatedActors)
 		{
 			CachedPlayer = PlayerCharacter;
 			RunBehaviorTree(CachedAIBoss->GetBehaviorTree());
+			Blackboard->SetValueAsObject(BB_CurrentTarget, CachedPlayer);
 			CachedAIBoss->SpawnEnemy();
 			break;
 		}

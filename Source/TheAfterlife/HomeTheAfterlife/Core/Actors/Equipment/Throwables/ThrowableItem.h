@@ -39,7 +39,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Throwables | Ammo", meta = (UIMin = 0, ClampMin = 0));
 	int32 MaxAmmo = 10000000;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Throwables")
+	float RechargeTime = 1.0f;
+
 private: 
 
+	FTimerHandle RechargeTimerHandle;
+
 	int32 CurrentAmmo = 10000000;
+
+	bool bCanThrow = true;
+
+	void RechargeIsOver();
 };

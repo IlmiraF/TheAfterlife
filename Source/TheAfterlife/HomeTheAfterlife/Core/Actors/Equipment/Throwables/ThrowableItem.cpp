@@ -54,7 +54,10 @@ void AThrowableItem::Throw()
 		Projectile->LaunchProjectile(LaunchDirection.GetSafeNormal());
 	}
 
+	bCanThrow = false;
 	SetAmmo(GetAmmo() - 1);
+
+	GetWorld()->GetTimerManager().SetTimer(RechargeTimerHandle, this, &AThrowableItem::RechargeIsOver, RechargeTime, false);
 }
 
 int32 AThrowableItem::GetAmmo() const
@@ -74,5 +77,10 @@ void AThrowableItem::SetAmmo(int32 NewAmmo)
 
 bool AThrowableItem::CanThrow()
 {
-	return CurrentAmmo > 0;
+	return bCanThrow;
+}
+
+void AThrowableItem::RechargeIsOver()
+{
+	bCanThrow = true;
 }

@@ -77,7 +77,7 @@ void ABoss::BeginPlay()
 {
 	Super::BeginPlay();;
 
-	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
+	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
 
 	for (AAltar* Altar : Altars)
 	{

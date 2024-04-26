@@ -35,8 +35,13 @@ EBTNodeResult::Type UBTTask_CheckDistance::ExecuteTask(UBehaviorTreeComponent& O
 		return EBTNodeResult::Failed;
 	}
 
+	float Dist = FVector::Dist(CurrentTarget->GetActorLocation(), Character->GetActorLocation());
 	float DistSq = FVector::DistSquared(CurrentTarget->GetActorLocation(), Character->GetActorLocation());
 
+	//UE_LOG(LogDamage, Warning, TEXT("Disntance: %f"), Dist);
+
+
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("Distance: %f"), Dist));
 
 	if (DistSq > FMath::Square(MaxDistance))
 	{
