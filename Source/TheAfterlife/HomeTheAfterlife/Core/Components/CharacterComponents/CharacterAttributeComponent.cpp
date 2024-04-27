@@ -129,17 +129,20 @@ void UCharacterAttributeComponent::OnTakeAnyDamage(AActor* DamagedActor, float D
 }
 
 void UCharacterAttributeComponent::UpdateDamageCounters(FString DamageType, float Damage)
-{
-	if (DamageType == FString("DT_Bullet"))
-	{
+{	
+	UE_LOG(LogDamage, Warning, TEXT("UpdateDamageCounters"));
+
+	if (DamageType == FString("Default__DT_Bullet_C"))
+	{	;
 		DamageCounters[(uint8)EDamageType::Bullet] += Damage;
 	}
-	else if (DamageType == FString("DT_Explosive"))
-	{
+	else if (DamageType == FString("Default__DT_Explosion_C"))
+	{	
 		DamageCounters[(uint8)EDamageType::Explosive] += Damage;
+
 	}
-	else if (DamageType == FString("DT_Melee"))
-	{
+	else if (DamageType == FString("Default__DT_Melee_C"))
+	{	
 		DamageCounters[(uint8)EDamageType::Melee] += Damage;
 	}
 }

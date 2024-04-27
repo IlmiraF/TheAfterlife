@@ -2,6 +2,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "../../Actors/Equipment/Weapons/MeleeWeaponItem.h"
+#include "../../Actors/Equipment/Weapons/RangeWeaponItem.h"
 
 
 ABoss::ABoss(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -153,15 +154,15 @@ void ABoss::ReturnToBird()
 }
 
 void ABoss::ChangeHealth(float newHealthPercent)
-{
+{	
 	if (newHealthPercent <= 66.6 && newHealthPercent > 33.3 && SecondPhase == false)
 	{
 		SecondPhase = true;
 		NewPhase();
 	}
 	else if (newHealthPercent <= 33.3 && newHealthPercent > 0 && ThirdPhase == false)
-	{
-		SecondPhase = true;
+	{	
+		ThirdPhase = true;
 		NewPhase();
 	}
 }
@@ -174,28 +175,29 @@ void ABoss::NewPhase()
 	}
 
 	BoosterSelection();
-
 }
 
 void ABoss::BoosterSelection()
 {
-
-	//EDamageType DamageType = GetCharacterAttributeComponent()->GetMostDamagingType();
-	//
-	//if (DamageType == EDamageType::Bullet)
-	//{	
-	//	GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
-	//}
-	//else if(DamageType == EDamageType::Explosive)
-	//{	
-	//	GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
-	//}
-	//else if (DamageType == EDamageType::Melee)
-	//{
-	//	GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetBoosterDamage(BoosterMeleeDamage);
-	//}
-	//
-	//GetCharacterAttributeComponent()->ClearDamageCounters();
+	EDamageType DamageType = GetCharacterAttributeComponent()->GetMostDamagingType();	//ÄÎ ÑÞÄÀ ÂÑ¨ ÐÀÁÎÒÀÅÒ, ÍÀÑÒÐÎÈÒÜ ÓÑÈËÈÒÅËÈ
+	
+	
+	if (DamageType == EDamageType::Bullet)
+	{	
+		GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
+		GetCharacterEquipmentComponent()->GetCurrentRangeWeapon()->SetWeaponBooster(BoosterBulletDamage, ShootingAccuracyBooster);
+	}
+	else if(DamageType == EDamageType::Explosive)
+	{	
+		//GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
+	}
+	else if (DamageType == EDamageType::Melee)
+	{
+		GetCharacterEquipmentComponent()->GetCurrentRangeWeapon()->SetDefaultWeaponBooster();
+		GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetBoosterDamage(BoosterMeleeDamage);
+	}
+	
+	GetCharacterAttributeComponent()->ClearDamageCounters();
 }
 
 void ABoss::FirstStageCompleted()

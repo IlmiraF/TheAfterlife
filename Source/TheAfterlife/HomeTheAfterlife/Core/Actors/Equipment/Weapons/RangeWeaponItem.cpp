@@ -41,38 +41,6 @@ void ARangeWeaponItem::StopFire()
 
 void ARangeWeaponItem::MakeShot()
 {	
-	
-	//checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::MakeShot() only character can be an owner of range weapon"));
-	//ABaseCharacter* CharacterOwner = GetCharacterOwner();
-	//
-	//FVector ShotLocation;
-	//FRotator ShotRotation;
-	//
-	//if (CharacterOwner->IsPlayerControlled())
-	//{
-	//	APlayerController* Controller = CharacterOwner->GetController<APlayerController>();
-	//	Controller->GetPlayerViewPoint(ShotLocation, ShotRotation);
-	//}
-	//else
-	//{
-	//	ShotLocation = WeaponBarell->GetComponentLocation();
-	//	ShotRotation = CharacterOwner->GetBaseAimRotation();
-	//}
-	//
-	//
-	//FVector ShotDirection = ShotRotation.RotateVector(FVector::ForwardVector);
-	//
-	//SetAmmo(Ammo - 1);
-	//
-	//WeaponBarell->Shot(ShotDirection, GetCurrentBulletSpreadAngle());
-	//
-	//if (Ammo == 0 && bAutoReload)
-	//{
-	//	CharacterOwner->Reload();
-	//}
-	//
-	//GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARangeWeaponItem::OnShotTimerElapsed, GetShotTimerInterval(), false);
-
 	ABaseCharacter* CharacterOwner = GetCharacterOwner();
 	if (!IsValid(CharacterOwner))
 	{
@@ -134,63 +102,12 @@ void ARangeWeaponItem::StopAim()
 
 void ARangeWeaponItem::StartReload()
 {
-	//checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::StartReload() only character can be an owner of range weapon"));
-	//ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
-	//
-	//bIsReloading = true;
-	//if (IsValid(CharacterReloadMontage))
-	//{
-	//	float MontageDuration = CharacterOwner->PlayAnimMontage(CharacterReloadMontage);
-	//	PlayAnimMontage(WeaponReloadMontage);
-	//	if (ReloadType == EReloadType::FullClip)
-	//	{
-	//		GetWorld()->GetTimerManager().SetTimer(ReloadTimer, [this]() { EndReload(true); }, MontageDuration, false);
-	//	}
-	//}
-	//else
-	//{
-	//	EndReload(true);
-	//}
+
 }
 
 void ARangeWeaponItem::EndReload(bool bIsSuccess)
 {
-	//if (!bIsReloading)
-	//{
-	//	return;
-	//}
-	//
-	//if (!bIsSuccess)
-	//{
-	//	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::StartReload() only character can be an owner of range weapon"));
-	//	ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
-	//	CharacterOwner->StopAnimMontage(CharacterReloadMontage);
-	//	StopAnimMontage(WeaponReloadMontage);
-	//}
-	//
-	//if (ReloadType == EReloadType::ByBullet)
-	//{
-	//	ABaseCharacter* CharacterOwner = StaticCast<ABaseCharacter*>(GetOwner());
-	//	UAnimInstance* CharacterAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
-	//	if (IsValid(CharacterAnimInstance))
-	//	{
-	//		CharacterAnimInstance->Montage_JumpToSection("ReloadEnd", CharacterReloadMontage);
-	//	}
-	//
-	//	UAnimInstance* WeaponAnimInstance = WeaponMesh->GetAnimInstance();
-	//	if (IsValid(WeaponAnimInstance))
-	//	{
-	//		WeaponAnimInstance->Montage_JumpToSection("ReloadEnd", WeaponReloadMontage);
-	//	}
-	//}
-	//
-	//GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);
-	//
-	//bIsReloading = false;
-	//if (bIsSuccess && OnReloadComplete.IsBound())
-	//{
-	//	OnReloadComplete.Broadcast();
-	//}
+	
 }
 
 int32 ARangeWeaponItem::GetAmmo() const
@@ -242,6 +159,18 @@ EReticleType ARangeWeaponItem::GetReticleType() const
 	return bIsAiming ? AimReticleType : ReticleType;
 }
 
+void ARangeWeaponItem::SetWeaponBooster(float newDamageMultiplier, float newAccuracyMultiplier)
+{
+	AccuracyMultiplier = newAccuracyMultiplier;
+	WeaponBarell->SetDamageMultiplier(newDamageMultiplier);
+}
+
+void ARangeWeaponItem::SetDefaultWeaponBooster()
+{
+	AccuracyMultiplier = 1;
+	WeaponBarell->SetDamageMultiplier(1);
+}
+
 void ARangeWeaponItem::BeginPlay()
 {
 	Super::BeginPlay();
@@ -251,7 +180,7 @@ void ARangeWeaponItem::BeginPlay()
 float ARangeWeaponItem::GetCurrentBulletSpreadAngle() const
 {
 	float AngleInDegrees = bIsAiming ? AimSpreadAngle : SpreadAngle;
-	return FMath::DegreesToRadians(AngleInDegrees);
+	return FMath::DegreesToRadians(AngleInDegrees*AccuracyMultiplier);
 }
 
 void ARangeWeaponItem::MakeShotAnim()

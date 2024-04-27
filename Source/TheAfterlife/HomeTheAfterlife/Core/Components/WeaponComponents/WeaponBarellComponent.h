@@ -41,6 +41,8 @@ public:
 
 	void Shot(FVector ShotDirection, float SpreadAngle);
 
+	void SetDamageMultiplier(float newDamageMultiplier);
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barell attributes")
@@ -74,4 +76,6 @@ private:
 	void LaunchProjectile(const FVector& LaunchStart, const FVector& LaunchDirection);
 
 	FVector GetBulletSpreadOffset(float Angle, FRotator ShotRotation) const;
+
+	float DamageMultiplier;
 };

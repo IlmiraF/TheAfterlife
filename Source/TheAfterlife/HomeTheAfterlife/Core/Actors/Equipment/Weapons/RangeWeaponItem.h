@@ -65,6 +65,10 @@ public:
 
 	virtual EReticleType GetReticleType() const;
 
+	void SetWeaponBooster(float newDamageMultiplier, float newAccuracyMultiplier);
+
+	void SetDefaultWeaponBooster();
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -144,5 +148,7 @@ private:
 
 	FTimerHandle ShotTimer;
 	FTimerHandle ReloadTimer;
+
+	float AccuracyMultiplier;
 
 };

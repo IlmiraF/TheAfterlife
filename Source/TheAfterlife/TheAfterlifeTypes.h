@@ -100,8 +100,8 @@ enum class EBirdFlinghtTypes : uint8
 
 enum class EDamageType : uint8
 {
-	Bullet,      // Пуля
-	Explosive,   // Взрыв
-	Melee,       // Рукопашный
+	Bullet,      
+	Explosive,   
+	Melee,       
 	MAX UMETA(Hidden)
 };

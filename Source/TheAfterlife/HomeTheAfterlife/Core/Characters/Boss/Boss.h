@@ -107,6 +107,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boosters")
 	float BoosterBulletDamage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boosters")
+	float ShootingAccuracyBooster;
+
 private:
 
 	int32 AmountAltars;

@@ -8,7 +8,8 @@
 #include "Kismet/GameplayStatics.h"
 
 void UWeaponBarellComponent::Shot(FVector ShotDirection, float SpreadAngle)
-{
+{	
+
 	for (int i = 0; i < BulletsPerShot; i++)
 	{	
 		FVector ShotStart = GetComponentLocation();
@@ -33,6 +34,11 @@ void UWeaponBarellComponent::Shot(FVector ShotDirection, float SpreadAngle)
 		}
 
 	}
+}
+
+void UWeaponBarellComponent::SetDamageMultiplier(float newDamageMultiplier)
+{
+	DamageMultiplier = newDamageMultiplier;
 }
 
 bool UWeaponBarellComponent::HitScan(FVector ShotStart, OUT FVector& ShotEnd, FVector ShotDirection)
@@ -83,15 +89,8 @@ void UWeaponBarellComponent::ProcessHit(const FHitResult& HitResult, const FVect
 		DamageEvent.HitInfo = HitResult;
 		DamageEvent.ShotDirection = Direction;
 		DamageEvent.DamageTypeClass = DamageTypeClass;
-		HitActor->TakeDamage(DamageAmount, DamageEvent, GetController(), GetOwner());
+		HitActor->TakeDamage(DamageAmount * DamageMultiplier, DamageEvent, GetController(), GetOwner());
 	}
-
-	//UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DefaultDecalInfo.DecalMaterial, DefaultDecalInfo.DecalSize, HitResult.ImpactPoint, HitResult.ImpactNormal.ToOrientationRotator());
-	//if (IsValid(DecalComponent))
-	//{
-	//	DecalComponent->SetFadeScreenSize(0.0001f);
-	//	DecalComponent->SetFadeOut(DefaultDecalInfo.DecalLifeTime, DefaultDecalInfo.DecalFadeOutTime);
-	//}
 }
 
 FVector UWeaponBarellComponent::GetBulletSpreadOffset(float Angle, FRotator ShotRotation) const
