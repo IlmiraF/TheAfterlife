@@ -15,7 +15,7 @@ UCharacterAttributeComponent::UCharacterAttributeComponent()
 
 float UCharacterAttributeComponent::GetHealthPercent() const
 {
-	return (Health / 100.0f);
+	return (Health / MaxHealth);
 }
 
 float UCharacterAttributeComponent::GetBalancePercent() const

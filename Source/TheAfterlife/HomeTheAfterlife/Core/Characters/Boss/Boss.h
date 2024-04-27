@@ -59,6 +59,10 @@ public:
 
 	void Concussion();
 
+	bool GetSecondStage();
+
+	void StartSecondStage();
+
 	FOnFirstStageCompleted OnFirstStageCompleted;
 
 	FOnMovedToCircleSpline OnMovedToCircleSpline;
@@ -146,4 +150,6 @@ private:
 	void NewPhase();
 
 	void BoosterSelection();
+
+	bool bSecondStage = false;
 };

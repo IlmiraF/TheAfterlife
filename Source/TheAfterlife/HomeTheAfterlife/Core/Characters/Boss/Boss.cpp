@@ -72,6 +72,18 @@ void ABoss::Concussion()
 	GetWorld()->GetTimerManager().SetTimer(ConcussionTimerHandle, this, &ABoss::ReturnToBird, TimeConcussion, false);
 }
 
+bool ABoss::GetSecondStage()
+{
+	return bSecondStage;
+}
+
+void ABoss::StartSecondStage()
+{
+	bSecondStage = true;
+
+	GetCharacterAttributeComponent()->RestoreHealth();
+}
+
 
 void ABoss::BeginPlay()
 {
@@ -168,22 +180,22 @@ void ABoss::NewPhase()
 void ABoss::BoosterSelection()
 {
 
-	EDamageType DamageType = GetCharacterAttributeComponent()->GetMostDamagingType();
-
-	if (DamageType == EDamageType::Bullet)
-	{	
-		GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
-	}
-	else if(DamageType == EDamageType::Explosive)
-	{	
-		GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
-	}
-	else if (DamageType == EDamageType::Melee)
-	{
-		GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetBoosterDamage(BoosterMeleeDamage);
-	}
-
-	GetCharacterAttributeComponent()->ClearDamageCounters();
+	//EDamageType DamageType = GetCharacterAttributeComponent()->GetMostDamagingType();
+	//
+	//if (DamageType == EDamageType::Bullet)
+	//{	
+	//	GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
+	//}
+	//else if(DamageType == EDamageType::Explosive)
+	//{	
+	//	GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
+	//}
+	//else if (DamageType == EDamageType::Melee)
+	//{
+	//	GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetBoosterDamage(BoosterMeleeDamage);
+	//}
+	//
+	//GetCharacterAttributeComponent()->ClearDamageCounters();
 }
 
 void ABoss::FirstStageCompleted()

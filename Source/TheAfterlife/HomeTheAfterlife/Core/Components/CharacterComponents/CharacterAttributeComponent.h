@@ -44,6 +44,7 @@ public:
 
 	void ClearDamageCounters();
 
+
 	EDamageType GetMostDamagingType() const;
 
 protected:

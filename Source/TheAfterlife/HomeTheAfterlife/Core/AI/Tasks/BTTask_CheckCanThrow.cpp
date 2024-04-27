@@ -38,18 +38,13 @@ EBTNodeResult::Type UBTTask_CheckCanThrow::ExecuteTask(UBehaviorTreeComponent& O
 
 	if (!IsValid(CurrentThrowableItem))
 	{	
-		UE_LOG(LogDamage, Warning, TEXT("NOT VALID"));
 		return EBTNodeResult::Failed;
 	}
-
-	UE_LOG(LogDamage, Warning, TEXT("LOX"));
-
-	UE_LOG(LogDamage, Warning, TEXT("Disntance: %b"), CurrentThrowableItem->CanThrow());
 
 	if (!CurrentThrowableItem->CanThrow())
 	{
 		return EBTNodeResult::Failed;
 	}
-	GEngine->AddOnScreenDebugMessage(5, 2.0f, FColor::White, FString::Printf(TEXT("TROLOLO")));
+
 	return EBTNodeResult::Succeeded;
 }

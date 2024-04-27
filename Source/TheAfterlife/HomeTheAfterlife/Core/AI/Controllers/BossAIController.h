@@ -41,4 +41,6 @@ private:
 	void BossConcussed(bool Concussed);
 
 	void BossHasLanded(bool Landed);
+
+	void BecomeBoy(bool Value);
 };

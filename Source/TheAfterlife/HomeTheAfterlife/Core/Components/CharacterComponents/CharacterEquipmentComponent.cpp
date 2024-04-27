@@ -29,7 +29,7 @@ void UCharacterEquipmentComponent::ReloadCurrentRangeWeapon()
 }
 
 AThrowableItem* UCharacterEquipmentComponent::GetCurrentThrowableItem() const
-{
+{	
 	return CurrentThrowableItem;
 }
 
@@ -185,6 +185,7 @@ void UCharacterEquipmentComponent::CreateLoadout()
 		Item->AttachToComponent(CachedBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, Item->GetUnEquippedSocketName());
 		Item->SetOwner(CachedBaseCharacter.Get());
 		Item->UnEquip();
+
 		ItemsArray[(uint32)ItemPair.Key] = Item;
 	}
 }

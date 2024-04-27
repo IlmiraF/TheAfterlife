@@ -34,6 +34,8 @@ EBTNodeResult::Type UBTTask_CheckHeathPercent::ExecuteTask(UBehaviorTreeComponen
 
 	float HealthPercent = AttributeComponent->GetHealthPercent();
 
+	UE_LOG(LogDamage, Warning, TEXT("HealthPercent: %f"), HealthPercent);
+
 	if (HealthPercent > MaxPercent)
 	{
 		return EBTNodeResult::Failed;

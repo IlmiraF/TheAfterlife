@@ -26,8 +26,9 @@ const FName BB_AltarsDestroyed = FName("AltarsDestroyed");
 const FName BB_OnCircleSpline = FName("OnCirleSpline");
 const FName BB_BossConcussed = FName("BossConcussed");
 const FName BB_OnGround = FName("OnGround");
+const FName BB_IsBoy = FName("IsBoy");
 
-const FName HandSocket = FName(TEXT("PickableItem"));
+const FName HandSocket = FName(TEXT("EquipItemSocket"));
 
 
 UENUM(BlueprintType)

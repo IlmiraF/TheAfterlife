@@ -19,6 +19,8 @@ EBTNodeResult::Type UBTTask_CheckBool::ExecuteTask(UBehaviorTreeComponent& Owner
 
 	bool Bool = Blackboard->GetValueAsBool(TargetKey.SelectedKeyName);
 
+	//UE_LOG(LogDamage, Warning, TEXT("Bool value: %d"), Bool);
+
 	if (Bool != TargetValue)
 	{
 		return EBTNodeResult::Failed;
