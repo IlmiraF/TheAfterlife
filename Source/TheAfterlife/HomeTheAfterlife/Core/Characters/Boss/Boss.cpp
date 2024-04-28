@@ -67,7 +67,7 @@ void ABoss::Concussion()
 	bIsConcussionTimerRunning = true;
 
 	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
-
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("Concussion")));
 	GetCharacterAttributeComponent()->ReduceHealth(ConcussionDamage);
 
 	GetWorld()->GetTimerManager().SetTimer(ConcussionTimerHandle, this, &ABoss::ReturnToBird, TimeConcussion, false);
@@ -79,9 +79,15 @@ bool ABoss::GetSecondStage()
 }
 
 void ABoss::StartSecondStage()
-{
+{	
+	if (!bFirstStageCompleted)
+	{
+		return;
+	}
+
 	bSecondStage = true;
 
+	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
 	GetCharacterAttributeComponent()->RestoreHealth();
 }
 
@@ -109,7 +115,8 @@ void ABoss::DestructionAltars()
 	BossConcussed();
 
 	if (AmountAltars == Altars.Num() - AmountFirstStageAltars)
-	{
+	{	
+		bFirstStageCompleted = true;
 		FirstStageCompleted();
 	}
 
@@ -152,7 +159,7 @@ void ABoss::ReturnToBird()
 	{
 		OnBossHasLanded.Broadcast(bOnGround);
 	}
-
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("ReturnToBird")));
 	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
 	CurrentFlyType = EBirdFlinghtTypes::Rise;
 }
@@ -169,6 +176,11 @@ void ABoss::ReturnToBoy()
 
 void ABoss::ChangeHealth(float newHealthPercent)
 {	
+	if (!bFirstStageCompleted)
+	{
+		return;
+	}
+
 	if (newHealthPercent <= 66.6 && newHealthPercent > 33.3 && SecondPhase == false)
 	{
 		SecondPhase = true;
@@ -187,7 +199,7 @@ void ABoss::NewPhase()
 	{
 		OnBossIsBoy.Broadcast(false);
 	}
-
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("NewPhase")));
 	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
 
 	BoosterSelection();
@@ -195,9 +207,14 @@ void ABoss::NewPhase()
 
 
 void ABoss::BoosterSelection()
-{
+{	
+
+	if (!bFirstStageCompleted)
+	{
+		return;
+	}
+
 	EDamageType DamageType = GetCharacterAttributeComponent()->GetMostDamagingType();
-	
 	
 	if (DamageType == EDamageType::Bullet)
 	{	
