@@ -36,7 +36,8 @@ void ABossAIController::BeginPlay()
 	CachedAIBoss->OnFirstStageCompleted.AddUObject(this, &ABossAIController::FirstStageCompleted);
 	CachedAIBoss->OnMovedToCircleSpline.AddUObject(this, &ABossAIController::MovedToCircleSpline);
 	CachedAIBoss->OnBossConcussed.AddUObject(this, &ABossAIController::BossConcussed);
-	CachedAIBoss->OnBossHasLanded.AddUObject(this, &ABossAIController::BossHasLanded);;
+	CachedAIBoss->OnBossHasLanded.AddUObject(this, &ABossAIController::BossHasLanded);
+	CachedAIBoss->OnBossIsBoy.AddUObject(this, &ABossAIController::BecomeBoy);
 }
 
 void ABossAIController::SearchPlayer(const TArray<AActor*>& UpdatedActors)
@@ -66,6 +67,9 @@ void ABossAIController::FirstStageCompleted()
 {
 	Blackboard->SetValueAsBool(BB_AltarsDestroyed, true);
 	Blackboard->SetValueAsBool(BB_IsBoy, true);
+	Blackboard->SetValueAsBool(BB_OnCircleSpline, false);
+	Blackboard->SetValueAsBool(BB_OnGround, false);
+
 	CachedPlayer->GetCharacterAttributeComponent()->RestoreHealth();
 }
 

@@ -87,7 +87,6 @@ void UCharacterAttributeComponent::OnHealthChanged()
 
 	if (Health <= 0.0f)
 	{
-		//UE_LOG(LogDamage, Warning, TEXT("UCharacterAttributeComponent::OnTakeAnyDamage character %s is killed by an actor %s"), *CachedBaseCharacterOwner->GetName(), *DamageCauser->GetName());
 		if (OnDeathEvent.IsBound())
 		{
 			OnDeathEvent.Broadcast();
@@ -130,7 +129,6 @@ void UCharacterAttributeComponent::OnTakeAnyDamage(AActor* DamagedActor, float D
 
 void UCharacterAttributeComponent::UpdateDamageCounters(FString DamageType, float Damage)
 {	
-	UE_LOG(LogDamage, Warning, TEXT("UpdateDamageCounters"));
 
 	if (DamageType == FString("Default__DT_Bullet_C"))
 	{	;
