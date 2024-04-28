@@ -43,4 +43,5 @@ private:
 	void BossHasLanded(bool Landed);
 
 	void BecomeBoy(bool Value);
+
 };

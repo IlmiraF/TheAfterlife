@@ -14,6 +14,7 @@
 
 
 DECLARE_MULTICAST_DELEGATE(FOnFirstStageCompleted);
+DECLARE_MULTICAST_DELEGATE(FOnPhaseIsOver);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMovedToCircleSpline, bool);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossConcussed, bool);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossHasLanded, bool);
@@ -63,6 +64,8 @@ public:
 
 	void StartSecondStage();
 
+	void ReturnToBoy();
+
 	FOnFirstStageCompleted OnFirstStageCompleted;
 
 	FOnMovedToCircleSpline OnMovedToCircleSpline;
@@ -72,6 +75,8 @@ public:
 	FOnBossHasLanded OnBossHasLanded;
 
 	FOnBossIsBoy OnBossIsBoy;
+
+	FOnPhaseIsOver OnPhaseIsOver;
 	
 protected:
 
@@ -88,6 +93,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Altars")
 	TArray<AAltar*> Altars;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Altars")
+	int AmountFirstStageAltars;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
 	FVector BossLocation;
@@ -146,6 +154,8 @@ private:
 
 	void ChangeHealth(float newHealthPercent);
 
+	bool bFirstStageCompleted = false;
+
 	bool FirstPhase = true;
 	bool SecondPhase = false;
 	bool ThirdPhase = false;
@@ -155,4 +165,6 @@ private:
 	void BoosterSelection();
 
 	bool bSecondStage = false;
+
+	void ReturnToBoyState();
 };

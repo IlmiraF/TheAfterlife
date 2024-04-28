@@ -58,7 +58,7 @@ void ABoss::SetInvulnerable(bool Value)
 }
 
 void ABoss::Concussion()
-{
+{	
 	if (bIsConcussionTimerRunning)
 	{
 		return;
@@ -90,7 +90,7 @@ void ABoss::BeginPlay()
 {
 	Super::BeginPlay();;
 
-	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
+	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
 
 	for (AAltar* Altar : Altars)
 	{
@@ -107,11 +107,15 @@ void ABoss::DestructionAltars()
 	AmountAltars--;
 
 	BossConcussed();
-	
 
-	if (AmountAltars<=0)
+	if (AmountAltars == Altars.Num() - AmountFirstStageAltars)
 	{
 		FirstStageCompleted();
+	}
+
+	if (AmountAltars < AmountAltars == Altars.Num() - AmountFirstStageAltars)
+	{
+		ReturnToBoyState();
 	}
 }
 
@@ -153,6 +157,16 @@ void ABoss::ReturnToBird()
 	CurrentFlyType = EBirdFlinghtTypes::Rise;
 }
 
+void ABoss::ReturnToBoy()
+{	
+	if (OnBossIsBoy.IsBound())
+	{
+		OnBossIsBoy.Broadcast(true);
+	}
+
+	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
+}
+
 void ABoss::ChangeHealth(float newHealthPercent)
 {	
 	if (newHealthPercent <= 66.6 && newHealthPercent > 33.3 && SecondPhase == false)
@@ -174,12 +188,15 @@ void ABoss::NewPhase()
 		OnBossIsBoy.Broadcast(false);
 	}
 
+	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
+
 	BoosterSelection();
 }
 
+
 void ABoss::BoosterSelection()
 {
-	EDamageType DamageType = GetCharacterAttributeComponent()->GetMostDamagingType();	//ÄÎ ÑÞÄÀ ÂÑ¨ ÐÀÁÎÒÀÅÒ, ÍÀÑÒÐÎÈÒÜ ÓÑÈËÈÒÅËÈ
+	EDamageType DamageType = GetCharacterAttributeComponent()->GetMostDamagingType();
 	
 	
 	if (DamageType == EDamageType::Bullet)
@@ -198,6 +215,14 @@ void ABoss::BoosterSelection()
 	}
 	
 	GetCharacterAttributeComponent()->ClearDamageCounters();
+}
+
+void ABoss::ReturnToBoyState()
+{
+	if (OnBossConcussed.IsBound())
+	{
+		OnBossConcussed.Broadcast(bOnConcussed);
+	}
 }
 
 void ABoss::FirstStageCompleted()
