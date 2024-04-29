@@ -131,13 +131,12 @@ void UCharacterAttributeComponent::UpdateDamageCounters(FString DamageType, floa
 {	
 
 	if (DamageType == FString("Default__DT_Bullet_C"))
-	{	;
+	{	
 		DamageCounters[(uint8)EDamageType::Bullet] += Damage;
 	}
 	else if (DamageType == FString("Default__DT_Explosion_C"))
 	{	
 		DamageCounters[(uint8)EDamageType::Explosive] += Damage;
-
 	}
 	else if (DamageType == FString("Default__DT_Melee_C"))
 	{	

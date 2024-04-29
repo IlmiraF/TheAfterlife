@@ -105,6 +105,18 @@ void ABoss::BeginPlay()
 
 	AmountAltars = Altars.Num();
 
+	for (int i = 0; i < Altars.Num(); i++)
+	{
+		if (i < AmountFirstStageAltars) 
+		{
+			Altars[i]->SetInvulnerable(false);
+		}
+		else
+		{
+			Altars[i]->SetInvulnerable(true);
+		}
+	}
+
 	GetCharacterAttributeComponent()->OnHealthChangedEvent.AddUObject(this, &ABoss::ChangeHealth);
 }
 
@@ -176,32 +188,43 @@ void ABoss::ReturnToBoy()
 
 void ABoss::ChangeHealth(float newHealthPercent)
 {	
+	GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Cyan, FString::Printf(TEXT("newHealthPercent: %f"), newHealthPercent));
+
 	if (!bFirstStageCompleted)
 	{
 		return;
 	}
 
-	if (newHealthPercent <= 66.6 && newHealthPercent > 33.3 && SecondPhase == false)
+	if (newHealthPercent <= 0.66 && newHealthPercent > 0.33 && SecondPhase == false)
 	{
 		SecondPhase = true;
+		Altars[Altars.Num()-2]->SetInvulnerable(false);
 		NewPhase();
 	}
-	else if (newHealthPercent <= 33.3 && newHealthPercent > 0 && ThirdPhase == false)
+	else if (newHealthPercent <= 0.33 && newHealthPercent > 0 && ThirdPhase == false)
 	{	
 		ThirdPhase = true;
+		Altars[Altars.Num() - 1]->SetInvulnerable(false);
 		NewPhase();
+	}
+
+	if (newHealthPercent <= 0)
+	{
+		if (OnBossIsDead.IsBound())
+		{
+			OnBossIsDead.Broadcast();
+		}
 	}
 }
 
 void ABoss::NewPhase()
-{
+{	
 	if (OnBossIsBoy.IsBound())
 	{
 		OnBossIsBoy.Broadcast(false);
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("NewPhase")));
-	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
 
+	ReturnToBird();
 	BoosterSelection();
 }
 
@@ -318,7 +341,7 @@ void ABoss::MoveToBossLocation(float DeltaTime)
 		return;
 	}
 
-	if (!GetActorLocation().Equals(BossLocation, 10.0f))
+	if (!GetActorLocation().Equals(BossLocation, 50.0f))
 	{
 		FVector Direction = (BossLocation - GetActorLocation()).GetSafeNormal();
 
@@ -330,7 +353,11 @@ void ABoss::MoveToBossLocation(float DeltaTime)
 	else
 	{	
 		bOnGround = true;
+		FRotator Rotator = FRotator(0, -180, 0);
 
+		SetActorRotation(Rotator);
+
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 		if (OnBossHasLanded.IsBound())
 		{
 			OnBossHasLanded.Broadcast(bOnGround);

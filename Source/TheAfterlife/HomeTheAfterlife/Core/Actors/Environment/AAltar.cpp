@@ -10,6 +10,11 @@ AAltar::AAltar()
 	AltarMesh->SetupAttachment(GetRootComponent());
 }
 
+void AAltar::SetInvulnerable(bool Value)
+{
+	bInvulnerable = Value;
+}
+
 
 void AAltar::BeginPlay()
 {
@@ -22,8 +27,21 @@ void AAltar::BeginPlay()
 
 void AAltar::TakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
+	
+	if (DamageType -> GetName() != FString("Default__DT_Explosion_C"))
+	{
+		return;
+	}
+
+	if (bInvulnerable)
+	{
+		return;
+	}
+
 	UE_LOG(LogDamage, Warning, TEXT("AAltar::OnTakeAnyDamag %s recevied %.2f amount of damage from %s  type %s"), *DamagedActor->GetName(), Damage, *DamageCauser->GetName(), *DamageType->GetName());
+
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
+	
 	if (Health <= 0)
 	{
 		Destroy();

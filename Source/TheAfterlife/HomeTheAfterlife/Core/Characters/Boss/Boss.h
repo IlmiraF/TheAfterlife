@@ -15,6 +15,7 @@
 
 DECLARE_MULTICAST_DELEGATE(FOnFirstStageCompleted);
 DECLARE_MULTICAST_DELEGATE(FOnPhaseIsOver);
+DECLARE_MULTICAST_DELEGATE(FOnBossIsDead);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMovedToCircleSpline, bool);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossConcussed, bool);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossHasLanded, bool);
@@ -77,6 +78,8 @@ public:
 	FOnBossIsBoy OnBossIsBoy;
 
 	FOnPhaseIsOver OnPhaseIsOver;
+
+	FOnBossIsDead OnBossIsDead;
 	
 protected:
 

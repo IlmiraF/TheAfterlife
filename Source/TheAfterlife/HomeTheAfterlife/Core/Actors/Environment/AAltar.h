@@ -22,7 +22,10 @@ public:
 
 	FOnAltarDestroyed OnAltarDestroyed;
 
+	void SetInvulnerable(bool Value);
+
 protected:
+
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
@@ -35,11 +38,14 @@ protected:
 	float MaxHealth = 30.0f;
 
 private:	
+
 	float Health = 0.0f;
 
 	UFUNCTION()
 	void TakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	void Destroy();
+
+	bool bInvulnerable = false;
 
 };
