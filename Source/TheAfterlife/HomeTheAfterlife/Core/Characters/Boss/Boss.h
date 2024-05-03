@@ -89,7 +89,13 @@ protected:
 	USkeletalMesh* FirstStageBossMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	UAnimSequence* FirstStageAnimSequence;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	USkeletalMesh* SecondStageBossMesh;	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	UAnimBlueprintGeneratedClass* SecondStageBossAnimBlueprint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 	UBehaviorTree* BehaviorTree;

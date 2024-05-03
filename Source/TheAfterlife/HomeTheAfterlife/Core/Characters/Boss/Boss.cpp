@@ -39,7 +39,7 @@ void ABoss::SetMovementToGround(bool Value)
 }
 
 void ABoss::SwitchSplines(EBirdFlinghtTypes FlyType)
-{	
+{
 	if (FlyType == EBirdFlinghtTypes::FlyingInCircle)
 	{
 		CachedSplineComponent = CircleSplineActor->GetSplineComponent();
@@ -54,11 +54,11 @@ void ABoss::SwitchSplines(EBirdFlinghtTypes FlyType)
 
 void ABoss::SetInvulnerable(bool Value)
 {
-	GetCharacterAttributeComponent() ->SetInvulnerable(Value);
+	GetCharacterAttributeComponent()->SetInvulnerable(Value);
 }
 
 void ABoss::Concussion()
-{	
+{
 	if (bIsConcussionTimerRunning)
 	{
 		return;
@@ -79,7 +79,7 @@ bool ABoss::GetSecondStage()
 }
 
 void ABoss::StartSecondStage()
-{	
+{
 	if (!bFirstStageCompleted)
 	{
 		return;
@@ -88,6 +88,11 @@ void ABoss::StartSecondStage()
 	bSecondStage = true;
 
 	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
+
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+
+	GetMesh()->AnimBlueprintGeneratedClass = SecondStageBossAnimBlueprint;
+
 	GetCharacterAttributeComponent()->RestoreHealth();
 }
 
@@ -98,6 +103,11 @@ void ABoss::BeginPlay()
 
 	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
 
+
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+
+	GetMesh()->PlayAnimation(FirstStageAnimSequence, true);
+
 	for (AAltar* Altar : Altars)
 	{
 		Altar->OnAltarDestroyed.AddUObject(this, &ABoss::DestructionAltars);
@@ -107,7 +117,7 @@ void ABoss::BeginPlay()
 
 	for (int i = 0; i < Altars.Num(); i++)
 	{
-		if (i < AmountFirstStageAltars) 
+		if (i < AmountFirstStageAltars)
 		{
 			Altars[i]->SetInvulnerable(false);
 		}
@@ -118,6 +128,8 @@ void ABoss::BeginPlay()
 	}
 
 	GetCharacterAttributeComponent()->OnHealthChangedEvent.AddUObject(this, &ABoss::ChangeHealth);
+
+
 }
 
 void ABoss::DestructionAltars()
@@ -127,7 +139,7 @@ void ABoss::DestructionAltars()
 	BossConcussed();
 
 	if (AmountAltars == Altars.Num() - AmountFirstStageAltars)
-	{	
+	{
 		bFirstStageCompleted = true;
 		FirstStageCompleted();
 	}
@@ -139,18 +151,18 @@ void ABoss::DestructionAltars()
 }
 
 void ABoss::BossConcussed()
-{	
+{
 	bOnConcussed = true;
 	bIsMovingToSpline = false;
 
 	if (OnBossConcussed.IsBound())
-	{	
+	{
 		OnBossConcussed.Broadcast(bOnConcussed);
 	}
 }
 
 void ABoss::ReturnToBird()
-{	
+{
 	DistanceAlongSpline = 0;
 	bIsConcussionTimerRunning = false;
 
@@ -161,7 +173,7 @@ void ABoss::ReturnToBird()
 	{
 		OnMovedToCircleSpline.Broadcast(false);
 	}
-	
+
 	if (OnBossConcussed.IsBound())
 	{
 		OnBossConcussed.Broadcast(bOnConcussed);
@@ -177,7 +189,7 @@ void ABoss::ReturnToBird()
 }
 
 void ABoss::ReturnToBoy()
-{	
+{
 	if (OnBossIsBoy.IsBound())
 	{
 		OnBossIsBoy.Broadcast(true);
@@ -187,7 +199,7 @@ void ABoss::ReturnToBoy()
 }
 
 void ABoss::ChangeHealth(float newHealthPercent)
-{	
+{
 	GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Cyan, FString::Printf(TEXT("newHealthPercent: %f"), newHealthPercent));
 
 	if (!bFirstStageCompleted)
@@ -198,11 +210,11 @@ void ABoss::ChangeHealth(float newHealthPercent)
 	if (newHealthPercent <= 0.66 && newHealthPercent > 0.33 && SecondPhase == false)
 	{
 		SecondPhase = true;
-		Altars[Altars.Num()-2]->SetInvulnerable(false);
+		Altars[Altars.Num() - 2]->SetInvulnerable(false);
 		NewPhase();
 	}
 	else if (newHealthPercent <= 0.33 && newHealthPercent > 0 && ThirdPhase == false)
-	{	
+	{
 		ThirdPhase = true;
 		Altars[Altars.Num() - 1]->SetInvulnerable(false);
 		NewPhase();
@@ -218,7 +230,7 @@ void ABoss::ChangeHealth(float newHealthPercent)
 }
 
 void ABoss::NewPhase()
-{	
+{
 	if (OnBossIsBoy.IsBound())
 	{
 		OnBossIsBoy.Broadcast(false);
@@ -230,7 +242,7 @@ void ABoss::NewPhase()
 
 
 void ABoss::BoosterSelection()
-{	
+{
 
 	if (!bFirstStageCompleted)
 	{
@@ -238,14 +250,14 @@ void ABoss::BoosterSelection()
 	}
 
 	EDamageType DamageType = GetCharacterAttributeComponent()->GetMostDamagingType();
-	
+
 	if (DamageType == EDamageType::Bullet)
-	{	
+	{
 		GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
 		GetCharacterEquipmentComponent()->GetCurrentRangeWeapon()->SetWeaponBooster(BoosterBulletDamage, ShootingAccuracyBooster);
 	}
-	else if(DamageType == EDamageType::Explosive)
-	{	
+	else if (DamageType == EDamageType::Explosive)
+	{
 		//GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
 	}
 	else if (DamageType == EDamageType::Melee)
@@ -253,7 +265,7 @@ void ABoss::BoosterSelection()
 		GetCharacterEquipmentComponent()->GetCurrentRangeWeapon()->SetDefaultWeaponBooster();
 		GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetBoosterDamage(BoosterMeleeDamage);
 	}
-	
+
 	GetCharacterAttributeComponent()->ClearDamageCounters();
 }
 
@@ -274,14 +286,14 @@ void ABoss::FirstStageCompleted()
 }
 
 void ABoss::SplineMovement(float DeltaTime)
-{	
+{
 	if (!bIsMovingToSpline)
 	{
 		return;
 	}
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
-	
+
 	float NewDistance = DistanceAlongSpline + FlySpeed * DeltaTime;
 
 	FVector NewLocation = CachedSplineComponent->GetLocationAtDistanceAlongSpline(NewDistance, ESplineCoordinateSpace::World);
@@ -305,7 +317,7 @@ void ABoss::MovementAlongCompleted()
 		DistanceAlongSpline = 0;
 	}
 	else if (CurrentFlyType == EBirdFlinghtTypes::Rise)
-	{	
+	{
 		if (OnMovedToCircleSpline.IsBound())
 		{
 			OnMovedToCircleSpline.Broadcast(true);
@@ -330,7 +342,7 @@ float ABoss::GetSplineLength()
 
 
 void ABoss::MoveToBossLocation(float DeltaTime)
-{	
+{
 	if (!bOnConcussed)
 	{
 		return;
@@ -351,7 +363,7 @@ void ABoss::MoveToBossLocation(float DeltaTime)
 		SetActorLocationAndRotation(NewLocation, NewRotation);
 	}
 	else
-	{	
+	{
 		bOnGround = true;
 		FRotator Rotator = FRotator(0, -180, 0);
 
