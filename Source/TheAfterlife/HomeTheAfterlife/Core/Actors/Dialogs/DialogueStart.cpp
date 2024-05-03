@@ -5,6 +5,8 @@
 #include "../../UI/Widget/DialogueWidget.h"
 #include "../Interfaces/ISpeak.h"
 #include "../Interactive/Interactive.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
 
 ADialogueStart::ADialogueStart()
 {
@@ -15,7 +17,7 @@ void ADialogueStart::BeginPlay()
 {
 	Super::BeginPlay();
 
-	DialogueSettings.SpeakingActors.Add(ESpeakerType::Player, GetWorld()->GetFirstPlayerController()->GetOwner());
+	DialogueSettings.SpeakingActors.Add(ESpeakerType::Player, UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	if (Trigger.GetInterface())
 	{
