@@ -42,15 +42,17 @@ public:
 
 	FOnDoorsOpening OnDoorsOpening;
 
+protected:
+
+	bool bStartOpen = false;
+
 private:
 
-	void OpenDoors(float DeltaTime);
 
 	UPROPERTY(EditAnywhere)
 	bool bIsForce = true;
 
 	bool bIsDoorOpened = false;
 
-	bool bStartOpen = false;
-
+	void OpenDoors(float DeltaTime);
 };

@@ -2,7 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../../Actors/Environment/AAltar.h"
 #include "EnemyPoolObject.generated.h"
+
 
 
 
@@ -21,6 +23,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
 	int32 AmmountEnemy;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Altar")
+	AAltar* Altar;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn Position")
 	float Radius = 1000.0f;
 
@@ -28,6 +33,8 @@ public:
 	float MinimumDistanceToPlayer = 300.0f;
 
 	void MakeEnemisVisible();
+
+	void DespawnEnemys();
 
 protected:
 
@@ -50,5 +57,7 @@ private:
 	TQueue<class ABaseAICharacter*> FreeEnemys;
 
 	FDelegateHandle OnCharacterDeathHandle;
+
+	bool bCanSpawn;
 
 };

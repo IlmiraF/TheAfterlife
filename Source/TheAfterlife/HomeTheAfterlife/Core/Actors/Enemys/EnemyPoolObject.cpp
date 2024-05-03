@@ -14,6 +14,11 @@ void AEnemyPoolObject::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (IsValid(Altar))
+	{
+		Altar->OnAltarDestroyed.AddUObject(this, &AEnemyPoolObject::DespawnEnemys);
+	}
+
 	InitSpawnEnemys();
 }
 
@@ -65,6 +70,20 @@ void AEnemyPoolObject::SpawnEnemy()
 	}
 }
 
+void AEnemyPoolObject::DespawnEnemys()
+{
+	bCanSpawn = false;
+
+	while (!FreeEnemys.IsEmpty())
+	{
+		ABaseAICharacter* NewEnemy = nullptr;
+
+		FreeEnemys.Dequeue(NewEnemy);
+
+		NewEnemy->DisableCharacter();
+	}
+}
+
 FVector AEnemyPoolObject::CalculatingSpawnPoint()
 {
 	FVector SpawnLocation = this->GetActorLocation();
@@ -108,7 +127,12 @@ void AEnemyPoolObject::MakeEnemisVisible()
 }
 
 void AEnemyPoolObject::ReturnEnemy(ABaseAICharacter* Enemy)
-{
+{	
+	if (!bCanSpawn)
+	{
+		return;
+	}
+
     if (Enemy)
     {	
 		Enemy->OnCharacterDeath.Remove(OnCharacterDeathHandle);

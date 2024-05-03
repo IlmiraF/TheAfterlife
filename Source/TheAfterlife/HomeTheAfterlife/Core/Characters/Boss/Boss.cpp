@@ -87,6 +87,8 @@ void ABoss::StartSecondStage()
 
 	bSecondStage = true;
 
+	EnemyPoolObject->DespawnEnemys();
+
 	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
