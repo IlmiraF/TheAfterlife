@@ -15,7 +15,7 @@ AConductor::AConductor()
 	ConductorAudioComponent->SetupAttachment(ConductorMesh);
 }
 
-void AConductor::StartSpeaking()
+/*void AConductor::StartSpeaking()
 {
 	ConductorAudioComponent->SetSound(WealcomSpeech);
 	ConductorAudioComponent->Play();
@@ -27,13 +27,15 @@ void AConductor::StopSpeaking()
 {
 	ConductorAudioComponent->Stop();
 	CurrentSpeechIndex = 999;
-}
+}*/
 
 void AConductor::Speak(USoundBase* SoundBase)
 {
+	ConductorAudioComponent->SetSound(SoundBase);
+	ConductorAudioComponent->Play();
 }
 
-void AConductor::Speak()
+/*void AConductor::Speak()
 {	
 	CurrentSpeechIndex++;
 	if (CurrentSpeechIndex < WaitingSpeeches.Num())
@@ -42,4 +44,4 @@ void AConductor::Speak()
 		ConductorAudioComponent->Play();
 		GetWorld()->GetTimerManager().SetTimer(SpeechTimerHandle, this, &AConductor::Speak, WaitingTimeBetweenPhrasesDiscontent, false);
 	}
-}
+}*/

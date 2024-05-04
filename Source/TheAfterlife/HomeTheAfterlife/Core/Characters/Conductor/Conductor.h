@@ -16,9 +16,9 @@ class THEAFTERLIFE_API AConductor : public APawn, public IISpeakable
 public:
 	AConductor();
 
-	void StartSpeaking();
+	//void StartSpeaking();
 
-	void StopSpeaking();
+	//void StopSpeaking();
 
 	virtual void Speak(USoundBase* SoundBase) override;
 
@@ -45,5 +45,5 @@ private:
 	FTimerHandle SpeechTimerHandle;
 	int32 CurrentSpeechIndex;
 
-	void Speak();
+	//void Speak();
 };

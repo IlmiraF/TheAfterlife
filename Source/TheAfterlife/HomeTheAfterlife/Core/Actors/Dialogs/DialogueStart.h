@@ -38,10 +38,10 @@ public:
 	ESpeakerType SpeakerType = ESpeakerType::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool ActionAtBeginningPhrase;
+	bool NeedPauseBeforePhrase;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool ActionAtEndPhrase;
+	float PauseTime;
 };
 
 USTRUCT(BlueprintType)

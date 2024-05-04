@@ -83,7 +83,14 @@ void ADialogueStart::ShowNextDialogueLine()
 					IISpeakable* SpeakableActor = Cast<IISpeakable>(CurrentSpeaker);
 					SpeakableActor->Speak(Row->Sound);
 				}
-				GetWorld()->GetTimerManager().SetTimer(SpeechTimerHandle, this, &ADialogueStart::ShowNextDialogueLine, Row->Sound->GetDuration());
+				if (Row->NeedPauseBeforePhrase)
+				{
+					GetWorld()->GetTimerManager().SetTimer(SpeechTimerHandle, this, &ADialogueStart::ShowNextDialogueLine, Row->PauseTime);
+				}
+				else
+				{
+					GetWorld()->GetTimerManager().SetTimer(SpeechTimerHandle, this, &ADialogueStart::ShowNextDialogueLine, Row->Sound->GetDuration());
+				}
 			}
 		}
 	}

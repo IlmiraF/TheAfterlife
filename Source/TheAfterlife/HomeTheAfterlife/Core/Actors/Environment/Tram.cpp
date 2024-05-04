@@ -56,10 +56,10 @@ void ATram::TriggerFromlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
 	if (IsValid(PlayerCharacter))
 	{	
-		PlayerCharacter->SetCanMove(false);
+		//PlayerCharacter->SetCanMove(false);
 	}
 
-	Conductor->StopSpeaking();
+	//Conductor->StopSpeaking();
 }
 
 void ATram::Move(float DeltaTime)
@@ -73,7 +73,7 @@ void ATram::Move(float DeltaTime)
 	{
 		bIsMoving = false;
 
-		Conductor->StartSpeaking();
+		//Conductor->StartSpeaking();
 	}
 
 	DistanceAlongSpline += Speed * DeltaTime;
