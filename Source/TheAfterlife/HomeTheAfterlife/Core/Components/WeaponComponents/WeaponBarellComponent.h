@@ -77,5 +77,5 @@ private:
 
 	FVector GetBulletSpreadOffset(float Angle, FRotator ShotRotation) const;
 
-	float DamageMultiplier;
+	float DamageMultiplier = 1;
 };

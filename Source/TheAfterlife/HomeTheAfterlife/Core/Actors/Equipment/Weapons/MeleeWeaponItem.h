@@ -72,5 +72,5 @@ private:
 
 	TWeakObjectPtr<class ABaseCharacter> CachedBaseCharacter;
 
-	float BoosterDamage;
+	float BoosterDamage = 1;
 };

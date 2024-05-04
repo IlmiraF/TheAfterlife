@@ -149,6 +149,6 @@ private:
 	FTimerHandle ShotTimer;
 	FTimerHandle ReloadTimer;
 
-	float AccuracyMultiplier;
+	float AccuracyMultiplier = 1;
 
 };
