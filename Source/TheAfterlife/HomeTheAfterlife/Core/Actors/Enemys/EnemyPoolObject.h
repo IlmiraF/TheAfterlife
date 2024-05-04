@@ -2,10 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "../../Actors/Environment/AAltar.h"
 #include "EnemyPoolObject.generated.h"
-
-
 
 
 UCLASS()
@@ -22,9 +19,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
 	int32 AmmountEnemy;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Altar")
-	AAltar* Altar;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn Position")
 	float Radius = 1000.0f;

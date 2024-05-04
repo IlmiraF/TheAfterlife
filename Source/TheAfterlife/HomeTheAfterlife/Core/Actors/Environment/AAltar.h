@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "../../AI/Characters/BaseAICharacter.h"
 #include "Components/BoxComponent.h"
+#include "../../Actors/Enemys/EnemyPoolObject.h"
 #include "TheAfterlife/TheAfterlifeTypes.h"
 #include "AAltar.generated.h"
 
@@ -30,6 +31,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
 	TArray<ABaseAICharacter*> EnemyArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
+	AEnemyPoolObject* EnemyPoolObject;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* AltarMesh;

@@ -14,11 +14,6 @@ void AEnemyPoolObject::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (IsValid(Altar))
-	{
-		Altar->OnAltarDestroyed.AddUObject(this, &AEnemyPoolObject::DespawnEnemys);
-	}
-
 	InitSpawnEnemys();
 }
 

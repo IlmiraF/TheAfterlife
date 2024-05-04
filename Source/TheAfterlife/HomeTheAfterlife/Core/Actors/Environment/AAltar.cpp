@@ -13,6 +13,11 @@ AAltar::AAltar()
 void AAltar::SetInvulnerable(bool Value)
 {
 	bInvulnerable = Value;
+
+	if (Value == false && IsValid(EnemyPoolObject))
+	{
+		EnemyPoolObject->MakeEnemisVisible();
+	}
 }
 
 
@@ -60,6 +65,11 @@ void AAltar::Destroy()
 		{
 			Enemy->DisableCharacter();
 		}
+	}
+
+	if (IsValid(EnemyPoolObject))
+	{
+		EnemyPoolObject->DespawnEnemys();
 	}
 
 	if (OnAltarDestroyed.IsBound())
