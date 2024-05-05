@@ -56,6 +56,8 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	float BoosterDamage = 1;
+
 private:
 
 	UFUNCTION()
@@ -71,6 +73,4 @@ private:
 	bool bIsAttacking;
 
 	TWeakObjectPtr<class ABaseCharacter> CachedBaseCharacter;
-
-	float BoosterDamage = 1;
 };

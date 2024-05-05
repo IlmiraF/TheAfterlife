@@ -82,14 +82,11 @@ AController* UWeaponBarellComponent::GetController() const
 
 void UWeaponBarellComponent::ProcessHit(const FHitResult& HitResult, const FVector& Direction)
 {	
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("ProcessHit")));
 
 	AActor* HitActor = HitResult.GetActor();
 	if (IsValid(HitActor))
 	{	
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("IsValid(HitActor)")));
 		FString Name = HitActor->GetName();
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, Name);
 		FPointDamageEvent DamageEvent;
 		DamageEvent.HitInfo = HitResult;
 		DamageEvent.ShotDirection = Direction;

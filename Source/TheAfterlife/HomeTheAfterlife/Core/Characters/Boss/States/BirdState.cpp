@@ -13,8 +13,6 @@ void UBirdState::Enter()
 {
 	Super::Enter();
 
-	// ...
-	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, FString::Printf(TEXT("GOIDA")));
 }
 
 void UBirdState::Exit()

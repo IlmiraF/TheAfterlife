@@ -48,6 +48,12 @@ public:
 	void EquipNextItem();
 	void EquipPreviousItem();
 
+	void SetMeleeBooster(float BoosterValue);
+	void SetRangeBooster(float BulletDamageValue, float AccuracyBoosterValue);
+
+	void SetDefaultMeleeBooster();
+	void SetDefaultRangeBooster();
+
 protected:
 	
 	virtual void BeginPlay() override;

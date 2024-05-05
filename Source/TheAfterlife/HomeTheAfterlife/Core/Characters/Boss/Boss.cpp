@@ -67,7 +67,6 @@ void ABoss::Concussion()
 	bIsConcussionTimerRunning = true;
 
 	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("Concussion")));
 	GetCharacterAttributeComponent()->ReduceHealth(ConcussionDamage);
 
 	GetWorld()->GetTimerManager().SetTimer(ConcussionTimerHandle, this, &ABoss::ReturnToBird, TimeConcussion, false);
@@ -185,7 +184,6 @@ void ABoss::ReturnToBird()
 	{
 		OnBossHasLanded.Broadcast(bOnGround);
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("ReturnToBird")));
 	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
 	CurrentFlyType = EBirdFlinghtTypes::Rise;
 }
@@ -202,7 +200,6 @@ void ABoss::ReturnToBoy()
 
 void ABoss::ChangeHealth(float newHealthPercent)
 {
-	GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Cyan, FString::Printf(TEXT("newHealthPercent: %f"), newHealthPercent));
 
 	if (!bFirstStageCompleted)
 	{
@@ -251,12 +248,17 @@ void ABoss::BoosterSelection()
 		return;
 	}
 
+	if (!IsValid(GetCharacterEquipmentComponent_Mutable()))
+	{
+		return;
+	}
+
 	EDamageType DamageType = GetCharacterAttributeComponent()->GetMostDamagingType();
 
 	if (DamageType == EDamageType::Bullet)
 	{
-		GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetDefaultBoosterDamage();
-		GetCharacterEquipmentComponent()->GetCurrentRangeWeapon()->SetWeaponBooster(BoosterBulletDamage, ShootingAccuracyBooster);
+		GetCharacterEquipmentComponent_Mutable()->SetDefaultMeleeBooster();
+		GetCharacterEquipmentComponent_Mutable()->SetRangeBooster(BoosterBulletDamage, ShootingAccuracyBooster);
 	}
 	else if (DamageType == EDamageType::Explosive)
 	{
@@ -264,8 +266,8 @@ void ABoss::BoosterSelection()
 	}
 	else if (DamageType == EDamageType::Melee)
 	{
-		GetCharacterEquipmentComponent()->GetCurrentRangeWeapon()->SetDefaultWeaponBooster();
-		GetCharacterEquipmentComponent()->GetCurrentMeleeWeaponItem()->SetBoosterDamage(BoosterMeleeDamage);
+		GetCharacterEquipmentComponent_Mutable()->SetDefaultRangeBooster();
+		GetCharacterEquipmentComponent_Mutable()->SetMeleeBooster(BoosterMeleeDamage);
 	}
 
 	GetCharacterAttributeComponent()->ClearDamageCounters();

@@ -109,22 +109,15 @@ void UCharacterAttributeComponent::OnHealthStealing()
 
 void UCharacterAttributeComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {	
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("OnTakeAnyDamage")));
-
 	if (!IsAlive())
 	{
 		return;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("IsAlive")));
-
 	if (Invulnerable)
 	{
 		return;
 	}
-
-
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, FString::Printf(TEXT("Invulnerable")));
 
 	UE_LOG(LogDamage, Warning, TEXT("AAltar::OnTakeAnyDamag %s recevied %.2f amount of damage from %s  type %s"), *DamagedActor->GetName(), Damage, *DamageCauser->GetName(), *DamageType->GetName());
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);

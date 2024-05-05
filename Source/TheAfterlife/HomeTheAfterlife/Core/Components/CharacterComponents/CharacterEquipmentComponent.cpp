@@ -275,3 +275,35 @@ void UCharacterEquipmentComponent::EquipPreviousItem()
 		EquipItemInSlot((EEquipmentSlots)PreviousSlotIndex);
 	}
 }
+
+void UCharacterEquipmentComponent::SetMeleeBooster(float BoosterValue)
+{
+	if (IsValid(CurrentMeleeWeaponItem))
+	{
+		CurrentMeleeWeaponItem->SetBoosterDamage(BoosterValue);
+	}
+}
+
+void UCharacterEquipmentComponent::SetDefaultMeleeBooster()
+{
+	if (IsValid(CurrentMeleeWeaponItem))
+	{
+		CurrentMeleeWeaponItem->SetDefaultBoosterDamage();
+	}
+}
+
+void UCharacterEquipmentComponent::SetRangeBooster(float BulletDamageValue, float AccuracyBoosterValue)
+{
+	if (IsValid(CurrentEquippedWeapon))
+	{
+		CurrentEquippedWeapon->SetWeaponBooster(BulletDamageValue, AccuracyBoosterValue);
+	}
+}
+
+void UCharacterEquipmentComponent::SetDefaultRangeBooster()
+{
+	if (IsValid(CurrentEquippedWeapon))
+	{
+		CurrentEquippedWeapon->SetDefaultWeaponBooster();
+	}
+}

@@ -160,7 +160,8 @@ EReticleType ARangeWeaponItem::GetReticleType() const
 }
 
 void ARangeWeaponItem::SetWeaponBooster(float newDamageMultiplier, float newAccuracyMultiplier)
-{
+{	
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Cyan, FString::Printf(TEXT("Famage: %f"), newDamageMultiplier));
 	AccuracyMultiplier = newAccuracyMultiplier;
 	WeaponBarell->SetDamageMultiplier(newDamageMultiplier);
 }
