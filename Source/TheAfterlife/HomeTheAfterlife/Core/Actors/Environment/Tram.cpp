@@ -3,6 +3,10 @@
 #include "../../Characters/BaseCharacter.h"
 #include "../../Components/MovementComponents/BaseCharacterMovementComponent.h"
 #include "../../Characters/PlayerCharacter.h"
+#include "../../Characters/Conductor/Conductor.h"
+#include "Components/SplineComponent.h"
+#include "Components/BoxComponent.h"
+#include "Components/TimelineComponent.h"
 
 ATram::ATram()
 {

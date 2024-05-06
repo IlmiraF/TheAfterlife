@@ -2,13 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/SplineComponent.h"
-#include "Components/BoxComponent.h"
-#include "Components/TimelineComponent.h"
-#include "../../Characters/Conductor/Conductor.h"
 #include "Tram.generated.h"
 
 
+class AConductor;
+class UBoxComponent;
 UCLASS()
 class THEAFTERLIFE_API ATram : public AActor
 {
@@ -21,7 +19,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
-	USplineComponent* SplineComponent;
+	class USplineComponent* SplineComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
 	UBoxComponent* MovementToPlatrofmTriggerComponent;

@@ -5,6 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "DialogueInterface.h"
 #include "DialogueStart.generated.h"
 
 UENUM(BlueprintType)
@@ -61,7 +62,7 @@ public:
 class UDialogueWidget;
 class IInteractable;
 UCLASS()
-class THEAFTERLIFE_API ADialogueStart : public AActor
+class THEAFTERLIFE_API ADialogueStart : public AActor, public IDialogueInterface
 {
 	GENERATED_BODY()
 	
@@ -69,14 +70,13 @@ public:
 	// Sets default values for this actor's properties
 	ADialogueStart();
 
-	UFUNCTION()
-	void StartDialogue();
+	virtual void StartDialogue() override;
+	virtual void FinishDialogue() override;
+	virtual bool GetIsFinished() override { return bIsAlreadyFinished; }
 
 protected:
 
 	virtual void BeginPlay() override;
-
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bCanMovePlayer;
@@ -90,13 +90,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FDialogueSettings DialogueSettings;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	AActor* TriggerActor;
+	UPROPERTY(VisibleAnywhere)
+	class UBoxComponent* Collider;
 
 private:	
 
 	void ShowNextDialogueLine();
-	void FinishDialogue();
 
 	UDialogueWidget* DialogBox = nullptr;
 
@@ -108,11 +107,6 @@ private:
 
 	bool bItSounded = false;
 
-	void UnSubscribeFromTrigger();
-
-	UPROPERTY()
-	TScriptInterface<IInteractable> Trigger;
-
-	FDelegateHandle TriggerHandle;
+	bool bIsAlreadyFinished = false;
 
 };

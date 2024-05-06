@@ -7,7 +7,7 @@
 #include "AIController.h"
 #include "../../../TheAfterlifeTypes.h"
 #include "../Actors/Interfaces/ISpeak.h"
-//#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h""
+#include "../Subsystems/SaveSubsystem/SaveSubsystemInterface.h"
 #include "BaseCharacter.generated.h"
 
 USTRUCT(BlueprintType)
@@ -61,6 +61,7 @@ class AInteractiveActor;
 class UCharacterEquipmentComponent;
 class UMotionWarpingComponent;
 class IInteractable;
+class IDialogueInterface;
 
 typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray;
 
@@ -70,14 +71,14 @@ DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnWidgetUpdate, FName, FString, bool)
 DECLARE_DELEGATE(FOnFallingDelegate)
 
 UCLASS()
-class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IISpeakable, public IGenericTeamAgentInterface//, public ISaveSubsystemInterface
+class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IISpeakable, public IGenericTeamAgentInterface, public ISaveSubsystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 
-	//virtual void OnLevelDeserialized_Implementation() override;
+	virtual void OnLevelDeserialized_Implementation() override;
 
 	virtual void PossessedBy(AController* NewController) override;
 
@@ -246,6 +247,12 @@ protected:
 
 	UPROPERTY()
 	TScriptInterface<IInteractable> LineOfSightObject;
+
+	UPROPERTY()
+	TScriptInterface<IDialogueInterface> PreviousDialoguePoint;
+
+	UPROPERTY()
+	TScriptInterface<IDialogueInterface> CurrentDialoguePoint;
 
 private:
 	const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;

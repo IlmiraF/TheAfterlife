@@ -23,6 +23,7 @@
 #include "../Actors/Equipment/Throwables/ThrowableItem.h"
 #include "AIController.h"
 #include "../Actors/Interactive/Interactive.h"
+#include "../Actors/Dialogs/DialogueInterface.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -42,9 +43,9 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	CharacterAudioComponent->SetupAttachment(GetRootComponent());
 }
 
-//void ABaseCharacter::OnLevelDeserialized_Implementation()
-//{
-//}
+void ABaseCharacter::OnLevelDeserialized_Implementation()
+{
+}
 
 void ABaseCharacter::PossessedBy(AController* NewController)
 {
@@ -510,6 +511,25 @@ void ABaseCharacter::TraceLineOfSight()
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_Interactive);
 	DrawDebugLine(GetWorld(), HitResult.TraceStart, HitResult.TraceEnd, FColor::Green);
+	AActor* CurrentActor = HitResult.GetActor();
+	if (IsValid(CurrentActor) && CurrentActor->Implements<UDialogueInterface>())
+	{
+		if (CurrentDialoguePoint.GetObject() != CurrentActor)
+		{
+			PreviousDialoguePoint = CurrentDialoguePoint;
+			CurrentDialoguePoint = CurrentActor;
+			if (CurrentDialoguePoint.GetInterface())
+			{
+				if (PreviousDialoguePoint.GetInterface() && 
+					PreviousDialoguePoint != CurrentDialoguePoint && 
+					!PreviousDialoguePoint.GetInterface()->GetIsFinished())
+				{
+					PreviousDialoguePoint.GetInterface()->FinishDialogue();
+				}
+				CurrentDialoguePoint.GetInterface()->StartDialogue();
+			}
+		}
+	}
 	if (LineOfSightObject.GetObject() != HitResult.GetActor())
 	{
 		LineOfSightObject = HitResult.GetActor();

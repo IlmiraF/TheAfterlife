@@ -20,9 +20,11 @@ public:
 
 	virtual void Interact(ABaseCharacter* Character) override;
 	virtual bool IsForce() override;
+	virtual void ShouldStopInteracting(bool bStop) override;
 	virtual bool HasOnInteractionCallback() const override { return true; }
 	virtual FDelegateHandle AddOnInteractionUFunction(UObject* Object, const FName& FunctionName) override;
 	virtual void RemoveOnInteractionDelegate(FDelegateHandle DelegateHandle) override;
+	virtual bool StopInteract() override { return bStopInteract; }
 
 protected:
 
@@ -40,6 +42,8 @@ protected:
 private:
 
 	bool bItSounded = false;
+
+	bool bStopInteract = false;
 
 	void StartAction();
 };
