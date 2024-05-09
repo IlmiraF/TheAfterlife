@@ -29,7 +29,8 @@ void AEnemySpawner::DestroyEnemies()
     for (ABaseAICharacter* Enemy : SpawnedEnemies)
     {
         if (Enemy)
-        {
+        {	
+			Enemy->DisableCharacter();
             Enemy->Destroy();
         }
     }
