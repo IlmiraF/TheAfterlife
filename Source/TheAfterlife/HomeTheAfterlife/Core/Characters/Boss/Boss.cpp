@@ -86,7 +86,7 @@ void ABoss::StartSecondStage()
 
 	bSecondStage = true;
 
-	EnemyPoolObject->DespawnEnemys();
+	EnemyPoolObject->DestroyEnemys();
 
 	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
 

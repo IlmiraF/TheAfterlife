@@ -3,7 +3,8 @@
 #include "BaseAIController.h"
 #include "Perception/AISense.h"
 #include "Perception/AIPerceptionComponent.h"
-
+#include "../../Characters/BaseCharacter.h"
+#include "TheAfterlife/TheAfterlifeTypes.h"
 
 ABaseAIController::ABaseAIController()
 {
@@ -26,7 +27,19 @@ AActor* ABaseAIController::GetClosestSesnedActor(TSubclassOf<UAISense> SenseClas
 	FVector PawnLocation = GetPawn()->GetActorLocation();
 
 	for (AActor* SensedActor : SensedActors)
-	{
+	{	
+		ABaseCharacter* SensedCharacter = Cast<ABaseCharacter>(SensedActor);
+
+		if (!IsValid(SensedCharacter))
+		{
+			continue;
+		}
+
+		if (SensedCharacter->GetGenericTeamId() != FGenericTeamId((uint8)ETeams::PLAYER))
+		{
+			continue;
+		}
+
 		float CurrentSquaredDistance = (PawnLocation - SensedActor->GetActorLocation()).SizeSquared();
 		if (CurrentSquaredDistance < MinSquaredDistance)
 		{

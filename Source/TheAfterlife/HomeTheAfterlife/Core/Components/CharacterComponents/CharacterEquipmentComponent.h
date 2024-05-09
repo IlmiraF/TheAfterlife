@@ -54,6 +54,8 @@ public:
 	void SetDefaultMeleeBooster();
 	void SetDefaultRangeBooster();
 
+	void HideWeapons();
+
 protected:
 	
 	virtual void BeginPlay() override;

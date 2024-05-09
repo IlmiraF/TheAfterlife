@@ -307,3 +307,16 @@ void UCharacterEquipmentComponent::SetDefaultRangeBooster()
 		CurrentEquippedWeapon->SetDefaultWeaponBooster();
 	}
 }
+
+void UCharacterEquipmentComponent::HideWeapons()
+{
+	if (IsValid(CurrentMeleeWeaponItem))
+	{
+		CurrentMeleeWeaponItem->SetActorHiddenInGame(true);
+	}
+
+	if (IsValid(CurrentEquippedWeapon))
+	{
+		CurrentEquippedWeapon->SetActorHiddenInGame(true);
+	}
+}

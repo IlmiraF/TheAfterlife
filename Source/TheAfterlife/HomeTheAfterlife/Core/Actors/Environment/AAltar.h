@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "../../AI/Characters/BaseAICharacter.h"
 #include "Components/BoxComponent.h"
-#include "../../Actors/Enemys/EnemyPoolObject.h"
+#include "../../Actors/Enemys/EnemySpawner.h"
 #include "TheAfterlife/TheAfterlifeTypes.h"
 #include "AAltar.generated.h"
 
@@ -33,7 +33,7 @@ protected:
 	TArray<ABaseAICharacter*> EnemyArray;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
-	AEnemyPoolObject* EnemyPoolObject;
+	AEnemySpawner* EnemySpawner;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* AltarMesh;

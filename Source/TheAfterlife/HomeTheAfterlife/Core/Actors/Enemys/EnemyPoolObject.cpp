@@ -63,19 +63,22 @@ void AEnemyPoolObject::SpawnEnemy()
 		NewEnemy->SetActorHiddenInGame(true);
 		FreeEnemys.Enqueue(NewEnemy);
 	}
+
+	AllEnemys.Add(NewEnemy);
 }
 
-void AEnemyPoolObject::DespawnEnemys()
+void AEnemyPoolObject::DestroyEnemys()
 {
 	bCanSpawn = false;
 
-	while (!FreeEnemys.IsEmpty())
+	for (int i = 0; i < AllEnemys.Num(); i++)
 	{
-		ABaseAICharacter* NewEnemy = nullptr;
-
-		FreeEnemys.Dequeue(NewEnemy);
-		NewEnemy->DisableCharacter();
+		ABaseAICharacter* Enemy = AllEnemys[i];
+		Enemy->DisableCharacter();
+		Enemy->Destroy();
 	}
+
+	FreeEnemys.Empty();
 }
 
 FVector AEnemyPoolObject::CalculatingSpawnPoint()

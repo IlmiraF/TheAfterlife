@@ -31,6 +31,11 @@ void ARangeWeaponItem::StartFire()
 
 void ARangeWeaponItem::StopFire()
 {	
+	if (!IsValid(this))
+	{
+		return;
+	}
+
 	checkf(GetOwner()->IsA<ABaseCharacter>(), TEXT("ARangeWeaponItem::MakeShot() only character can be an owner of range weapon"));
 	ABaseCharacter* CharacterOwner = GetCharacterOwner();
 

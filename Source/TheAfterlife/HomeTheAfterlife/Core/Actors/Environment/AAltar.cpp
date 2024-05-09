@@ -14,9 +14,9 @@ void AAltar::SetInvulnerable(bool Value)
 {
 	bInvulnerable = Value;
 
-	if (Value == false && IsValid(EnemyPoolObject))
+	if (Value == false && IsValid(EnemySpawner))
 	{
-		EnemyPoolObject->MakeEnemisVisible();
+		EnemySpawner->SpawnEnemies();
 	}
 }
 
@@ -63,14 +63,17 @@ void AAltar::Destroy()
 	{
 		for (ABaseAICharacter* Enemy : EnemyArray)
 		{	
+			Enemy->DisableCharacter();
 			Enemy->Destroy();
-			//Enemy->DisableCharacter();
+			
 		}
+
+		EnemyArray.Empty();
 	}
 
-	if (IsValid(EnemyPoolObject))
+	if (IsValid(EnemySpawner))
 	{
-		EnemyPoolObject->DespawnEnemys();
+		EnemySpawner->DestroyEnemies();
 	}
 
 	if (OnAltarDestroyed.IsBound())

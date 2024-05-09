@@ -3,6 +3,7 @@
 #include "BaseAICharacter.h"
 #include "../../Components/CharacterComponents/CharacterAttributeComponent.h"
 #include "../../Components/MovementComponents/BaseCharacterMovementComponent.h"
+#include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "Components/CapsuleComponent.h"
 
 
@@ -33,6 +34,8 @@ void ABaseAICharacter::OnDeath()
 
 void ABaseAICharacter::DisableCharacter()
 {	
+	CharacterEquipmentComponent->HideWeapons();
+
 	if (OnCharacterDeath.IsBound())
 	{
 		OnCharacterDeath.Broadcast(this);

@@ -28,7 +28,7 @@ public:
 
 	void MakeEnemisVisible();
 
-	void DespawnEnemys();
+	void DestroyEnemys();
 
 protected:
 
@@ -49,6 +49,8 @@ private:
 	FVector CalculatingSpawnPoint();
 
 	TQueue<class ABaseAICharacter*> FreeEnemys;
+
+	TArray<class ABaseAICharacter*> AllEnemys;
 
 	FDelegateHandle OnCharacterDeathHandle;
 
