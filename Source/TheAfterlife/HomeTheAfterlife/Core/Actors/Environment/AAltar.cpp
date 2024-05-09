@@ -62,8 +62,9 @@ void AAltar::Destroy()
 	if (EnemyArray.Num() > 0)
 	{
 		for (ABaseAICharacter* Enemy : EnemyArray)
-		{
-			Enemy->DisableCharacter();
+		{	
+			Enemy->Destroy();
+			//Enemy->DisableCharacter();
 		}
 	}
 

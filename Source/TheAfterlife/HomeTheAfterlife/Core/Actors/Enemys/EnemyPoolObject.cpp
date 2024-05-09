@@ -74,7 +74,6 @@ void AEnemyPoolObject::DespawnEnemys()
 		ABaseAICharacter* NewEnemy = nullptr;
 
 		FreeEnemys.Dequeue(NewEnemy);
-
 		NewEnemy->DisableCharacter();
 	}
 }

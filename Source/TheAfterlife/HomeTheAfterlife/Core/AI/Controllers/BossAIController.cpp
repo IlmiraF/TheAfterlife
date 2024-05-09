@@ -68,9 +68,9 @@ void ABossAIController::FirstStageCompleted()
 {
 	Blackboard->SetValueAsBool(BB_AltarsDestroyed, true);
 	Blackboard->SetValueAsBool(BB_IsBoy, true);
-	Blackboard->SetValueAsBool(BB_OnCircleSpline, false);
 	Blackboard->SetValueAsBool(BB_OnGround, false);
 	Blackboard->SetValueAsBool(BB_BossConcussed, false);
+	Blackboard->SetValueAsBool(BB_OnCircleSpline, false);
 
 	CachedPlayer->GetCharacterAttributeComponent()->RestoreHealth();
 }
