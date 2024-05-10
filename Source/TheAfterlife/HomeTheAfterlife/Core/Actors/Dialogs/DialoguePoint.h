@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma once
+
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Engine/DataTable.h"
@@ -14,15 +16,17 @@ UCLASS()
 class THEAFTERLIFE_API ADialoguePoint : public AActor, public IInteractable
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	ADialoguePoint();
 
 	virtual void Interact(ABaseCharacter* Character) override;
 	virtual bool IsForce() override;
+	virtual void ShouldStopInteracting(bool bStop) override;
 	virtual bool HasOnInteractionCallback() const override { return true; }
 	virtual FDelegateHandle AddOnInteractionUFunction(UObject* Object, const FName& FunctionName) override;
 	virtual void RemoveOnInteractionDelegate(FDelegateHandle DelegateHandle) override;
+	virtual bool StopInteract() override { return bStopInteract; }
 
 protected:
 
@@ -40,6 +44,8 @@ protected:
 private:
 
 	bool bItSounded = false;
+
+	bool bStopInteract = false;
 
 	void StartAction();
 };

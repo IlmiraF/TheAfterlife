@@ -20,12 +20,18 @@ void ADialoguePoint::Interact(ABaseCharacter* Character)
 	if (OnInteractionEvent.IsBound())
 	{
 		OnInteractionEvent.Broadcast();
+		Collider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 
 bool ADialoguePoint::IsForce()
 {
 	return bIsForce;
+}
+
+void ADialoguePoint::ShouldStopInteracting(bool bStop)
+{
+	bStopInteract = bStop;
 }
 
 FDelegateHandle ADialoguePoint::AddOnInteractionUFunction(UObject* Object, const FName& FunctionName)
@@ -36,6 +42,7 @@ FDelegateHandle ADialoguePoint::AddOnInteractionUFunction(UObject* Object, const
 void ADialoguePoint::RemoveOnInteractionDelegate(FDelegateHandle DelegateHandle)
 {
 	OnInteractionEvent.Remove(DelegateHandle);
+	Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 void ADialoguePoint::StartAction()
