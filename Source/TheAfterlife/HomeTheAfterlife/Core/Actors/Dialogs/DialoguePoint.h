@@ -1,51 +1,31 @@
 #pragma once
 
-#pragma once
-
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Engine/DataTable.h"
-#include "../Interactive/Interactive.h"
-#include "../../Actors/Interfaces/ISpeak.h"
+#include "Components/BoxComponent.h"
 #include "DialoguePoint.generated.h"
 
 class UBoxComponent;
-class ABaseCharacter;
-class UDialogueWidget;
+
+DECLARE_MULTICAST_DELEGATE(FOnPlayerEnterCollider);
+
 UCLASS()
-class THEAFTERLIFE_API ADialoguePoint : public AActor, public IInteractable
+class THEAFTERLIFE_API ADialoguePoint : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	ADialoguePoint();
 
-	virtual void Interact(ABaseCharacter* Character) override;
-	virtual bool IsForce() override;
-	virtual void ShouldStopInteracting(bool bStop) override;
-	virtual bool HasOnInteractionCallback() const override { return true; }
-	virtual FDelegateHandle AddOnInteractionUFunction(UObject* Object, const FName& FunctionName) override;
-	virtual void RemoveOnInteractionDelegate(FDelegateHandle DelegateHandle) override;
-	virtual bool StopInteract() override { return bStopInteract; }
+	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnPlayerEnter(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	FOnPlayerEnterCollider OnPlayerEnterCollider;
 
 protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* Collider;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bCanMovePlayer;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bIsForce = true;
-
-	IInteractable::FOnInteraction OnInteractionEvent;
-
-private:
-
-	bool bItSounded = false;
-
-	bool bStopInteract = false;
-
-	void StartAction();
 };

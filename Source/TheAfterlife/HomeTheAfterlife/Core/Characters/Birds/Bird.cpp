@@ -21,6 +21,11 @@ void ABird::BeginPlay()
 	Super::BeginPlay();
 
 	InitializeSpline();
+
+	for (ADialoguePoint* DialoguePoint : DialoguePointArray)
+	{
+		DialoguePoint->OnPlayerEnterCollider.AddUObject(this, &ABird::SetNewPoint);
+	}
 }
 
 void ABird::InitializeSpline()

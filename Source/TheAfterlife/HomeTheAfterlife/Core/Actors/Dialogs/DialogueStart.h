@@ -6,7 +6,9 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "DialogueInterface.h"
+#include "../../Characters/PlayerCharacter.h"
 #include "DialogueStart.generated.h"
+
 
 UENUM(BlueprintType)
 enum class ESpeakerType : uint8
@@ -108,5 +110,7 @@ private:
 	bool bItSounded = false;
 
 	bool bIsAlreadyFinished = false;
+
+	APlayerCharacter* CachedPlayerCharacter;
 
 };

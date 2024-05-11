@@ -35,6 +35,8 @@ public:
 
 	virtual void OnDeath() override;
 
+	void SetCanMove(bool Value);
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Camera")

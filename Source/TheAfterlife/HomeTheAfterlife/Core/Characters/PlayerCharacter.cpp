@@ -146,6 +146,11 @@ void APlayerCharacter::OnDeath()
 
 }
 
+void APlayerCharacter::SetCanMove(bool Value)
+{
+	bCanMove = Value;
+}
+
 void APlayerCharacter::OnStartAimingIternal()
 {
 	Super::OnStartAimingIternal();

@@ -18,12 +18,18 @@ ADialogueStart::ADialogueStart()
 void ADialogueStart::BeginPlay()
 {
 	Super::BeginPlay();
-
-	DialogueSettings.SpeakingActors.Add(ESpeakerType::Player, UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	DialogueSettings.SpeakingActors.Add(ESpeakerType::Player, PlayerCharacter);
+	CachedPlayerCharacter = Cast<APlayerCharacter>(PlayerCharacter);
 }
 
 void ADialogueStart::StartDialogue()
-{
+{	
+	if (!bCanMovePlayer)
+	{
+		CachedPlayerCharacter->SetCanMove(false);
+	}
+
 	Collider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	bIsAlreadyFinished = false;
 	if (DialogueSettings.SelectedDialogTable)
@@ -85,4 +91,5 @@ void ADialogueStart::FinishDialogue()
 	DialogBox->ConditionalBeginDestroy();
 	DialogBox = nullptr;
 	Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CachedPlayerCharacter->SetCanMove(true);
 }

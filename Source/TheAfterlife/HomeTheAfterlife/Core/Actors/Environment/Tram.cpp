@@ -92,9 +92,10 @@ void ATram::Move(float DeltaTime)
 }
 
 void ATram::StartMove()
-{
+{	
 	if (!bOnTramStarted)
-	{
+	{	
+		
 		Conductor->AttachToComponent(TramMesh, FAttachmentTransformRules::KeepWorldTransform);
 
 		bIsMoving = true;
