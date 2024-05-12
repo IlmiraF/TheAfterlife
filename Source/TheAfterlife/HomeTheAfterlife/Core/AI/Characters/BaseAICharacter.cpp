@@ -34,8 +34,11 @@ void ABaseAICharacter::OnDeath()
 
 void ABaseAICharacter::DisableCharacter()
 {	
-	CharacterEquipmentComponent->HideWeapons();
-
+	if (IsValid(CharacterEquipmentComponent))
+	{
+		CharacterEquipmentComponent->HideWeapons();
+	}
+	
 	if (OnCharacterDeath.IsBound())
 	{
 		OnCharacterDeath.Broadcast(this);

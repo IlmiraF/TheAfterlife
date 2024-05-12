@@ -61,7 +61,7 @@ void ABossDoor::BeginPlay()
 
 void ABossDoor::Open()
 {	
-	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, FString::Printf(TEXT("Boss Dead")));
+	//GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, FString::Printf(TEXT("Boss Dead")));
 	bStartOpen = true;
 
 	//Destroy();
