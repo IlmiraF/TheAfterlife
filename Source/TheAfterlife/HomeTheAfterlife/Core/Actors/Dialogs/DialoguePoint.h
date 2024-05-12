@@ -28,4 +28,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* Collider;
+
+private:
+
+	bool bVisited = false;
 };

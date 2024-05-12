@@ -19,8 +19,15 @@ void ADialoguePoint::BeginPlay()
 
 void ADialoguePoint::OnPlayerEnter(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {	
+	if (bVisited)
+	{
+		return;
+	}
+
 	if (OnPlayerEnterCollider.IsBound())
 	{
 		OnPlayerEnterCollider.Broadcast();
 	}
+
+	bVisited = true;
 }
