@@ -779,7 +779,6 @@ bool UBaseCharacterMovementComponent::TryWallRun()
 		UpdatedComponent->GetComponentLocation() + FVector::DownVector * (CharacterOwner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + MinWallRunHeight),
 		ECC_Visibility, Params))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Check"));
 		return false;
 	}
 
@@ -798,7 +797,6 @@ bool UBaseCharacterMovementComponent::TryWallRun()
 		}
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, TEXT("Check"));
 			return false;
 		}
 

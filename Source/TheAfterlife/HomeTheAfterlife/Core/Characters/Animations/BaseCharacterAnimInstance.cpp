@@ -30,6 +30,8 @@ void UBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsOnLadder = CharacterMovement->IsOnLadder();
 	bIsClimbing = CharacterMovement->IsClimbing();
 	bIsOnBeam = CharacterMovement->IsOnBeam();
+	bIsWallRunning = CharacterMovement->IsWallRunning();
+	bIsWallRunningRight = CharacterMovement->IsWallRunningRight();
 
 	if (bIsOnLadder)
 	{

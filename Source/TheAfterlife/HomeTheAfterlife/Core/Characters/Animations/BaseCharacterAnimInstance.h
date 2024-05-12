@@ -45,6 +45,12 @@ protected:
 	float OnBeamDirection = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
+	bool bIsWallRunning = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
+	bool bIsWallRunningRight = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
 	EEquipableItemType CurrentEquippedItemType = EEquipableItemType::NONE;
 
 private:
