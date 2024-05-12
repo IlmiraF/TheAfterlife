@@ -40,9 +40,10 @@ void APlatformTrigger::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp
 	}
 
 	OverlappedPawns.AddUnique(OtherPawn);
-
+	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, FString::Printf(TEXT("OnTriggerOverlapBegin")));
 	if (!bIsActivated && OverlappedPawns.Num() > 0)
-	{
+	{	
+		GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Green, FString::Printf(TEXT("OnTriggerOverlapBegin")));
 		SetIsActivated(true);
 		bIsActivated = true;
 	}
