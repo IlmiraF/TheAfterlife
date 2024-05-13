@@ -6,9 +6,6 @@
 #include "GameFramework/PlayerController.h"
 #include "BasePlayerController.generated.h"
 
-/**
- * 
- */
 
 class ABaseCharacter;
 
@@ -20,6 +17,9 @@ class THEAFTERLIFE_API ABasePlayerController : public APlayerController
 public:
 
 	virtual void SetPawn(APawn* InPawn) override;
+
+	void UnblockBomb();
+	void UnblockRange();
 
 protected:
 
@@ -83,4 +83,6 @@ private:
 
 	bool bIgnoreCameraPitch = false;
 
+	bool bBlockBomb = true;
+	bool bBlockRange = true;
 };

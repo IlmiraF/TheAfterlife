@@ -70,6 +70,10 @@ DECLARE_DELEGATE_TwoParams(FOnInteractableObjectFound, bool, FName)
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnWidgetUpdate, FName, FString, bool)
 DECLARE_DELEGATE(FOnFallingDelegate)
 
+DECLARE_MULTICAST_DELEGATE(FOnUnblockBomb);
+DECLARE_MULTICAST_DELEGATE(FOnUnblockRange);
+
+
 UCLASS()
 class THEAFTERLIFE_API ABaseCharacter : public ACharacter, public IISpeakable, public IGenericTeamAgentInterface, public ISaveSubsystemInterface
 {
@@ -176,6 +180,13 @@ public:
 	FOnFallingDelegate OnFalling;
 
 	FOnWidgetUpdate WidgetUpdateEvent;
+
+
+	void UnblockBomb();
+	void UnblockRange();
+
+	FOnUnblockBomb OnUnblockBomb;
+	FOnUnblockRange OnUnblockRange;
 
 protected:
 	virtual void BeginPlay() override;

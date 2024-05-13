@@ -26,7 +26,20 @@ void ABasePlayerController::SetPawn(APawn* InPawn)
 		CachedBaseCharacter->OnInteractableObjectFound.BindUObject(this, &ABasePlayerController::OnInteractableObjectFound);
 		CachedBaseCharacter->OnFalling.BindUObject(this, &ABasePlayerController::QuickLoadGame);
 		CachedBaseCharacter->WidgetUpdateEvent.AddUObject(this, &ABasePlayerController::WidgetUpdate);
+
+		CachedBaseCharacter->OnUnblockBomb.AddUObject(this, &ABasePlayerController::UnblockBomb);
+		CachedBaseCharacter->OnUnblockRange.AddUObject(this, &ABasePlayerController::UnblockRange);
 	}
+}
+
+void ABasePlayerController::UnblockBomb()
+{
+	bBlockBomb = false;
+}
+
+void ABasePlayerController::UnblockRange()
+{
+	bBlockRange = false;
 }
 
 void ABasePlayerController::SetupInputComponent()
@@ -220,7 +233,12 @@ void ABasePlayerController::PreviousItem()
 }
 
 void ABasePlayerController::Fire()
-{
+{	
+	if (bBlockRange)
+	{
+		return;
+	}
+
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->Fire();
@@ -228,7 +246,12 @@ void ABasePlayerController::Fire()
 }
 
 void ABasePlayerController::StartAiming()
-{
+{	
+	if (bBlockRange)
+	{
+		return;
+	}
+
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->StartAiming();
@@ -236,7 +259,12 @@ void ABasePlayerController::StartAiming()
 }
 
 void ABasePlayerController::StopAiming()
-{
+{	
+	if (bBlockRange)
+	{
+		return;
+	}
+
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->StopAiming();
@@ -244,7 +272,12 @@ void ABasePlayerController::StopAiming()
 }
 
 void ABasePlayerController::EquipPrimaryItem()
-{
+{	
+	if (bBlockBomb)
+	{
+		return;
+	}
+
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->EquipPrimaryItem();
@@ -268,7 +301,12 @@ void ABasePlayerController::LegsMeleeAttack()
 }
 
 void ABasePlayerController::ThrowBomb()
-{
+{	
+	if (bBlockBomb)
+	{
+		return;
+	}
+
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->ThrowBomb();

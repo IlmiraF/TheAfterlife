@@ -581,3 +581,19 @@ void ABaseCharacter::Speak(USoundBase* SoundBase)
 		PlaySound(SoundBase);
 	}
 }
+
+void ABaseCharacter::UnblockBomb()
+{
+	if (OnUnblockBomb.IsBound())
+	{
+		OnUnblockBomb.Broadcast();
+	}
+}
+
+void ABaseCharacter::UnblockRange()
+{
+	if (OnUnblockRange.IsBound())
+	{
+		OnUnblockRange.Broadcast();
+	}
+}
