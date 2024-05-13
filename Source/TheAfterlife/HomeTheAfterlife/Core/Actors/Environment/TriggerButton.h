@@ -3,12 +3,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "../../Actors/Environment/Platforms/PlatformTrigger.h"
 #include "TriggerButton.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnButtonActivated);
 
 UCLASS()
-class THEAFTERLIFE_API ATriggerButton : public AActor
+class THEAFTERLIFE_API ATriggerButton : public APlatformTrigger
 {
 	GENERATED_BODY()
 	
@@ -16,10 +17,15 @@ public:
 
 	ATriggerButton();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
-	UBoxComponent* TriggerComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UStaticMeshComponent* TriggerMesh;
 
 	FOnButtonActivated OnButtonActivated;
+
+protected:
+
+	virtual void BeginPlay() override;
+
 
 private:
 

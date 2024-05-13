@@ -28,6 +28,9 @@ public:
 
 	void Revival();
 
+	UPROPERTY(EditAnywhere, Category = "Health")
+	bool CanRevival = true;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
