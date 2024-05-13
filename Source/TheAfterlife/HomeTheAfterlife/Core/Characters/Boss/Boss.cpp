@@ -43,11 +43,13 @@ void ABoss::SwitchSplines(EBirdFlinghtTypes FlyType)
 	if (FlyType == EBirdFlinghtTypes::FlyingInCircle)
 	{
 		CachedSplineComponent = CircleSplineActor->GetSplineComponent();
+		GetMesh()->SetWorldScale3D(BossBirdScale);
 		CurrentFlyType = EBirdFlinghtTypes::FlyingInCircle;
 	}
 	else
 	{
 		CachedSplineComponent = RiseSplineActor->GetSplineComponent();
+		GetMesh()->SetWorldScale3D(BossBirdScale);
 		CurrentFlyType = EBirdFlinghtTypes::Rise;
 	}
 }
@@ -67,6 +69,7 @@ void ABoss::Concussion()
 	bIsConcussionTimerRunning = true;
 
 	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
+	GetMesh()->SetWorldScale3D(BossBoyScale);
 	GetCharacterAttributeComponent()->ReduceHealth(ConcussionDamage);
 
 	GetWorld()->GetTimerManager().SetTimer(ConcussionTimerHandle, this, &ABoss::ReturnToBird, TimeConcussion, false);
@@ -89,6 +92,7 @@ void ABoss::StartSecondStage()
 	EnemyPoolObject->DestroyEnemys();
 
 	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
+	GetMesh()->SetWorldScale3D(BossBoyScale);
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
@@ -185,6 +189,8 @@ void ABoss::ReturnToBird()
 		OnBossHasLanded.Broadcast(bOnGround);
 	}
 	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
+
+	GetMesh()->SetWorldScale3D(BossBirdScale);
 	CurrentFlyType = EBirdFlinghtTypes::Rise;
 }
 
@@ -196,6 +202,7 @@ void ABoss::ReturnToBoy()
 	}
 
 	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
+	GetMesh()->SetWorldScale3D(BossBoyScale);
 }
 
 void ABoss::ChangeHealth(float newHealthPercent)

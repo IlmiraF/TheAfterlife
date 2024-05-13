@@ -109,6 +109,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
 	FVector BossLocation;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scale")
+	FVector BossBoyScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scale")
+	FVector BossBirdScale;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Concussion")
 	float TimeConcussion;
 

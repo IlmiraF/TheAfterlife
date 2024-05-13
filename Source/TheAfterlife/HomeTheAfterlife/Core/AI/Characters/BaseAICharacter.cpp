@@ -58,6 +58,14 @@ void ABaseAICharacter::OnDeath()
 void ABaseAICharacter::DisableCharacter()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("DisableCharacter")));
+
+
+	ARangeWeaponItem* RangeWeapon = GetCharacterEquipmentComponent_Mutable()->GetCurrentRangeWeapon();
+	if (IsValid(RangeWeapon))
+	{
+		RangeWeapon->StopFire();
+	}
+
 	if (IsValid(CharacterEquipmentComponent))
 	{
 		CharacterEquipmentComponent->HideWeapons();
