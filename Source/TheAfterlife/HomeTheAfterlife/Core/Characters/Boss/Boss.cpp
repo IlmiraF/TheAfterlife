@@ -92,7 +92,8 @@ void ABoss::StartSecondStage()
 	EnemyPoolObject->DestroyEnemys();
 
 	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
-	GetMesh()->SetWorldScale3D(BossBoyScale);
+	GetMesh()->SetWorldScale3D(DefaultBossBoyScale);
+
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
@@ -107,7 +108,6 @@ void ABoss::BeginPlay()
 	Super::BeginPlay();;
 
 	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
-
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationSingleNode);
 
@@ -133,8 +133,6 @@ void ABoss::BeginPlay()
 	}
 
 	GetCharacterAttributeComponent()->OnHealthChangedEvent.AddUObject(this, &ABoss::ChangeHealth);
-
-
 }
 
 void ABoss::DestructionAltars()
@@ -191,6 +189,11 @@ void ABoss::ReturnToBird()
 	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
 
 	GetMesh()->SetWorldScale3D(BossBirdScale);
+
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+
+	GetMesh()->PlayAnimation(FirstStageAnimSequence, true);
+
 	CurrentFlyType = EBirdFlinghtTypes::Rise;
 }
 

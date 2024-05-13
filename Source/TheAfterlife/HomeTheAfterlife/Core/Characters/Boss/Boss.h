@@ -113,6 +113,9 @@ protected:
 	FVector BossBoyScale;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scale")
+	FVector DefaultBossBoyScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Scale")
 	FVector BossBirdScale;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Concussion")
