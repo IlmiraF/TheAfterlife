@@ -70,6 +70,7 @@ void ABoss::Concussion()
 
 	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
 	GetMesh()->SetWorldScale3D(BossBoyScale);
+	GetMesh()->Stop();
 	GetCharacterAttributeComponent()->ReduceHealth(ConcussionDamage);
 
 	GetWorld()->GetTimerManager().SetTimer(ConcussionTimerHandle, this, &ABoss::ReturnToBird, TimeConcussion, false);
@@ -105,10 +106,9 @@ void ABoss::StartSecondStage()
 
 void ABoss::BeginPlay()
 {
-	Super::BeginPlay();;
+	Super::BeginPlay();
 
 	GetMesh()->SetSkeletalMesh(FirstStageBossMesh);
-
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationSingleNode);
 
 	GetMesh()->PlayAnimation(FirstStageAnimSequence, true);
@@ -205,7 +205,11 @@ void ABoss::ReturnToBoy()
 	}
 
 	GetMesh()->SetSkeletalMesh(SecondStageBossMesh);
-	GetMesh()->SetWorldScale3D(BossBoyScale);
+	GetMesh()->SetWorldScale3D(DefaultBossBoyScale);
+
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+
+	GetMesh()->AnimBlueprintGeneratedClass = SecondStageBossAnimBlueprint;
 }
 
 void ABoss::ChangeHealth(float newHealthPercent)
