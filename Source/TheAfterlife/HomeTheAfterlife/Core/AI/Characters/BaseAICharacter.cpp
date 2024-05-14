@@ -57,8 +57,6 @@ void ABaseAICharacter::OnDeath()
 
 void ABaseAICharacter::DisableCharacter()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("DisableCharacter")));
-
 
 	ARangeWeaponItem* RangeWeapon = GetCharacterEquipmentComponent_Mutable()->GetCurrentRangeWeapon();
 	if (IsValid(RangeWeapon))
@@ -71,7 +69,6 @@ void ABaseAICharacter::DisableCharacter()
 		CharacterEquipmentComponent->HideWeapons();
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("DisableCharacter")));
 	if (OnCharacterDeath.IsBound())
 	{
 		OnCharacterDeath.Broadcast(this);

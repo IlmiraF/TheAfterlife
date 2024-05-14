@@ -11,7 +11,11 @@ void UAnimNotify_SetVisibility::Notify(USkeletalMeshComponent* MeshComp, UAnimSe
 	//Actor->SetActorEnableCollision(false);
 	//Actor->SetActorTickEnabled(false);
 	ABaseAICharacter* AICharacter = Cast<ABaseAICharacter>(Actor);
+	if (IsValid(AICharacter))
+	{
+		AICharacter->DisableCharacter();
+	}
 
-	AICharacter->DisableCharacter();
 }
+	
 
