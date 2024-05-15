@@ -39,6 +39,7 @@ ATram::ATram()
 void ATram::TriggerToPlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {	
 	StartMove();
+
 }
 
 void ATram::TriggerFromlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -46,14 +47,6 @@ void ATram::TriggerFromlatfromOnOverlapBegin(UPrimitiveComponent* OverlappedComp
 	bIsMoving = true;
 
 	StopDistance = INFINITY;
-
-	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
-	if (IsValid(PlayerCharacter))
-	{	
-		//PlayerCharacter->SetCanMove(false);
-	}
-
-	//Conductor->StopSpeaking();
 }
 
 void ATram::BeginPlay()
