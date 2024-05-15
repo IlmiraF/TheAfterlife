@@ -64,6 +64,11 @@ void ATram::BeginPlay()
 	{
 		StartMove();
 	}
+
+	if (IsValid(Conductor))
+	{
+		Conductor->AttachToComponent(TramMesh, FAttachmentTransformRules::KeepWorldTransform);
+	}
 }
 
 void ATram::Move(float DeltaTime)
@@ -95,11 +100,6 @@ void ATram::StartMove()
 {	
 	if (!bOnTramStarted)
 	{	
-		if (IsValid(Conductor))
-		{
-			Conductor->AttachToComponent(TramMesh, FAttachmentTransformRules::KeepWorldTransform);
-		}
-		
 		bIsMoving = true;
 
 		float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(StopWorldLocation);
