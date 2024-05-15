@@ -7,6 +7,7 @@
 #include "../../../Characters/BaseCharacter.h"
 #include "../../../../../TheAfterlifeTypes.h"
 #include "Kismet/GameplayStatics.h"
+#include "C:\Program Files\Epic Games\UE_5.2\Engine\Source\Runtime\Engine\Classes\GameFramework\PawnMovementComponent.h"
 
 // Sets default values
 ALevelTransition::ALevelTransition()
@@ -35,6 +36,17 @@ void ALevelTransition::OnInteractionVolumeOverlapBegin(UPrimitiveComponent* Over
 		return;
 	}
 
+	//UCharacterMovementComponent* MovementComponent = CachedBaseCharacter->GetMovementComponent();
+	//CachedBaseCharacter->GetMovementComponent()->Velocity = FVector::Zero;
+
+	UPrimitiveComponent* RootPlayerComponent = Cast<UPrimitiveComponent>(CachedBaseCharacter->GetRootComponent());
+	FVector NewVelocity = FVector::ZeroVector;
+
+	if (RootPlayerComponent != nullptr)
+	{
+		RootPlayerComponent->SetAllPhysicsLinearVelocity(NewVelocity, false);
+	}
+
 	UGameplayStatics::OpenLevel(GetWorld(), LevelName);
 }
 
@@ -45,6 +57,8 @@ bool ALevelTransition::IsOverlappingCharacterCapsule(AActor* OtherActor, UPrimit
 	{
 		return false;
 	}
+
+	CachedBaseCharacter = BaseCharacter;
 
 	if (Cast<UCapsuleComponent>(OtherComp) != BaseCharacter->GetCapsuleComponent())
 	{

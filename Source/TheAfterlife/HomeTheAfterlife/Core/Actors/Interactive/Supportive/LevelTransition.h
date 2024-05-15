@@ -29,4 +29,6 @@ protected:
 private:
 
 	bool IsOverlappingCharacterCapsule(AActor* OtherActor, UPrimitiveComponent* OtherComp);
+
+	TWeakObjectPtr<class ABaseCharacter> CachedBaseCharacter;
 };
