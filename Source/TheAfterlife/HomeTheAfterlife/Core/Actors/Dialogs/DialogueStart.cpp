@@ -90,6 +90,7 @@ void ADialogueStart::FinishDialogue()
 	DialogBox->RemoveFromParent();
 	DialogBox->ConditionalBeginDestroy();
 	DialogBox = nullptr;
-	Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CachedPlayerCharacter->SetCanMove(true);
+	this->Destroy();
 }
